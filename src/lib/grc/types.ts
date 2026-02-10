@@ -13,6 +13,9 @@ export interface ParsedControl {
   title: string;
   description: string;
   controlType: 'technical' | 'operational' | 'management';
+  criticality?: 'low' | 'medium' | 'high' | 'critical';
+  relatedControls?: string[];
+  objectives?: string[];
 }
 
 export interface ControlMapping {

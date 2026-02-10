@@ -52,7 +52,42 @@ export interface RiskScore {
   timestamp: Date;
 }
 
-// Travel Risk Types
+// Travel Risk Types - Enhanced
+export type AdvisoryLevel = 1 | 2 | 3 | 4;
+
+export interface HealthRisk {
+  disease: string;
+  severity: 'low' | 'medium' | 'high';
+  recommended_vaccines?: string[];
+  description: string;
+}
+
+export interface SecurityThreat {
+  type: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+}
+
+export interface NaturalDisasterRisk {
+  type: string;
+  probability: 'low' | 'medium' | 'high';
+  season?: string;
+  description: string;
+}
+
+export interface TravelDestination {
+  countryCode: string;
+  countryName: string;
+  advisoryLevel: AdvisoryLevel;
+  riskScore: number; // 0-100
+  securityThreats: SecurityThreat[];
+  healthRisks: HealthRisk[];
+  naturalDisasterRisk: NaturalDisasterRisk[];
+  infrastructureScore: number; // 0-100, higher is better
+  lastUpdated: Date;
+  advisoryText?: string;
+}
+
 export interface TravelAdvisory {
   id: string;
   countryCode: string;
@@ -69,6 +104,32 @@ export interface TravelRiskScore {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   factors: string[];
   advisoryLevel: number;
+}
+
+export interface TripLeg {
+  origin: string;
+  destination: string;
+  departureDate: Date;
+  returnDate: Date;
+  purpose: string;
+}
+
+export interface TripLegAssessment {
+  destination: string;
+  riskScore: number;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  advisoryLevel: AdvisoryLevel;
+  recommendations: string[];
+}
+
+export interface TripAssessment {
+  tripId?: string;
+  legs: TripLegAssessment[];
+  overallTripScore: number;
+  overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
+  highestRisk: TripLegAssessment;
+  recommendations: string[];
+  createdAt: Date;
 }
 
 export interface TripRiskReport {
