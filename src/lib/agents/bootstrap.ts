@@ -36,6 +36,11 @@ import { createSocialMediaAgent } from './social-media-agent';
 import { createBrandVoiceAgent } from './brand-voice-agent';
 import { createAnalyticsDashboardAgent } from './analytics-dashboard-agent';
 
+// Import F-category agent factories (Strategic Planning)
+import { createCompetitiveIntelligenceAgent } from './competitive-intelligence-agent';
+import { createRevenueForecastingAgent } from './revenue-forecasting-agent';
+import { createStrategicPlanningAgent } from './strategic-planning-agent';
+
 // Import Sprint 1 agents (A-01, A-02, A-03 are registered via their own modules)
 // They use the BaseAgent pattern but are registered as lightweight classes
 import { BaseAgent, type AgentConfig } from './base-agent';
@@ -255,6 +260,11 @@ export function initializeAgents(): void {
     manager.registerAgent(createSocialMediaAgent());
     manager.registerAgent(createBrandVoiceAgent());
     manager.registerAgent(createAnalyticsDashboardAgent());
+
+    // Sprint 6: F-category agents (Strategic Planning)
+    manager.registerAgent(createCompetitiveIntelligenceAgent());
+    manager.registerAgent(createRevenueForecastingAgent());
+    manager.registerAgent(createStrategicPlanningAgent());
 
     initialized = true;
     console.log(`[AgentBootstrap] Registered ${manager.getAgentNames().length} agents`);

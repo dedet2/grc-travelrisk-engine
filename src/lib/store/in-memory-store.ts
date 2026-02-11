@@ -34,6 +34,9 @@ import type { DatabaseMetrics } from '../agents/database-optimization-agent';
 import type { SecurityAuditReport } from '../agents/security-audit-agent';
 import type { BackupRecoveryReport } from '../agents/backup-recovery-agent';
 import type { CostOptimizationReport } from '../agents/cost-optimization-agent';
+import type { CompetitiveIntelligenceReport } from '../agents/competitive-intelligence-agent';
+import type { RevenueForecastingReport } from '../agents/revenue-forecasting-agent';
+import type { StrategicPlan } from '../agents/strategic-planning-agent';
 
 export interface StoredScoringResult {
   assessmentId: string;
@@ -141,6 +144,11 @@ class InMemoryStore {
   private securityAuditReport?: SecurityAuditReport;
   private backupRecoveryReport?: BackupRecoveryReport;
   private costOptimizationReport?: CostOptimizationReport;
+
+  // F-Category Agent Storage (Strategic Planning)
+  private competitiveIntelligenceReport?: CompetitiveIntelligenceReport;
+  private revenueForecastingReport?: RevenueForecastingReport;
+  private strategicPlan?: StrategicPlan;
 
   // ===== Scoring Results Methods =====
 
@@ -1109,6 +1117,54 @@ class InMemoryStore {
     return this.costOptimizationReport;
   }
 
+  // ===== Competitive Intelligence Storage (F-01) =====
+
+  /**
+   * Store competitive intelligence report
+   */
+  storeCompetitiveIntelligenceReport(report: CompetitiveIntelligenceReport): void {
+    this.competitiveIntelligenceReport = report;
+  }
+
+  /**
+   * Get competitive intelligence report
+   */
+  getCompetitiveIntelligenceReport(): CompetitiveIntelligenceReport | undefined {
+    return this.competitiveIntelligenceReport;
+  }
+
+  // ===== Revenue Forecasting Storage (F-02) =====
+
+  /**
+   * Store revenue forecasting report
+   */
+  storeRevenueForecastingReport(report: RevenueForecastingReport): void {
+    this.revenueForecastingReport = report;
+  }
+
+  /**
+   * Get revenue forecasting report
+   */
+  getRevenueForecastingReport(): RevenueForecastingReport | undefined {
+    return this.revenueForecastingReport;
+  }
+
+  // ===== Strategic Planning Storage (F-03) =====
+
+  /**
+   * Store strategic plan
+   */
+  storeStrategicPlan(plan: StrategicPlan): void {
+    this.strategicPlan = plan;
+  }
+
+  /**
+   * Get strategic plan
+   */
+  getStrategicPlan(): StrategicPlan | undefined {
+    return this.strategicPlan;
+  }
+
   // ===== Utility Methods =====
 
   // ============================================================
@@ -1280,6 +1336,9 @@ class InMemoryStore {
     this.securityAuditReport = undefined;
     this.backupRecoveryReport = undefined;
     this.costOptimizationReport = undefined;
+    this.competitiveIntelligenceReport = undefined;
+    this.revenueForecastingReport = undefined;
+    this.strategicPlan = undefined;
   }
 
   /**

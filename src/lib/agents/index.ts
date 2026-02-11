@@ -201,3 +201,37 @@ export {
   type ServiceCost,
   type BudgetTracking,
 } from './cost-optimization-agent';
+
+// F-Category Agents (Strategic Planning)
+export {
+  CompetitiveIntelligenceAgent,
+  createCompetitiveIntelligenceAgent,
+  type CompetitiveIntelligenceReport,
+  type Competitor,
+  type FeatureLaunch,
+  type CompetitiveThreat,
+  type CompetitiveOpportunity,
+  type MarketPositionScore,
+} from './competitive-intelligence-agent';
+
+export {
+  RevenueForecastingAgent,
+  createRevenueForecastingAgent,
+  type RevenueForecastingReport,
+  type RevenueForecast,
+  type RevenueRiskFactor,
+  type RevenueScenarioModel,
+  type SalesMetric,
+  type PipelineStage,
+} from './revenue-forecasting-agent';
+
+export {
+  StrategicPlanningAgent,
+  createStrategicPlanningAgent,
+  type StrategicPlan,
+  type StrategicInitiative,
+  type QuarterlyObjective,
+  type StrategicTheme,
+  type RiskMitigationStrategy,
+  type ResourceAllocationPlan,
+} from './strategic-planning-agent';
