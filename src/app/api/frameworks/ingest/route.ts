@@ -4,6 +4,8 @@ import { parseFrameworkDocument, validateFramework, normalizeControlId } from '@
 import type { ApiResponse } from '@/types';
 import type { FrameworkResponse } from '@/types/grc';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/frameworks/ingest
  * Parse and ingest a GRC framework document

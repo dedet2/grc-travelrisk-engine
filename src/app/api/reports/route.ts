@@ -2,6 +2,8 @@ import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
 import type { ApiResponse, TripRiskReport } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request): Promise<Response> {
   try {
     const { userId } = await auth();

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { assessTrip, getTripRiskSummary, isTripSafeForTravel } from '@/lib/travel/trip-assessor';
 import { TripLeg, TripAssessment, ApiResponse } from '@/types/index';
 
+export const dynamic = 'force-dynamic';
+
 interface TripAssessmentRequest {
   legs: TripLeg[];
 }

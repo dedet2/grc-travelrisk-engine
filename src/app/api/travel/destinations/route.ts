@@ -3,6 +3,8 @@ import { fetchTravelAdvisories } from '@/lib/travel/advisory-fetcher';
 import { TravelDestination } from '@/types/index';
 import { ApiResponse } from '@/types/index';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/travel/destinations
  * List all travel destinations with risk scores

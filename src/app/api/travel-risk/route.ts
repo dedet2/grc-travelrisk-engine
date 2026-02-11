@@ -3,6 +3,8 @@ import { getAdvisoryClient } from '@/lib/travel-risk/advisory-client';
 import { calculateTravelRiskScore } from '@/lib/travel-risk/scorer';
 import type { ApiResponse, TravelRiskScore } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request): Promise<Response> {
   try {
     const { userId } = await auth();

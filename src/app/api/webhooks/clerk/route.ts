@@ -1,6 +1,8 @@
 import { Webhook } from 'svix';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 
+export const dynamic = 'force-dynamic';
+
 // Clerk webhook secret
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 

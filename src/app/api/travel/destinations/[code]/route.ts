@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDestinationRisk, calculateDestinationRiskFactors, getRecommendedVaccines } from '@/lib/travel/advisory-fetcher';
 import { TravelDestination, ApiResponse } from '@/types/index';
 
+export const dynamic = 'force-dynamic';
+
 interface DestinationResponse extends TravelDestination {
   riskFactors: string[];
   recommendedVaccines: string[];

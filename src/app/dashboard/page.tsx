@@ -63,7 +63,7 @@ export default function DashboardPage() {
         const response = await fetch('/api/dashboard/stats');
         if (!response.ok) throw new Error('Failed to fetch stats');
         const data = await response.json();
-        setStats(data);
+        setStats(data.data);
       } catch (err) {
         console.error('Error fetching dashboard stats:', err);
         setError(err instanceof Error ? err.message : 'Failed to load stats');

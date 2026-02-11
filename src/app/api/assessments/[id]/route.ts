@@ -5,6 +5,8 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
+
+export const dynamic = 'force-dynamic';
 import { computeGRCScore } from '@/lib/scoring/risk-engine';
 import type { ApiResponse, Control } from '@/types';
 import type {

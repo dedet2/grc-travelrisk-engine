@@ -7,6 +7,8 @@ import { getAgentManager } from '@/lib/agents';
 import type { AgentRunResult } from '@/lib/agents';
 import type { ApiResponse } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/agents/[name]/run
  * Trigger a specific agent to run and return the result

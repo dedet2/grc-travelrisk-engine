@@ -5,6 +5,8 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
+
+export const dynamic = 'force-dynamic';
 import type { ApiResponse } from '@/types';
 
 interface ScoreResponse {

@@ -1,7 +1,10 @@
 import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
+import { inMemoryStore } from '@/lib/store/in-memory-store';
 import type { ApiResponse } from '@/types';
 import type { FrameworkDetailResponse, FrameworkResponse, CategoryBreakdown } from '@/types/grc';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/frameworks/[id]
@@ -14,83 +17,148 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const supabase = await createServerSideClient();
+    let supabase;
+    let useInMemory = false;
 
-    // Fetch framework
-    const { data: frameworkData, error: frameworkError } = await supabase
-      .from('frameworks')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (frameworkError || !frameworkData) {
-      return Response.json(
-        {
-          success: false,
-          error: 'Framework not found',
-          timestamp: new Date(),
-        } as ApiResponse<null>,
-        { status: 404 }
-      );
+    // Try to create Supabase client, fall back to in-memory store if not configured
+    try {
+      supabase = await createServerSideClient();
+    } catch (e) {
+      console.warn('Supabase not configured, using in-memory store:', e instanceof Error ? e.message : String(e));
+      useInMemory = true;
     }
 
-    // Fetch all controls for this framework
-    const { data: controlsData, error: controlsError } = await supabase
-      .from('controls')
-      .select('*')
-      .eq('framework_id', id)
-      .order('control_id_str', { ascending: true });
+    let framework: FrameworkResponse;
+    let categories: CategoryBreakdown[];
+    let controls: any[] = [];
 
-    if (controlsError) {
-      console.error('Controls fetch error:', controlsError);
-      throw controlsError;
-    }
-
-    const controls = controlsData || [];
-
-    // Build category breakdown
-    const categoryMap = new Map<string, CategoryBreakdown>();
-
-    (controls as any[]).forEach((control: any) => {
-      if (!categoryMap.has(control.category)) {
-        categoryMap.set(control.category, {
-          categoryId: control.category,
-          categoryName: control.category,
-          controlCount: 0,
-        });
+    if (useInMemory) {
+      // Fetch from in-memory store
+      const frameworkData = inMemoryStore.getFramework(id);
+      if (!frameworkData) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Framework not found',
+            timestamp: new Date(),
+          } as ApiResponse<null>,
+          { status: 404 }
+        );
       }
 
-      const category = categoryMap.get(control.category)!;
-      category.controlCount += 1;
-    });
+      controls = inMemoryStore.getControls(id);
 
-    const categories = Array.from(categoryMap.values()).sort((a, b) =>
-      a.categoryId.localeCompare(b.categoryId)
-    );
+      // Build category breakdown
+      const categoryMap = new Map<string, CategoryBreakdown>();
+      controls.forEach((control) => {
+        if (!categoryMap.has(control.category)) {
+          categoryMap.set(control.category, {
+            categoryId: control.category,
+            categoryName: control.category,
+            controlCount: 0,
+          });
+        }
+        const category = categoryMap.get(control.category)!;
+        category.controlCount += 1;
+      });
 
-    // Build framework response
-    const framework: FrameworkResponse = {
-      id: (frameworkData as any).id,
-      name: (frameworkData as any).name,
-      version: (frameworkData as any).version,
-      description: (frameworkData as any).description || '',
-      controlCount: controls.length,
-      status: (frameworkData as any).status as 'draft' | 'published' | 'archived',
-      categories: categories.map(c => ({
-        id: c.categoryId,
-        name: c.categoryName,
-        description: '',
-        controlCount: c.controlCount,
-      })),
-      createdAt: new Date((frameworkData as any).created_at),
-      updatedAt: new Date((frameworkData as any).updated_at),
-    };
+      categories = Array.from(categoryMap.values()).sort((a, b) =>
+        a.categoryId.localeCompare(b.categoryId)
+      );
+
+      framework = {
+        id: frameworkData.id,
+        name: frameworkData.name,
+        version: frameworkData.version,
+        description: frameworkData.description,
+        controlCount: controls.length,
+        status: frameworkData.status,
+        categories: categories.map(c => ({
+          id: c.categoryId,
+          name: c.categoryName,
+          description: '',
+          controlCount: c.controlCount,
+        })),
+        createdAt: frameworkData.createdAt,
+        updatedAt: frameworkData.updatedAt,
+      };
+    } else {
+      // Fetch from database
+      const { data: frameworkData, error: frameworkError } = await supabase!
+        .from('frameworks')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (frameworkError || !frameworkData) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Framework not found',
+            timestamp: new Date(),
+          } as ApiResponse<null>,
+          { status: 404 }
+        );
+      }
+
+      // Fetch all controls for this framework
+      const { data: controlsData, error: controlsError } = await supabase!
+        .from('controls')
+        .select('*')
+        .eq('framework_id', id)
+        .order('control_id_str', { ascending: true });
+
+      if (controlsError) {
+        console.error('Controls fetch error:', controlsError);
+        throw controlsError;
+      }
+
+      controls = controlsData || [];
+
+      // Build category breakdown
+      const categoryMap = new Map<string, CategoryBreakdown>();
+
+      (controls as any[]).forEach((control: any) => {
+        if (!categoryMap.has(control.category)) {
+          categoryMap.set(control.category, {
+            categoryId: control.category,
+            categoryName: control.category,
+            controlCount: 0,
+          });
+        }
+
+        const category = categoryMap.get(control.category)!;
+        category.controlCount += 1;
+      });
+
+      categories = Array.from(categoryMap.values()).sort((a, b) =>
+        a.categoryId.localeCompare(b.categoryId)
+      );
+
+      // Build framework response
+      framework = {
+        id: (frameworkData as any).id,
+        name: (frameworkData as any).name,
+        version: (frameworkData as any).version,
+        description: (frameworkData as any).description || '',
+        controlCount: controls.length,
+        status: (frameworkData as any).status as 'draft' | 'published' | 'archived',
+        categories: categories.map(c => ({
+          id: c.categoryId,
+          name: c.categoryName,
+          description: '',
+          controlCount: c.controlCount,
+        })),
+        createdAt: new Date((frameworkData as any).created_at),
+        updatedAt: new Date((frameworkData as any).updated_at),
+      };
+    }
 
     const response: FrameworkDetailResponse = {
       framework,
       categoryBreakdown: categories,
       totalControls: controls.length,
-      lastUpdated: new Date(frameworkData.updated_at),
+      lastUpdated: framework.updatedAt,
     };
 
     return Response.json(
@@ -138,32 +206,56 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const supabase = await createServerSideClient();
+    let supabase;
+    let useInMemory = false;
 
-    // Check if framework exists
-    const { data: frameworkData, error: checkError } = await supabase
-      .from('frameworks')
-      .select('id')
-      .eq('id', id)
-      .single();
-
-    if (checkError || !frameworkData) {
-      return Response.json(
-        {
-          success: false,
-          error: 'Framework not found',
-          timestamp: new Date(),
-        } as ApiResponse<null>,
-        { status: 404 }
-      );
+    // Try to create Supabase client, fall back to in-memory store if not configured
+    try {
+      supabase = await createServerSideClient();
+    } catch (e) {
+      console.warn('Supabase not configured, using in-memory store:', e instanceof Error ? e.message : String(e));
+      useInMemory = true;
     }
 
-    // Delete the framework (cascade delete handles controls)
-    const { error: deleteError } = await supabase.from('frameworks').delete().eq('id', id);
+    if (useInMemory) {
+      // Delete from in-memory store
+      const deleted = inMemoryStore.deleteFramework(id);
+      if (!deleted) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Framework not found',
+            timestamp: new Date(),
+          } as ApiResponse<null>,
+          { status: 404 }
+        );
+      }
+    } else {
+      // Check if framework exists
+      const { data: frameworkData, error: checkError } = await supabase!
+        .from('frameworks')
+        .select('id')
+        .eq('id', id)
+        .single();
 
-    if (deleteError) {
-      console.error('Framework deletion error:', deleteError);
-      throw deleteError;
+      if (checkError || !frameworkData) {
+        return Response.json(
+          {
+            success: false,
+            error: 'Framework not found',
+            timestamp: new Date(),
+          } as ApiResponse<null>,
+          { status: 404 }
+        );
+      }
+
+      // Delete the framework (cascade delete handles controls)
+      const { error: deleteError } = await supabase!.from('frameworks').delete().eq('id', id);
+
+      if (deleteError) {
+        console.error('Framework deletion error:', deleteError);
+        throw deleteError;
+      }
     }
 
     return Response.json(

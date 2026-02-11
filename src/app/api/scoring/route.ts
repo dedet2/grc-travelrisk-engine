@@ -11,6 +11,8 @@ import { calculateRiskScore, calculateAssessmentMetrics } from '@/lib/scoring/en
 import type { ApiResponse } from '@/types';
 import type { ControlScore, ScoringInput } from '@/lib/scoring/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/scoring
  * Run risk scoring on assessment data

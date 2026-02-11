@@ -2,6 +2,8 @@ import { GrcIngestionAgent } from '@/lib/agents/grc-ingestion-agent';
 import { store } from '@/lib/store/in-memory-store';
 import type { ApiResponse } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/frameworks/seed
  * Seed the database with ISO 27001:2022 controls using the GRC Ingestion Agent

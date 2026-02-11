@@ -6,6 +6,8 @@
 import { getAgentManager } from '@/lib/agents';
 import type { ApiResponse } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export interface AgentListItem {
   name: string;
   description: string;
