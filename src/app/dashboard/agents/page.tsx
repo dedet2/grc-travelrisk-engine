@@ -198,33 +198,79 @@ export default function AgentsPage() {
     ]);
   }
 
+  /**
+   * Validate agent response data structure
+   */
+  function isValidAgentListResponse(data: unknown): data is AgentListResponse {
+    if (!data || typeof data !== 'object') return false;
+
+    const response = data as Record<string, unknown>;
+    return (
+      response.summary &&
+      typeof response.summary === 'object' &&
+      Array.isArray(response.agents) &&
+      typeof response.timestamp === 'string' || response.timestamp instanceof Date
+    );
+  }
+
   async function fetchAgents() {
     try {
       setLoading(true);
-      const response = await fetch('/api/agents');
-      if (!response.ok) throw new Error('Failed to fetch agents');
+      setError(null);
+
+      const response = await fetch('/api/agents', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to fetch agents`);
+      }
+
       const result = await response.json();
+
+      if (!isValidAgentListResponse(result.data)) {
+        throw new Error('Invalid response format from server');
+      }
+
       setData(result.data);
     } catch (err) {
       console.error('Error fetching agents:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load agents');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load agents';
+      setError(errorMessage);
+      setData(null);
     } finally {
       setLoading(false);
     }
   }
 
   async function runAgent(agentName: string) {
+    if (!agentName || typeof agentName !== 'string') {
+      setError('Invalid agent name');
+      return;
+    }
+
     try {
       setRunningAgents((prev) => new Set([...prev, agentName]));
-      const response = await fetch(`/api/agents/${agentName}/run`, {
+      const response = await fetch(`/api/agents/${encodeURIComponent(agentName)}/run`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      if (!response.ok) throw new Error('Failed to run agent');
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to run agent`);
+      }
+
       // Refresh agent list after a delay
       setTimeout(fetchAgents, 1000);
     } catch (err) {
       console.error('Error running agent:', err);
-      setError(err instanceof Error ? err.message : 'Failed to run agent');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to run agent';
+      setError(errorMessage);
     } finally {
       setRunningAgents((prev) => {
         const newSet = new Set(prev);
@@ -295,21 +341,45 @@ export default function AgentsPage() {
     );
   }
 
-  if (error) {
+  if (error || !data) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h2 className="text-lg font-bold text-red-900 mb-2">
-          Failed to load agents
-        </h2>
-        <p className="text-red-700">{error}</p>
+      <div className="space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-lg font-bold text-red-900 mb-2">
+            Failed to load agents
+          </h2>
+          <p className="text-red-700 mb-4">{error || 'Unknown error occurred'}</p>
+          <button
+            onClick={fetchAgents}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
 
-  if (!data) {
+  // Validate data before rendering
+  if (
+    !data.summary ||
+    typeof data.summary.totalAgents !== 'number' ||
+    !Array.isArray(data.agents)
+  ) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
-        <p className="text-gray-600">No agents available</p>
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
+        <h2 className="text-lg font-bold text-amber-900 mb-2">
+          Invalid data format
+        </h2>
+        <p className="text-amber-700 mb-4">
+          The server returned invalid data. Please try again.
+        </p>
+        <button
+          onClick={fetchAgents}
+          className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface DashboardStats {
@@ -52,49 +52,110 @@ function StatusIndicator({ status }: { status: string }) {
   return <div className={`w-2 h-2 rounded-full ${statusColor}`} />;
 }
 
+/**
+ * Loading skeleton component for better UX
+ */
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Error display component with retry functionality
+ */
+function ErrorBoundary({ error, onRetry }: { error: string; onRetry: () => void }) {
+  return (
+    <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+      <h2 className="text-lg font-bold text-red-900 mb-2">Failed to load dashboard</h2>
+      <p className="text-red-700 mb-4">{error}</p>
+      <button
+        onClick={onRetry}
+        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+      >
+        Retry
+      </button>
+    </div>
+  );
+}
+
+/**
+ * Validate that stats object has all required properties
+ */
+function isValidDashboardStats(data: unknown): data is DashboardStats {
+  if (!data || typeof data !== 'object') return false;
+
+  const stats = data as Record<string, unknown>;
+  return (
+    stats.riskScore &&
+    typeof stats.riskScore === 'object' &&
+    stats.compliance &&
+    typeof stats.compliance === 'object' &&
+    stats.assessments &&
+    typeof stats.assessments === 'object' &&
+    stats.travelRisks &&
+    typeof stats.travelRisks === 'object' &&
+    Array.isArray(stats.categoryScores) &&
+    Array.isArray(stats.recentActivity)
+  );
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchStats() {
-      try {
-        const response = await fetch('/api/dashboard/stats');
-        if (!response.ok) throw new Error('Failed to fetch stats');
-        const data = await response.json();
-        setStats(data.data);
-      } catch (err) {
-        console.error('Error fetching dashboard stats:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load stats');
-      } finally {
-        setLoading(false);
-      }
-    }
+  const fetchStats = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    fetchStats();
+      const response = await fetch('/api/dashboard/stats', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to fetch stats`);
+      }
+
+      const data = await response.json();
+
+      if (!data || !isValidDashboardStats(data.data)) {
+        throw new Error('Invalid response format from server');
+      }
+
+      setStats(data.data);
+    } catch (err) {
+      console.error('Error fetching dashboard stats:', err);
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      setStats(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
   if (loading) {
-    return (
-      <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
-          ))}
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (error || !stats) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h2 className="text-lg font-bold text-red-900 mb-2">Failed to load dashboard</h2>
-        <p className="text-red-700">{error || 'Unknown error occurred'}</p>
-      </div>
-    );
+    return <ErrorBoundary error={error || 'Unknown error occurred'} onRetry={fetchStats} />;
   }
 
   return (

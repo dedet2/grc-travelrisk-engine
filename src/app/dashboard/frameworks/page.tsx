@@ -32,16 +32,61 @@ export default function FrameworksPage() {
     fetchFrameworks();
   }, []);
 
+  /**
+   * Validate framework data structure
+   */
+  function isValidFramework(data: unknown): data is Framework {
+    if (!data || typeof data !== 'object') return false;
+
+    const framework = data as Record<string, unknown>;
+    return (
+      typeof framework.id === 'string' &&
+      typeof framework.name === 'string' &&
+      typeof framework.version === 'string' &&
+      typeof framework.description === 'string' &&
+      typeof framework.controlCount === 'number' &&
+      ['draft', 'published', 'archived'].includes(framework.status as string) &&
+      Array.isArray(framework.categories)
+    );
+  }
+
   async function fetchFrameworks() {
     try {
       setLoading(true);
-      const response = await fetch('/api/frameworks');
-      if (!response.ok) throw new Error('Failed to fetch frameworks');
+      setError(null);
+
+      const response = await fetch('/api/frameworks', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to fetch frameworks`);
+      }
+
       const result = await response.json();
-      setFrameworks(Array.isArray(result.data) ? result.data : []);
+
+      if (!Array.isArray(result.data)) {
+        throw new Error('Invalid response format: expected array of frameworks');
+      }
+
+      // Validate each framework
+      const validFrameworks = result.data.filter((fw: unknown) => {
+        const valid = isValidFramework(fw);
+        if (!valid) {
+          console.warn('Skipping invalid framework:', fw);
+        }
+        return valid;
+      });
+
+      setFrameworks(validFrameworks);
     } catch (err) {
       console.error('Error fetching frameworks:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load frameworks');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load frameworks';
+      setError(errorMessage);
+      setFrameworks([]);
     } finally {
       setLoading(false);
     }
@@ -50,13 +95,25 @@ export default function FrameworksPage() {
   async function seedISO27001() {
     try {
       setSeeding(true);
-      const response = await fetch('/api/frameworks/seed', { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to seed framework');
+      setError(null);
+
+      const response = await fetch('/api/frameworks/seed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Failed to seed framework`);
+      }
+
       // Refresh the list
       await fetchFrameworks();
     } catch (err) {
       console.error('Error seeding framework:', err);
-      setError(err instanceof Error ? err.message : 'Failed to seed framework');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to seed framework';
+      setError(errorMessage);
     } finally {
       setSeeding(false);
     }

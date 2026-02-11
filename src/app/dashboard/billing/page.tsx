@@ -1,0 +1,321 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Invoice {
+  id: string;
+  clientName: string;
+  amount: number;
+  dueDate: string;
+  status: 'paid' | 'pending' | 'overdue';
+  invoiceDate: string;
+}
+
+interface BillingMetrics {
+  totalRevenue: number;
+  outstandingAmount: number;
+  paidAmount: number;
+  overdueAmount: number;
+  invoiceCount: number;
+}
+
+interface BillingData {
+  metrics: BillingMetrics;
+  invoices: Invoice[];
+}
+
+function getStatusColor(status: string): string {
+  switch (status) {
+    case 'paid':
+      return 'bg-emerald-100 text-emerald-700 border-emerald-300';
+    case 'pending':
+      return 'bg-blue-100 text-blue-700 border-blue-300';
+    case 'overdue':
+      return 'bg-red-100 text-red-700 border-red-300';
+    default:
+      return 'bg-gray-100 text-gray-700 border-gray-300';
+  }
+}
+
+function getStatusLabel(status: string): string {
+  switch (status) {
+    case 'paid':
+      return 'Paid';
+    case 'pending':
+      return 'Pending';
+    case 'overdue':
+      return 'Overdue';
+    default:
+      return 'Unknown';
+  }
+}
+
+export default function BillingPage() {
+  const [data, setData] = useState<BillingData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchBillingData() {
+      try {
+        const [metricsRes, invoicesRes] = await Promise.all([
+          fetch('/api/billing/metrics'),
+          fetch('/api/billing'),
+        ]);
+
+        if (!metricsRes.ok || !invoicesRes.ok) {
+          throw new Error('Failed to fetch billing data');
+        }
+
+        const metricsData = await metricsRes.json();
+        const invoicesData = await invoicesRes.json();
+
+        setData({
+          metrics: metricsData.data || metricsData,
+          invoices: invoicesData.data || invoicesData,
+        });
+      } catch (err) {
+        console.error('Error fetching billing data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load billing data');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchBillingData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
+          ))}
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow h-96 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+        <h2 className="text-lg font-bold text-red-900 mb-2">Failed to load billing</h2>
+        <p className="text-red-700">{error || 'Unknown error occurred'}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-4xl font-bold text-gray-900">Billing & Invoices</h1>
+        <p className="text-gray-600 mt-2">Manage invoices, payments, and revenue metrics</p>
+      </div>
+
+      {/* Metric Cards - 4 Column Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Total Revenue */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
+          <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
+          <p className="text-4xl font-bold text-indigo-600">
+            ${(data.metrics.totalRevenue / 1000).toFixed(1)}k
+          </p>
+          <p className="text-xs text-gray-600 mt-2">All-time invoiced</p>
+        </div>
+
+        {/* Outstanding Amount */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-gray-600 mb-1">Outstanding</p>
+          <p className="text-4xl font-bold text-blue-600">
+            ${(data.metrics.outstandingAmount / 1000).toFixed(1)}k
+          </p>
+          <p className="text-xs text-gray-600 mt-2">Pending & overdue</p>
+        </div>
+
+        {/* Paid Amount */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-gray-600 mb-1">Paid</p>
+          <p className="text-4xl font-bold text-emerald-600">
+            ${(data.metrics.paidAmount / 1000).toFixed(1)}k
+          </p>
+          <p className="text-xs text-gray-600 mt-2">Received payments</p>
+        </div>
+
+        {/* Overdue Amount */}
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-600">
+          <p className="text-sm font-medium text-gray-600 mb-1">Overdue</p>
+          <p className="text-4xl font-bold text-red-600">
+            ${(data.metrics.overdueAmount / 1000).toFixed(1)}k
+          </p>
+          <p className="text-xs text-gray-600 mt-2">Action required</p>
+        </div>
+      </div>
+
+      {/* Invoices Table */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="border-b border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-gray-900">Recent Invoices</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            {data.invoices.length} invoices total
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                  Invoice ID
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                  Client
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                  Invoice Date
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                  Due Date
+                </th>
+                <th className="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                  Amount
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.invoices.length > 0 ? (
+                data.invoices.map((invoice) => (
+                  <tr
+                    key={invoice.id}
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      {invoice.id}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {invoice.clientName}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {new Date(invoice.invoiceDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {new Date(invoice.dueDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">
+                      ${invoice.amount.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                          invoice.status
+                        )}`}
+                      >
+                        {getStatusLabel(invoice.status)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    No invoices found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-6">Billing Summary</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <p className="text-sm text-gray-600 mb-2">Collection Rate</p>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold text-emerald-600">
+                {data.metrics.totalRevenue > 0
+                  ? Math.round(
+                      (data.metrics.paidAmount / data.metrics.totalRevenue) * 100
+                    )
+                  : 0}
+              </span>
+              <span className="text-gray-600">%</span>
+            </div>
+            <div className="mt-3 bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-emerald-600 h-2 rounded-full"
+                style={{
+                  width: `${
+                    data.metrics.totalRevenue > 0
+                      ? (data.metrics.paidAmount / data.metrics.totalRevenue) * 100
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-600 mb-2">Outstanding Rate</p>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold text-blue-600">
+                {data.metrics.totalRevenue > 0
+                  ? Math.round(
+                      (data.metrics.outstandingAmount / data.metrics.totalRevenue) * 100
+                    )
+                  : 0}
+              </span>
+              <span className="text-gray-600">%</span>
+            </div>
+            <div className="mt-3 bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full"
+                style={{
+                  width: `${
+                    data.metrics.totalRevenue > 0
+                      ? (data.metrics.outstandingAmount / data.metrics.totalRevenue) * 100
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-600 mb-2">Overdue Rate</p>
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold text-red-600">
+                {data.metrics.totalRevenue > 0
+                  ? Math.round(
+                      (data.metrics.overdueAmount / data.metrics.totalRevenue) * 100
+                    )
+                  : 0}
+              </span>
+              <span className="text-gray-600">%</span>
+            </div>
+            <div className="mt-3 bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-red-600 h-2 rounded-full"
+                style={{
+                  width: `${
+                    data.metrics.totalRevenue > 0
+                      ? (data.metrics.overdueAmount / data.metrics.totalRevenue) * 100
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
