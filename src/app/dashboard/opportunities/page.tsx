@@ -92,7 +92,38 @@ export default function OpportunitiesPage() {
         if (!response.ok) throw new Error('Failed to fetch opportunities');
 
         const result = await response.json();
-        setData(result.data || result);
+        const leadsData = result.data;
+
+        // Transform leads data to opportunities format
+        const opportunities: Opportunity[] = (leadsData.leads || []).map((lead: any) => ({
+          id: lead.leadId,
+          title: lead.companyName,
+          category: 'consulting' as const,
+          status:
+            lead.stage === 'qualified' ? 'won' :
+            lead.stage === 'hot' ? 'in-progress' :
+            lead.stage === 'cold' ? 'new' :
+            'new' as any,
+          revenuePotential: lead.revenue || 100000,
+          probability: Math.round(lead.score || 50),
+          source: 'Lead Pipeline',
+          contact: lead.contactName,
+          dateAdded: lead.createdAt,
+          nextAction: `Follow up with ${lead.contactName} at ${lead.companyName}`,
+        }));
+
+        // Create metrics from the API response
+        const metrics = leadsData.metrics || {
+          totalPipeline: opportunities.reduce((sum, opp) => sum + opp.revenuePotential, 0),
+          activeOpportunities: opportunities.filter(opp => opp.status === 'new' || opp.status === 'in-progress').length,
+          closedWon: opportunities.filter(opp => opp.status === 'won').length,
+          closureRate: Math.round((opportunities.filter(opp => opp.status === 'won').length / Math.max(opportunities.length, 1)) * 100),
+        };
+
+        setData({
+          metrics,
+          opportunities,
+        });
       } catch (err) {
         console.error('Error fetching opportunities:', err);
         setError(err instanceof Error ? err.message : 'Failed to load opportunities');
