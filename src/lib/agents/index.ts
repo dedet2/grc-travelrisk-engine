@@ -17,3 +17,10 @@ export {
   type AgentMetrics,
   type AgentManagerStatus,
 } from './agent-manager';
+
+export {
+  UnifiedRiskCombinerAgent,
+  createUnifiedRiskCombinerAgent,
+  type RiskCombinerConfig,
+  type CombinedRiskReport,
+} from './unified-risk-combiner-agent';

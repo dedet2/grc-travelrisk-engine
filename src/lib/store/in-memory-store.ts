@@ -11,6 +11,7 @@
 import type { ScoringOutput } from '@/lib/scoring/types';
 import type { ControlScore } from '@/lib/scoring/types';
 import type { AgentRunResult } from '../agents/base-agent';
+import type { CombinedRiskReport } from '../agents/unified-risk-combiner-agent';
 
 export interface StoredScoringResult {
   assessmentId: string;
@@ -65,6 +66,8 @@ class InMemoryStore {
   private controls: Map<string, StoredControl[]> = new Map();
   private assessments: Map<string, StoredAssessment> = new Map();
   private agentRuns: AgentRunResult[] = [];
+  private combinedRiskReports: Map<string, CombinedRiskReport> = new Map();
+  private lastCombinedRiskReport?: CombinedRiskReport;
 
   // ===== Scoring Results Methods =====
 
@@ -347,6 +350,60 @@ class InMemoryStore {
     this.agentRuns = [];
   }
 
+  // ===== Combined Risk Report Methods =====
+
+  /**
+   * Store a combined risk report
+   */
+  storeCombinedRiskReport(report: CombinedRiskReport): void {
+    this.combinedRiskReports.set(report.reportId, report);
+    this.lastCombinedRiskReport = report;
+  }
+
+  /**
+   * Retrieve a combined risk report by ID
+   */
+  getCombinedRiskReport(reportId: string): CombinedRiskReport | undefined {
+    return this.combinedRiskReports.get(reportId);
+  }
+
+  /**
+   * Get the last stored combined risk report
+   */
+  getLastCombinedRiskReport(): CombinedRiskReport | undefined {
+    return this.lastCombinedRiskReport;
+  }
+
+  /**
+   * Get combined risk reports for an assessment
+   */
+  getCombinedRiskReportsByAssessment(assessmentId: string): CombinedRiskReport[] {
+    return Array.from(this.combinedRiskReports.values()).filter(
+      (report) => report.assessmentId === assessmentId
+    );
+  }
+
+  /**
+   * Get all combined risk reports
+   */
+  getAllCombinedRiskReports(): CombinedRiskReport[] {
+    return Array.from(this.combinedRiskReports.values());
+  }
+
+  /**
+   * Clear a specific combined risk report
+   */
+  clearCombinedRiskReport(reportId: string): boolean {
+    return this.combinedRiskReports.delete(reportId);
+  }
+
+  /**
+   * Get count of combined risk reports
+   */
+  getCombinedRiskReportCount(): number {
+    return this.combinedRiskReports.size;
+  }
+
   // ===== Utility Methods =====
 
   /**
@@ -359,6 +416,8 @@ class InMemoryStore {
     this.controls.clear();
     this.assessments.clear();
     this.agentRuns = [];
+    this.combinedRiskReports.clear();
+    this.lastCombinedRiskReport = undefined;
   }
 
   /**
@@ -370,6 +429,7 @@ class InMemoryStore {
     totalControls: number;
     assessments: number;
     agentRuns: number;
+    combinedRiskReports: number;
   } {
     let totalControls = 0;
     for (const controls of this.controls.values()) {
@@ -382,6 +442,7 @@ class InMemoryStore {
       totalControls,
       assessments: this.assessments.size,
       agentRuns: this.agentRuns.length,
+      combinedRiskReports: this.combinedRiskReports.size,
     };
   }
 }
