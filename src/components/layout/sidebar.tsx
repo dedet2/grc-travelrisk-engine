@@ -89,17 +89,24 @@ function IconSettings() {
 
 /* ------------------------------------------------------------------ */
 
+function IconRoadmap() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M3 12h12M3 18h8"/><circle cx="20" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+  );
+}
+
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
   { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
-  { href: '/dashboard/agents', label: 'Workflows', Icon: IconWorkflows },
-  { href: '/dashboard/leads', label: 'Lead Pipeline', Icon: IconLeadPipeline },
+  { href: '/dashboard/content', label: 'Workflows', Icon: IconWorkflows },
+  { href: '/dashboard/lead-pipeline', label: 'Lead Pipeline', Icon: IconLeadPipeline },
   { href: '/dashboard/campaigns', label: 'Campaigns', Icon: IconCampaigns },
   { href: '/dashboard/opportunities', label: 'Opportunities', Icon: IconOpportunities },
   { href: '/dashboard/speaking', label: 'Speaking', Icon: IconSpeaking },
   { href: '/dashboard/foundations', label: 'Foundations', Icon: IconFoundations },
   { href: '/dashboard/health', label: 'Health', Icon: IconHealth },
   { href: '/dashboard/revenue', label: 'Revenue', Icon: IconRevenue },
+  { href: '/dashboard/roadmap', label: 'Roadmap', Icon: IconRoadmap },
   { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
   { href: '/dashboard/frameworks', label: 'Frameworks', Icon: IconFrameworks },
   { href: '/dashboard/settings', label: 'Settings', Icon: IconSettings },
