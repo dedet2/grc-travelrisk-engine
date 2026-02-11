@@ -2,7 +2,7 @@
 
 import { useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
-import { AlertBell } from '@/components/notifications/alert-bell';
+import AlertBell from '@/components/notifications/alert-bell';
 
 export function Header() {
   const { user } = useUser();
