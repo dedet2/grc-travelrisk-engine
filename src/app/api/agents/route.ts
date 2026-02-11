@@ -4,9 +4,13 @@
  */
 
 import { getAgentManager } from '@/lib/agents';
+import { initializeAgents } from '@/lib/agents/bootstrap';
 import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
+
+// Ensure agents are registered on first API call
+initializeAgents();
 
 export interface AgentListItem {
   name: string;

@@ -4,10 +4,14 @@
  */
 
 import { getAgentManager } from '@/lib/agents';
+import { initializeAgents } from '@/lib/agents/bootstrap';
 import type { AgentRunResult } from '@/lib/agents';
 import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
+
+// Ensure agents are registered
+initializeAgents();
 
 /**
  * POST /api/agents/[name]/run

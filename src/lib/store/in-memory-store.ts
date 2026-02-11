@@ -12,6 +12,14 @@ import type { ScoringOutput } from '@/lib/scoring/types';
 import type { ControlScore } from '@/lib/scoring/types';
 import type { AgentRunResult } from '../agents/base-agent';
 import type { CombinedRiskReport } from '../agents/unified-risk-combiner-agent';
+import type { MonitoringAlert } from '../agents/continuous-monitoring-agent';
+import type { InvoiceData, BillingMetrics } from '../agents/invoice-billing-agent';
+import type { CalendarEvent } from '../agents/calendar-scheduling-agent';
+import type { SchedulingProcessedData } from '../agents/calendar-scheduling-agent';
+import type { TriagedEmail, TriageMetrics } from '../agents/email-triage-agent';
+import type { ComplianceDocument, DocumentMetrics, DocumentSummary } from '../agents/document-management-agent';
+import type { ProjectTask, Project, StatusReport } from '../agents/task-project-agent';
+import type { Sprint } from '../agents/task-project-agent';
 
 export interface StoredScoringResult {
   assessmentId: string;
@@ -68,6 +76,24 @@ class InMemoryStore {
   private agentRuns: AgentRunResult[] = [];
   private combinedRiskReports: Map<string, CombinedRiskReport> = new Map();
   private lastCombinedRiskReport?: CombinedRiskReport;
+  private monitoringAlerts: Map<string, MonitoringAlert> = new Map();
+  private lastMonitoringAlert?: MonitoringAlert;
+  private monitoringRunCount: number = 0;
+
+  // B-Category Agent Storage
+  private invoices: InvoiceData[] = [];
+  private billingMetrics?: BillingMetrics;
+  private calendarEvents: CalendarEvent[] = [];
+  private schedulingMetrics?: SchedulingProcessedData;
+  private triagedEmails: TriagedEmail[] = [];
+  private triageMetrics?: TriageMetrics;
+  private documents: Map<string, ComplianceDocument> = new Map();
+  private documentMetrics?: DocumentMetrics;
+  private documentSummaries: Map<string, DocumentSummary> = new Map();
+  private projects: Project[] = [];
+  private tasks: ProjectTask[] = [];
+  private sprints: Sprint[] = [];
+  private statusReports: StatusReport[] = [];
 
   // ===== Scoring Results Methods =====
 
@@ -404,7 +430,327 @@ class InMemoryStore {
     return this.combinedRiskReports.size;
   }
 
+  // ===== Invoice & Billing Storage (B-01) =====
+
+  /**
+   * Store invoices
+   */
+  storeInvoices(invoices: InvoiceData[]): void {
+    this.invoices = invoices;
+  }
+
+  /**
+   * Get all invoices
+   */
+  getInvoices(): InvoiceData[] {
+    return [...this.invoices];
+  }
+
+  /**
+   * Store billing metrics
+   */
+  storeBillingMetrics(metrics: BillingMetrics): void {
+    this.billingMetrics = metrics;
+  }
+
+  /**
+   * Get billing metrics
+   */
+  getBillingMetrics(): BillingMetrics | undefined {
+    return this.billingMetrics;
+  }
+
+  // ===== Calendar & Scheduling Storage (B-02) =====
+
+  /**
+   * Store calendar events
+   */
+  storeCalendarEvents(events: CalendarEvent[]): void {
+    this.calendarEvents = events;
+  }
+
+  /**
+   * Get all calendar events
+   */
+  getCalendarEvents(): CalendarEvent[] {
+    return [...this.calendarEvents];
+  }
+
+  /**
+   * Store scheduling metrics
+   */
+  storeSchedulingMetrics(metrics: SchedulingProcessedData): void {
+    this.schedulingMetrics = metrics;
+  }
+
+  /**
+   * Get scheduling metrics
+   */
+  getSchedulingMetrics(): SchedulingProcessedData | undefined {
+    return this.schedulingMetrics;
+  }
+
+  // ===== Email Triage Storage (B-03) =====
+
+  /**
+   * Store triaged emails
+   */
+  storeTriagedEmails(emails: TriagedEmail[]): void {
+    this.triagedEmails = emails;
+  }
+
+  /**
+   * Get all triaged emails
+   */
+  getTriagedEmails(): TriagedEmail[] {
+    return [...this.triagedEmails];
+  }
+
+  /**
+   * Store triage metrics
+   */
+  storeTriageMetrics(metrics: TriageMetrics): void {
+    this.triageMetrics = metrics;
+  }
+
+  /**
+   * Get triage metrics
+   */
+  getTriageMetrics(): TriageMetrics | undefined {
+    return this.triageMetrics;
+  }
+
+  // ===== Document Management Storage (B-04) =====
+
+  /**
+   * Store documents
+   */
+  storeDocuments(documents: ComplianceDocument[]): void {
+    this.documents.clear();
+    for (const doc of documents) {
+      this.documents.set(doc.documentId, doc);
+    }
+  }
+
+  /**
+   * Get all documents
+   */
+  getDocuments(): ComplianceDocument[] {
+    return Array.from(this.documents.values());
+  }
+
+  /**
+   * Get a document by ID
+   */
+  getDocument(documentId: string): ComplianceDocument | undefined {
+    return this.documents.get(documentId);
+  }
+
+  /**
+   * Store document metrics
+   */
+  storeDocumentMetrics(metrics: DocumentMetrics): void {
+    this.documentMetrics = metrics;
+  }
+
+  /**
+   * Get document metrics
+   */
+  getDocumentMetrics(): DocumentMetrics | undefined {
+    return this.documentMetrics;
+  }
+
+  /**
+   * Store document summaries
+   */
+  storeDocumentSummaries(summaries: DocumentSummary[]): void {
+    this.documentSummaries.clear();
+    for (const summary of summaries) {
+      this.documentSummaries.set(summary.documentId, summary);
+    }
+  }
+
+  /**
+   * Get document summaries
+   */
+  getDocumentSummaries(): DocumentSummary[] {
+    return Array.from(this.documentSummaries.values());
+  }
+
+  // ===== Task & Project Storage (B-05) =====
+
+  /**
+   * Store projects
+   */
+  storeProjects(projects: Project[]): void {
+    this.projects = projects;
+  }
+
+  /**
+   * Get all projects
+   */
+  getProjects(): Project[] {
+    return [...this.projects];
+  }
+
+  /**
+   * Store tasks
+   */
+  storeTasks(tasks: ProjectTask[]): void {
+    this.tasks = tasks;
+  }
+
+  /**
+   * Get all tasks
+   */
+  getTasks(): ProjectTask[] {
+    return [...this.tasks];
+  }
+
+  /**
+   * Store sprints
+   */
+  storeSprints(sprints: Sprint[]): void {
+    this.sprints = sprints;
+  }
+
+  /**
+   * Get all sprints
+   */
+  getSprints(): Sprint[] {
+    return [...this.sprints];
+  }
+
+  /**
+   * Store status reports
+   */
+  storeStatusReports(reports: StatusReport[]): void {
+    this.statusReports = reports;
+  }
+
+  /**
+   * Get status reports
+   */
+  getStatusReports(): StatusReport[] {
+    return [...this.statusReports];
+  }
+
   // ===== Utility Methods =====
+
+  // ============================================================
+  // Monitoring Alert Methods (A-06)
+  // ============================================================
+
+  /**
+   * Add a monitoring alert
+   */
+  addMonitoringAlert(alert: MonitoringAlert): void {
+    this.monitoringAlerts.set(alert.alertId, alert);
+    this.lastMonitoringAlert = alert;
+  }
+
+  /**
+   * Get all monitoring alerts
+   */
+  getAllMonitoringAlerts(): MonitoringAlert[] {
+    return Array.from(this.monitoringAlerts.values()).sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+  }
+
+  /**
+   * Get a monitoring alert by ID
+   */
+  getMonitoringAlert(alertId: string): MonitoringAlert | undefined {
+    return this.monitoringAlerts.get(alertId);
+  }
+
+  /**
+   * Get unacknowledged monitoring alerts
+   */
+  getUnacknowledgedAlerts(): MonitoringAlert[] {
+    return this.getAllMonitoringAlerts().filter((a) => !a.acknowledged);
+  }
+
+  /**
+   * Get alerts by severity
+   */
+  getAlertsBySeverity(severity: string): MonitoringAlert[] {
+    return this.getAllMonitoringAlerts().filter((a) => a.severity === severity);
+  }
+
+  /**
+   * Acknowledge a monitoring alert
+   */
+  acknowledgeMonitoringAlert(alertId: string, acknowledgedBy?: string): boolean {
+    const alert = this.monitoringAlerts.get(alertId);
+    if (!alert) return false;
+
+    alert.acknowledged = true;
+    alert.acknowledgedAt = new Date();
+    alert.acknowledgedBy = acknowledgedBy || 'system';
+    this.monitoringAlerts.set(alertId, alert);
+    return true;
+  }
+
+  /**
+   * Clear acknowledged monitoring alerts
+   */
+  clearAcknowledgedMonitoringAlerts(): number {
+    let cleared = 0;
+    for (const [id, alert] of this.monitoringAlerts.entries()) {
+      if (alert.acknowledged) {
+        this.monitoringAlerts.delete(id);
+        cleared++;
+      }
+    }
+    return cleared;
+  }
+
+  /**
+   * Get monitoring alert count
+   */
+  getMonitoringAlertCount(): number {
+    return this.monitoringAlerts.size;
+  }
+
+  /**
+   * Get monitoring alert statistics
+   */
+  getMonitoringStats(): {
+    total: number;
+    unacknowledged: number;
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    info: number;
+  } {
+    const alerts = this.getAllMonitoringAlerts();
+    return {
+      total: alerts.length,
+      unacknowledged: alerts.filter((a) => !a.acknowledged).length,
+      critical: alerts.filter((a) => a.severity === 'critical').length,
+      high: alerts.filter((a) => a.severity === 'high').length,
+      medium: alerts.filter((a) => a.severity === 'medium').length,
+      low: alerts.filter((a) => a.severity === 'low').length,
+      info: alerts.filter((a) => a.severity === 'info').length,
+    };
+  }
+
+  /**
+   * Increment monitoring run count
+   */
+  incrementMonitoringRunCount(): number {
+    return ++this.monitoringRunCount;
+  }
+
+  /**
+   * Get monitoring run count
+   */
+  getMonitoringRunCount(): number {
+    return this.monitoringRunCount;
+  }
 
   /**
    * Clear all data
@@ -418,6 +764,21 @@ class InMemoryStore {
     this.agentRuns = [];
     this.combinedRiskReports.clear();
     this.lastCombinedRiskReport = undefined;
+    this.monitoringAlerts.clear();
+    this.lastMonitoringAlert = undefined;
+    this.invoices = [];
+    this.billingMetrics = undefined;
+    this.calendarEvents = [];
+    this.schedulingMetrics = undefined;
+    this.triagedEmails = [];
+    this.triageMetrics = undefined;
+    this.documents.clear();
+    this.documentMetrics = undefined;
+    this.documentSummaries.clear();
+    this.projects = [];
+    this.tasks = [];
+    this.sprints = [];
+    this.statusReports = [];
   }
 
   /**
@@ -430,6 +791,14 @@ class InMemoryStore {
     assessments: number;
     agentRuns: number;
     combinedRiskReports: number;
+    invoices: number;
+    calendarEvents: number;
+    triagedEmails: number;
+    documents: number;
+    projects: number;
+    tasks: number;
+    sprints: number;
+    monitoringAlerts: number;
   } {
     let totalControls = 0;
     for (const controls of this.controls.values()) {
@@ -443,6 +812,14 @@ class InMemoryStore {
       assessments: this.assessments.size,
       agentRuns: this.agentRuns.length,
       combinedRiskReports: this.combinedRiskReports.size,
+      invoices: this.invoices.length,
+      calendarEvents: this.calendarEvents.length,
+      triagedEmails: this.triagedEmails.length,
+      documents: this.documents.size,
+      projects: this.projects.length,
+      tasks: this.tasks.length,
+      sprints: this.sprints.length,
+      monitoringAlerts: this.monitoringAlerts.size,
     };
   }
 }
