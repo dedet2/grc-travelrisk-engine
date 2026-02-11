@@ -16,6 +16,12 @@ import { createEmailTriageAgent } from './email-triage-agent';
 import { createDocumentManagementAgent } from './document-management-agent';
 import { createTaskProjectAgent } from './task-project-agent';
 
+// Import C-category agent factories
+import { createLeadScoringAgent } from './lead-scoring-agent';
+import { createOutreachAutomationAgent } from './outreach-automation-agent';
+import { createCrmSyncAgent } from './crm-sync-agent';
+import { createProposalGeneratorAgent } from './proposal-generator-agent';
+
 // Import Sprint 1 agents (A-01, A-02, A-03 are registered via their own modules)
 // They use the BaseAgent pattern but are registered as lightweight classes
 import { BaseAgent, type AgentConfig } from './base-agent';
@@ -215,6 +221,12 @@ export function initializeAgents(): void {
     manager.registerAgent(createEmailTriageAgent());
     manager.registerAgent(createDocumentManagementAgent());
     manager.registerAgent(createTaskProjectAgent());
+
+    // Sprint 3: C-category agents (Sales & Outreach)
+    manager.registerAgent(createLeadScoringAgent());
+    manager.registerAgent(createOutreachAutomationAgent());
+    manager.registerAgent(createCrmSyncAgent());
+    manager.registerAgent(createProposalGeneratorAgent());
 
     initialized = true;
     console.log(`[AgentBootstrap] Registered ${manager.getAgentNames().length} agents`);

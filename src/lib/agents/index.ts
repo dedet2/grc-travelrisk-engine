@@ -81,3 +81,37 @@ export {
   type StatusReport,
   type SprintMetrics,
 } from './task-project-agent';
+
+// C-Category Agents
+export {
+  LeadScoringAgent,
+  createLeadScoringAgent,
+  type ScoredLead,
+  type LeadData,
+  type LeadPipelineMetrics,
+} from './lead-scoring-agent';
+
+export {
+  OutreachAutomationAgent,
+  createOutreachAutomationAgent,
+  type OutreachSequence,
+  type OutreachEmail,
+  type OutreachMetrics,
+} from './outreach-automation-agent';
+
+export {
+  CrmSyncAgent,
+  createCrmSyncAgent,
+  type CrmContact,
+  type CrmDeal,
+  type CrmPipelineMetrics,
+} from './crm-sync-agent';
+
+export {
+  ProposalGeneratorAgent,
+  createProposalGeneratorAgent,
+  type ProposalDocument,
+  type ProposalTemplate,
+  type ProposalSection,
+  type ProposalMetrics,
+} from './proposal-generator-agent';

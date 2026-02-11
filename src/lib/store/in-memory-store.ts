@@ -20,6 +20,10 @@ import type { TriagedEmail, TriageMetrics } from '../agents/email-triage-agent';
 import type { ComplianceDocument, DocumentMetrics, DocumentSummary } from '../agents/document-management-agent';
 import type { ProjectTask, Project, StatusReport } from '../agents/task-project-agent';
 import type { Sprint } from '../agents/task-project-agent';
+import type { ScoredLead, LeadPipelineMetrics } from '../agents/lead-scoring-agent';
+import type { OutreachSequence, OutreachMetrics } from '../agents/outreach-automation-agent';
+import type { CrmContact, CrmDeal, CrmPipelineMetrics } from '../agents/crm-sync-agent';
+import type { ProposalDocument, ProposalMetrics } from '../agents/proposal-generator-agent';
 
 export interface StoredScoringResult {
   assessmentId: string;
@@ -94,6 +98,17 @@ class InMemoryStore {
   private tasks: ProjectTask[] = [];
   private sprints: Sprint[] = [];
   private statusReports: StatusReport[] = [];
+
+  // C-Category Agent Storage
+  private leads: ScoredLead[] = [];
+  private leadPipelineMetrics?: LeadPipelineMetrics;
+  private outreachSequences: OutreachSequence[] = [];
+  private outreachMetrics?: OutreachMetrics;
+  private crmContacts: CrmContact[] = [];
+  private crmDeals: CrmDeal[] = [];
+  private crmPipelineMetrics?: CrmPipelineMetrics;
+  private proposals: ProposalDocument[] = [];
+  private proposalMetrics?: ProposalMetrics;
 
   // ===== Scoring Results Methods =====
 
@@ -635,6 +650,140 @@ class InMemoryStore {
     return [...this.statusReports];
   }
 
+  // ===== Lead Scoring Storage (C-01) =====
+
+  /**
+   * Store leads
+   */
+  storeLeads(leads: ScoredLead[]): void {
+    this.leads = leads;
+  }
+
+  /**
+   * Get all leads
+   */
+  getLeads(): ScoredLead[] {
+    return [...this.leads];
+  }
+
+  /**
+   * Store lead pipeline metrics
+   */
+  storeLeadPipelineMetrics(metrics: LeadPipelineMetrics): void {
+    this.leadPipelineMetrics = metrics;
+  }
+
+  /**
+   * Get lead pipeline metrics
+   */
+  getLeadPipelineMetrics(): LeadPipelineMetrics | undefined {
+    return this.leadPipelineMetrics;
+  }
+
+  // ===== Outreach Automation Storage (C-02) =====
+
+  /**
+   * Store outreach sequences
+   */
+  storeOutreachSequences(sequences: OutreachSequence[]): void {
+    this.outreachSequences = sequences;
+  }
+
+  /**
+   * Get all outreach sequences
+   */
+  getOutreachSequences(): OutreachSequence[] {
+    return [...this.outreachSequences];
+  }
+
+  /**
+   * Store outreach metrics
+   */
+  storeOutreachMetrics(metrics: OutreachMetrics): void {
+    this.outreachMetrics = metrics;
+  }
+
+  /**
+   * Get outreach metrics
+   */
+  getOutreachMetrics(): OutreachMetrics | undefined {
+    return this.outreachMetrics;
+  }
+
+  // ===== CRM Sync Storage (C-03) =====
+
+  /**
+   * Store CRM contacts
+   */
+  storeCrmContacts(contacts: CrmContact[]): void {
+    this.crmContacts = contacts;
+  }
+
+  /**
+   * Get all CRM contacts
+   */
+  getCrmContacts(): CrmContact[] {
+    return [...this.crmContacts];
+  }
+
+  /**
+   * Store CRM deals
+   */
+  storeCrmDeals(deals: CrmDeal[]): void {
+    this.crmDeals = deals;
+  }
+
+  /**
+   * Get all CRM deals
+   */
+  getCrmDeals(): CrmDeal[] {
+    return [...this.crmDeals];
+  }
+
+  /**
+   * Store CRM pipeline metrics
+   */
+  storeCrmPipelineMetrics(metrics: CrmPipelineMetrics): void {
+    this.crmPipelineMetrics = metrics;
+  }
+
+  /**
+   * Get CRM pipeline metrics
+   */
+  getCrmPipelineMetrics(): CrmPipelineMetrics | undefined {
+    return this.crmPipelineMetrics;
+  }
+
+  // ===== Proposal Generator Storage (C-04) =====
+
+  /**
+   * Store proposals
+   */
+  storeProposals(proposals: ProposalDocument[]): void {
+    this.proposals = proposals;
+  }
+
+  /**
+   * Get all proposals
+   */
+  getProposals(): ProposalDocument[] {
+    return [...this.proposals];
+  }
+
+  /**
+   * Store proposal metrics
+   */
+  storeProposalMetrics(metrics: ProposalMetrics): void {
+    this.proposalMetrics = metrics;
+  }
+
+  /**
+   * Get proposal metrics
+   */
+  getProposalMetrics(): ProposalMetrics | undefined {
+    return this.proposalMetrics;
+  }
+
   // ===== Utility Methods =====
 
   // ============================================================
@@ -779,6 +928,15 @@ class InMemoryStore {
     this.tasks = [];
     this.sprints = [];
     this.statusReports = [];
+    this.leads = [];
+    this.leadPipelineMetrics = undefined;
+    this.outreachSequences = [];
+    this.outreachMetrics = undefined;
+    this.crmContacts = [];
+    this.crmDeals = [];
+    this.crmPipelineMetrics = undefined;
+    this.proposals = [];
+    this.proposalMetrics = undefined;
   }
 
   /**
@@ -799,6 +957,11 @@ class InMemoryStore {
     tasks: number;
     sprints: number;
     monitoringAlerts: number;
+    leads: number;
+    outreachSequences: number;
+    crmContacts: number;
+    crmDeals: number;
+    proposals: number;
   } {
     let totalControls = 0;
     for (const controls of this.controls.values()) {
@@ -820,6 +983,11 @@ class InMemoryStore {
       tasks: this.tasks.length,
       sprints: this.sprints.length,
       monitoringAlerts: this.monitoringAlerts.size,
+      leads: this.leads.length,
+      outreachSequences: this.outreachSequences.length,
+      crmContacts: this.crmContacts.length,
+      crmDeals: this.crmDeals.length,
+      proposals: this.proposals.length,
     };
   }
 }
