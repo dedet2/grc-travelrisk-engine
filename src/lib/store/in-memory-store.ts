@@ -24,6 +24,16 @@ import type { ScoredLead, LeadPipelineMetrics } from '../agents/lead-scoring-age
 import type { OutreachSequence, OutreachMetrics } from '../agents/outreach-automation-agent';
 import type { CrmContact, CrmDeal, CrmPipelineMetrics } from '../agents/crm-sync-agent';
 import type { ProposalDocument, ProposalMetrics } from '../agents/proposal-generator-agent';
+import type { ScheduledContent, ContentCalendarMetrics } from '../agents/content-calendar-agent';
+import type { KeywordRanking, CompetitorAnalysis, SEOMetrics } from '../agents/seo-intelligence-agent';
+import type { SocialPost, SocialMention, SocialMetrics } from '../agents/social-media-agent';
+import type { ContentAnalysis, BrandVoiceMetrics } from '../agents/brand-voice-agent';
+import type { ChannelMetrics, DashboardMetrics } from '../agents/analytics-dashboard-agent';
+import type { HealthReport, HealthAlert } from '../agents/uptime-health-agent';
+import type { DatabaseMetrics } from '../agents/database-optimization-agent';
+import type { SecurityAuditReport } from '../agents/security-audit-agent';
+import type { BackupRecoveryReport } from '../agents/backup-recovery-agent';
+import type { CostOptimizationReport } from '../agents/cost-optimization-agent';
 
 export interface StoredScoringResult {
   assessmentId: string;
@@ -109,6 +119,28 @@ class InMemoryStore {
   private crmPipelineMetrics?: CrmPipelineMetrics;
   private proposals: ProposalDocument[] = [];
   private proposalMetrics?: ProposalMetrics;
+
+  // E-Category Agent Storage (Content & Marketing)
+  private scheduledContent: ScheduledContent[] = [];
+  private contentCalendarMetrics?: ContentCalendarMetrics;
+  private keywordRankings: KeywordRanking[] = [];
+  private competitorAnalyses: CompetitorAnalysis[] = [];
+  private seoMetrics?: SEOMetrics;
+  private socialPosts: SocialPost[] = [];
+  private socialMentions: SocialMention[] = [];
+  private socialMediaMetrics?: SocialMetrics;
+  private contentAnalyses: Map<string, ContentAnalysis> = new Map();
+  private brandVoiceMetrics?: BrandVoiceMetrics;
+  private channelMetrics: ChannelMetrics[] = [];
+  private dashboardMetrics?: DashboardMetrics;
+
+  // D-Category Agent Storage (Infrastructure)
+  private healthReport?: HealthReport;
+  private healthAlerts: HealthAlert[] = [];
+  private dbOptimizationMetrics?: DatabaseMetrics;
+  private securityAuditReport?: SecurityAuditReport;
+  private backupRecoveryReport?: BackupRecoveryReport;
+  private costOptimizationReport?: CostOptimizationReport;
 
   // ===== Scoring Results Methods =====
 
@@ -784,6 +816,299 @@ class InMemoryStore {
     return this.proposalMetrics;
   }
 
+  // ===== Content Calendar Storage (E-01) =====
+
+  /**
+   * Store scheduled content
+   */
+  storeContentCalendar(content: ScheduledContent[]): void {
+    this.scheduledContent = content;
+  }
+
+  /**
+   * Get scheduled content
+   */
+  getContentCalendar(): ScheduledContent[] {
+    return [...this.scheduledContent];
+  }
+
+  /**
+   * Store content calendar metrics
+   */
+  storeContentCalendarMetrics(metrics: ContentCalendarMetrics): void {
+    this.contentCalendarMetrics = metrics;
+  }
+
+  /**
+   * Get content calendar metrics
+   */
+  getContentCalendarMetrics(): ContentCalendarMetrics | undefined {
+    return this.contentCalendarMetrics;
+  }
+
+  // ===== SEO Intelligence Storage (E-02) =====
+
+  /**
+   * Store keyword rankings
+   */
+  storeKeywordRankings(keywords: KeywordRanking[]): void {
+    this.keywordRankings = keywords;
+  }
+
+  /**
+   * Get keyword rankings
+   */
+  getKeywordRankings(): KeywordRanking[] {
+    return [...this.keywordRankings];
+  }
+
+  /**
+   * Store competitor analyses
+   */
+  storeCompetitorAnalyses(analyses: CompetitorAnalysis[]): void {
+    this.competitorAnalyses = analyses;
+  }
+
+  /**
+   * Get competitor analyses
+   */
+  getCompetitorAnalyses(): CompetitorAnalysis[] {
+    return [...this.competitorAnalyses];
+  }
+
+  /**
+   * Store SEO metrics
+   */
+  storeSEOMetrics(metrics: SEOMetrics): void {
+    this.seoMetrics = metrics;
+  }
+
+  /**
+   * Get SEO metrics
+   */
+  getSEOMetrics(): SEOMetrics | undefined {
+    return this.seoMetrics;
+  }
+
+  // ===== Social Media Storage (E-03) =====
+
+  /**
+   * Store social posts
+   */
+  storeSocialPosts(posts: SocialPost[]): void {
+    this.socialPosts = posts;
+  }
+
+  /**
+   * Get social posts
+   */
+  getSocialPosts(): SocialPost[] {
+    return [...this.socialPosts];
+  }
+
+  /**
+   * Store social mentions
+   */
+  storeSocialMentions(mentions: SocialMention[]): void {
+    this.socialMentions = mentions;
+  }
+
+  /**
+   * Get social mentions
+   */
+  getSocialMentions(): SocialMention[] {
+    return [...this.socialMentions];
+  }
+
+  /**
+   * Store social media metrics
+   */
+  storeSocialMediaMetrics(metrics: SocialMetrics): void {
+    this.socialMediaMetrics = metrics;
+  }
+
+  /**
+   * Get social media metrics
+   */
+  getSocialMediaMetrics(): SocialMetrics | undefined {
+    return this.socialMediaMetrics;
+  }
+
+  // ===== Brand Voice Storage (E-04) =====
+
+  /**
+   * Store content analyses
+   */
+  storeContentAnalyses(analyses: ContentAnalysis[]): void {
+    this.contentAnalyses.clear();
+    for (const analysis of analyses) {
+      this.contentAnalyses.set(analysis.contentId, analysis);
+    }
+  }
+
+  /**
+   * Get content analyses
+   */
+  getContentAnalyses(): ContentAnalysis[] {
+    return Array.from(this.contentAnalyses.values());
+  }
+
+  /**
+   * Get content analysis by ID
+   */
+  getContentAnalysis(contentId: string): ContentAnalysis | undefined {
+    return this.contentAnalyses.get(contentId);
+  }
+
+  /**
+   * Store brand voice metrics
+   */
+  storeBrandVoiceMetrics(metrics: BrandVoiceMetrics): void {
+    this.brandVoiceMetrics = metrics;
+  }
+
+  /**
+   * Get brand voice metrics
+   */
+  getBrandVoiceMetrics(): BrandVoiceMetrics | undefined {
+    return this.brandVoiceMetrics;
+  }
+
+  // ===== Analytics Dashboard Storage (E-05) =====
+
+  /**
+   * Store channel metrics
+   */
+  storeChannelMetrics(metrics: ChannelMetrics[]): void {
+    this.channelMetrics = metrics;
+  }
+
+  /**
+   * Get channel metrics
+   */
+  getChannelMetrics(): ChannelMetrics[] {
+    return [...this.channelMetrics];
+  }
+
+  /**
+   * Store dashboard metrics
+   */
+  storeDashboardMetrics(metrics: DashboardMetrics): void {
+    this.dashboardMetrics = metrics;
+  }
+
+  /**
+   * Get dashboard metrics
+   */
+  getDashboardMetrics(): DashboardMetrics | undefined {
+    return this.dashboardMetrics;
+  }
+
+  // ===== Uptime & Health Storage (D-01) =====
+
+  /**
+   * Store health report
+   */
+  storeHealthReport(report: HealthReport): void {
+    this.healthReport = report;
+  }
+
+  /**
+   * Get health report
+   */
+  getHealthReport(): HealthReport | undefined {
+    return this.healthReport;
+  }
+
+  /**
+   * Add health alert
+   */
+  addHealthAlert(alert: HealthAlert): void {
+    this.healthAlerts.push(alert);
+    // Keep last 100 alerts
+    if (this.healthAlerts.length > 100) {
+      this.healthAlerts = this.healthAlerts.slice(-100);
+    }
+  }
+
+  /**
+   * Get health alerts
+   */
+  getHealthAlerts(): HealthAlert[] {
+    return [...this.healthAlerts];
+  }
+
+  /**
+   * Clear health alerts
+   */
+  clearHealthAlerts(): void {
+    this.healthAlerts = [];
+  }
+
+  // ===== Database Optimization Storage (D-02) =====
+
+  /**
+   * Store database optimization metrics
+   */
+  storeDbOptimizationMetrics(metrics: DatabaseMetrics): void {
+    this.dbOptimizationMetrics = metrics;
+  }
+
+  /**
+   * Get database optimization metrics
+   */
+  getDbOptimizationMetrics(): DatabaseMetrics | undefined {
+    return this.dbOptimizationMetrics;
+  }
+
+  // ===== Security Audit Storage (D-03) =====
+
+  /**
+   * Store security audit report
+   */
+  storeSecurityAuditReport(report: SecurityAuditReport): void {
+    this.securityAuditReport = report;
+  }
+
+  /**
+   * Get security audit report
+   */
+  getSecurityAuditReport(): SecurityAuditReport | undefined {
+    return this.securityAuditReport;
+  }
+
+  // ===== Backup & Recovery Storage (D-04) =====
+
+  /**
+   * Store backup recovery report
+   */
+  storeBackupRecoveryReport(report: BackupRecoveryReport): void {
+    this.backupRecoveryReport = report;
+  }
+
+  /**
+   * Get backup recovery report
+   */
+  getBackupRecoveryReport(): BackupRecoveryReport | undefined {
+    return this.backupRecoveryReport;
+  }
+
+  // ===== Cost Optimization Storage (D-05) =====
+
+  /**
+   * Store cost optimization report
+   */
+  storeCostOptimizationReport(report: CostOptimizationReport): void {
+    this.costOptimizationReport = report;
+  }
+
+  /**
+   * Get cost optimization report
+   */
+  getCostOptimizationReport(): CostOptimizationReport | undefined {
+    return this.costOptimizationReport;
+  }
+
   // ===== Utility Methods =====
 
   // ============================================================
@@ -937,6 +1262,24 @@ class InMemoryStore {
     this.crmPipelineMetrics = undefined;
     this.proposals = [];
     this.proposalMetrics = undefined;
+    this.scheduledContent = [];
+    this.contentCalendarMetrics = undefined;
+    this.keywordRankings = [];
+    this.competitorAnalyses = [];
+    this.seoMetrics = undefined;
+    this.socialPosts = [];
+    this.socialMentions = [];
+    this.socialMediaMetrics = undefined;
+    this.contentAnalyses.clear();
+    this.brandVoiceMetrics = undefined;
+    this.channelMetrics = [];
+    this.dashboardMetrics = undefined;
+    this.healthReport = undefined;
+    this.healthAlerts = [];
+    this.dbOptimizationMetrics = undefined;
+    this.securityAuditReport = undefined;
+    this.backupRecoveryReport = undefined;
+    this.costOptimizationReport = undefined;
   }
 
   /**
@@ -962,6 +1305,14 @@ class InMemoryStore {
     crmContacts: number;
     crmDeals: number;
     proposals: number;
+    scheduledContent: number;
+    keywordRankings: number;
+    competitorAnalyses: number;
+    socialPosts: number;
+    socialMentions: number;
+    contentAnalyses: number;
+    channelMetrics: number;
+    healthAlerts: number;
   } {
     let totalControls = 0;
     for (const controls of this.controls.values()) {
@@ -988,6 +1339,14 @@ class InMemoryStore {
       crmContacts: this.crmContacts.length,
       crmDeals: this.crmDeals.length,
       proposals: this.proposals.length,
+      scheduledContent: this.scheduledContent.length,
+      keywordRankings: this.keywordRankings.length,
+      competitorAnalyses: this.competitorAnalyses.length,
+      socialPosts: this.socialPosts.length,
+      socialMentions: this.socialMentions.length,
+      contentAnalyses: this.contentAnalyses.size,
+      channelMetrics: this.channelMetrics.length,
+      healthAlerts: this.healthAlerts.length,
     };
   }
 }

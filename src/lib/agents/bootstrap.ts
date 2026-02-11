@@ -22,6 +22,20 @@ import { createOutreachAutomationAgent } from './outreach-automation-agent';
 import { createCrmSyncAgent } from './crm-sync-agent';
 import { createProposalGeneratorAgent } from './proposal-generator-agent';
 
+// Import D-category agent factories (Infrastructure)
+import { createUptimeHealthAgent } from './uptime-health-agent';
+import { createDatabaseOptimizationAgent } from './database-optimization-agent';
+import { createSecurityAuditAgent } from './security-audit-agent';
+import { createBackupRecoveryAgent } from './backup-recovery-agent';
+import { createCostOptimizationAgent } from './cost-optimization-agent';
+
+// Import E-category agent factories
+import { createContentCalendarAgent } from './content-calendar-agent';
+import { createSEOIntelligenceAgent } from './seo-intelligence-agent';
+import { createSocialMediaAgent } from './social-media-agent';
+import { createBrandVoiceAgent } from './brand-voice-agent';
+import { createAnalyticsDashboardAgent } from './analytics-dashboard-agent';
+
 // Import Sprint 1 agents (A-01, A-02, A-03 are registered via their own modules)
 // They use the BaseAgent pattern but are registered as lightweight classes
 import { BaseAgent, type AgentConfig } from './base-agent';
@@ -227,6 +241,20 @@ export function initializeAgents(): void {
     manager.registerAgent(createOutreachAutomationAgent());
     manager.registerAgent(createCrmSyncAgent());
     manager.registerAgent(createProposalGeneratorAgent());
+
+    // Sprint 4: D-category agents (Infrastructure)
+    manager.registerAgent(createUptimeHealthAgent());
+    manager.registerAgent(createDatabaseOptimizationAgent());
+    manager.registerAgent(createSecurityAuditAgent());
+    manager.registerAgent(createBackupRecoveryAgent());
+    manager.registerAgent(createCostOptimizationAgent());
+
+    // Sprint 5: E-category agents (Content & Marketing)
+    manager.registerAgent(createContentCalendarAgent());
+    manager.registerAgent(createSEOIntelligenceAgent());
+    manager.registerAgent(createSocialMediaAgent());
+    manager.registerAgent(createBrandVoiceAgent());
+    manager.registerAgent(createAnalyticsDashboardAgent());
 
     initialized = true;
     console.log(`[AgentBootstrap] Registered ${manager.getAgentNames().length} agents`);
