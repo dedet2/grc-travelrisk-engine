@@ -101,12 +101,57 @@ function IconIntegrations() {
   );
 }
 
+function IconTravelRisk() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/><path d="M7 7l4.24 4.24M16.97 7.03l-4.24 4.24M7.03 16.97l4.24-4.24M17 17l-4.24-4.24"/></svg>
+  );
+}
+
+function IconCRM() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  );
+}
+
+function IconContent() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/><path d="M10 13l2 2 4-4"/></svg>
+  );
+}
+
+function IconBilling() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="12" cy="15" r="1.5"/></svg>
+  );
+}
+
+function IconAssessments() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  );
+}
+
+function IconStrategic() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="5" r="1"/><circle cx="5" cy="19" r="1"/><path d="M12 13v8M11 11H3M13 11h8M12 11l7-7M12 11l-7 7"/></svg>
+  );
+}
+
+function IconInfrastructure() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="8" height="5" rx="1"/><rect x="14" y="4" width="8" height="5" rx="1"/><rect x="2" y="13" width="8" height="5" rx="1"/><rect x="14" y="13" width="8" height="5" rx="1"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="18" y1="2" x2="18" y2="4"/><line x1="6" y1="11" x2="6" y2="13"/><line x1="18" y1="11" x2="18" y2="13"/></svg>
+  );
+}
+
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
   { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
+  { href: '/dashboard/travel-risk', label: 'Travel Risk', Icon: IconTravelRisk },
   { href: '/dashboard/workflows', label: 'Workflows', Icon: IconWorkflows },
   { href: '/dashboard/lead-pipeline', label: 'Lead Pipeline', Icon: IconLeadPipeline },
+  { href: '/dashboard/crm', label: 'CRM', Icon: IconCRM },
   { href: '/dashboard/campaigns', label: 'Campaigns', Icon: IconCampaigns },
+  { href: '/dashboard/content', label: 'Content', Icon: IconContent },
   { href: '/dashboard/opportunities', label: 'Opportunities', Icon: IconOpportunities },
   { href: '/dashboard/speaking', label: 'Speaking', Icon: IconSpeaking },
   { href: '/dashboard/foundations', label: 'Foundations', Icon: IconFoundations },
@@ -114,8 +159,12 @@ const navItems = [
   { href: '/dashboard/revenue', label: 'Revenue', Icon: IconRevenue },
   { href: '/dashboard/roadmap', label: 'Roadmap', Icon: IconRoadmap },
   { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
+  { href: '/dashboard/strategic', label: 'Strategic', Icon: IconStrategic },
   { href: '/dashboard/frameworks', label: 'Frameworks', Icon: IconFrameworks },
+  { href: '/dashboard/assessments', label: 'Assessments', Icon: IconAssessments },
   { href: '/dashboard/integrations', label: 'Integrations', Icon: IconIntegrations },
+  { href: '/dashboard/infrastructure', label: 'Infrastructure', Icon: IconInfrastructure },
+  { href: '/dashboard/billing', label: 'Billing', Icon: IconBilling },
   { href: '/dashboard/settings', label: 'Settings', Icon: IconSettings },
 ];
 
