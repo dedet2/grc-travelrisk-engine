@@ -144,6 +144,7 @@ export default function AgentsPage() {
   const [runningAgents, setRunningAgents] = useState<Set<string>>(new Set());
   const [approvalQueue, setApprovalQueue] = useState<ApprovalItem[]>([]);
   const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
+  const [activeTab, setActiveTab] = useState<'grc' | 'life'>('grc');
 
   useEffect(() => {
     fetchAgents();
@@ -325,6 +326,81 @@ export default function AgentsPage() {
     ]);
   }
 
+  const lifeAgents: Agent[] = [
+    {
+      name: 'Health Agent',
+      description: 'Monitors wellness metrics and health risk assessments',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 2 * 3600000),
+      latencyMs: 234,
+      successCount: 42,
+      failureCount: 2,
+      averageLatencyMs: 240,
+      schedule: 'Every 6 hours',
+    },
+    {
+      name: 'Legal Agent',
+      description: 'Analyzes legal compliance and regulatory requirements',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 4 * 3600000),
+      latencyMs: 456,
+      successCount: 38,
+      failureCount: 1,
+      averageLatencyMs: 445,
+      schedule: 'Daily',
+    },
+    {
+      name: 'Jobs Agent',
+      description: 'Tracks employment opportunities and career developments',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 1 * 3600000),
+      latencyMs: 312,
+      successCount: 35,
+      failureCount: 3,
+      averageLatencyMs: 318,
+      schedule: 'Every 4 hours',
+    },
+    {
+      name: 'Revenue Agent',
+      description: 'Analyzes revenue streams and financial performance metrics',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 3 * 3600000),
+      latencyMs: 567,
+      successCount: 51,
+      failureCount: 0,
+      averageLatencyMs: 573,
+      schedule: 'Every 8 hours',
+    },
+    {
+      name: 'Speaking Agent',
+      description: 'Manages speaking engagements and communication analytics',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 5 * 3600000),
+      latencyMs: 289,
+      successCount: 29,
+      failureCount: 2,
+      averageLatencyMs: 291,
+      schedule: 'Weekly',
+    },
+    {
+      name: 'LinkedIn Agent',
+      description: 'Monitors LinkedIn activity and professional network insights',
+      enabled: true,
+      status: 'idle',
+      lastRunAt: new Date(Date.now() - 30 * 60000),
+      latencyMs: 198,
+      successCount: 48,
+      failureCount: 1,
+      averageLatencyMs: 201,
+      schedule: 'Every 2 hours',
+    },
+  ];
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -404,39 +480,65 @@ export default function AgentsPage() {
         </button>
       </div>
 
+      {/* Tab Navigation */}
+      <div className="flex gap-4 border-b border-gray-200 mb-6">
+        <button
+          onClick={() => setActiveTab('grc')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === 'grc'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          GRC Agents
+        </button>
+        <button
+          onClick={() => setActiveTab('life')}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === 'life'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Life Agents
+        </button>
+      </div>
+
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
           <p className="text-sm text-gray-600 mb-1">Total Agents</p>
           <p className="text-3xl font-bold text-indigo-600">
-            {data.summary.totalAgents}
+            {activeTab === 'grc' ? data.summary.totalAgents : 34}
           </p>
         </div>
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
           <p className="text-sm text-gray-600 mb-1">Running</p>
           <p className="text-3xl font-bold text-blue-600">
-            {data.summary.runningCount}
+            {activeTab === 'grc' ? data.summary.runningCount : 0}
           </p>
         </div>
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
           <p className="text-sm text-gray-600 mb-1">Completed</p>
           <p className="text-3xl font-bold text-emerald-600">
-            {data.summary.completedCount}
+            {activeTab === 'grc' ? data.summary.completedCount : 284}
           </p>
         </div>
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-600">
           <p className="text-sm text-gray-600 mb-1">Failed</p>
           <p className="text-3xl font-bold text-red-600">
-            {data.summary.failedCount}
+            {activeTab === 'grc' ? data.summary.failedCount : 9}
           </p>
         </div>
       </div>
 
       {/* Agent Status Cards Grid */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Sprint 1 Agents</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          {activeTab === 'grc' ? 'Sprint 1 Agents' : 'Life Agents'}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {data.agents.map((agent) => (
+          {(activeTab === 'grc' ? data.agents : lifeAgents).map((agent) => (
             <AgentCard
               key={agent.name}
               agent={agent}

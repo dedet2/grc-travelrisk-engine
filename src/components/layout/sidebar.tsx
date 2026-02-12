@@ -95,10 +95,16 @@ function IconRoadmap() {
   );
 }
 
+function IconIntegrations() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="18" r="2"/><circle cx="15" cy="18" r="2"/><line x1="9" y1="8" x2="9" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/><line x1="6" y1="12" x2="18" y2="12"/><path d="M6 6h3M15 6h3M6 18h3M15 18h3"/></svg>
+  );
+}
+
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
   { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
-  { href: '/dashboard/content', label: 'Workflows', Icon: IconWorkflows },
+  { href: '/dashboard/workflows', label: 'Workflows', Icon: IconWorkflows },
   { href: '/dashboard/lead-pipeline', label: 'Lead Pipeline', Icon: IconLeadPipeline },
   { href: '/dashboard/campaigns', label: 'Campaigns', Icon: IconCampaigns },
   { href: '/dashboard/opportunities', label: 'Opportunities', Icon: IconOpportunities },
@@ -109,6 +115,7 @@ const navItems = [
   { href: '/dashboard/roadmap', label: 'Roadmap', Icon: IconRoadmap },
   { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
   { href: '/dashboard/frameworks', label: 'Frameworks', Icon: IconFrameworks },
+  { href: '/dashboard/integrations', label: 'Integrations', Icon: IconIntegrations },
   { href: '/dashboard/settings', label: 'Settings', Icon: IconSettings },
 ];
 

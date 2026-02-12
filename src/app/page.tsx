@@ -101,8 +101,18 @@ export default async function Home() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-indigo-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-            GRC TravelRisk
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.dr-dede.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-300 hover:text-indigo-100 transition-colors text-sm font-medium flex items-center gap-1"
+            >
+              <span>←</span> Back to dr-dede.com
+            </a>
+            <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+              GRC TravelRisk
+            </div>
           </div>
           <div className="flex gap-4 items-center">
             {user ? (
