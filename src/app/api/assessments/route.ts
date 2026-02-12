@@ -1,271 +1,198 @@
-/**
- * Assessment API Routes
- * POST: Submit assessment responses and compute risk score
- * GET: List all assessments for authenticated user's organization
- */
-
-import { auth } from '@clerk/nextjs/server';
-import { createServerSideClient } from '@/lib/supabase/server';
-
 export const dynamic = 'force-dynamic';
-import { computeGRCScore, validateAssessmentResponses } from '@/lib/scoring/risk-engine';
-import type { Assessment, Control, ApiResponse } from '@/types';
-import type {
-  AssessmentResponseInput,
-  AssessmentResult,
-} from '@/types/assessment';
 
-/**
- * POST /api/assessments
- * Submit assessment responses and compute risk score
- */
-export async function POST(request: Request): Promise<Response> {
+import { NextRequest, NextResponse } from 'next/server';
+
+interface Assessment {
+  id: string;
+  name: string;
+  framework: string;
+  status: 'completed' | 'in_progress' | 'scheduled';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  score: number;
+  dueDate: string;
+  assessor: string;
+  findings: number;
+  lastUpdated: string;
+}
+
+const assessmentsData: Assessment[] = [
+  {
+    id: 'ASS-001',
+    name: 'ISO 27001 Gap Analysis',
+    framework: 'ISO 27001',
+    status: 'completed',
+    riskLevel: 'medium',
+    score: 78,
+    dueDate: '2024-01-15',
+    assessor: 'Sarah Johnson',
+    findings: 12,
+    lastUpdated: '2024-01-10'
+  },
+  {
+    id: 'ASS-002',
+    name: 'SOC 2 Type II Readiness',
+    framework: 'SOC 2',
+    status: 'in_progress',
+    riskLevel: 'high',
+    score: 62,
+    dueDate: '2024-02-20',
+    assessor: 'Mike Chen',
+    findings: 8,
+    lastUpdated: '2024-01-08'
+  },
+  {
+    id: 'ASS-003',
+    name: 'GDPR Compliance Review',
+    framework: 'GDPR',
+    status: 'completed',
+    riskLevel: 'low',
+    score: 92,
+    dueDate: '2024-01-20',
+    assessor: 'Emma Wilson',
+    findings: 3,
+    lastUpdated: '2024-01-12'
+  },
+  {
+    id: 'ASS-004',
+    name: 'PCI DSS Assessment',
+    framework: 'PCI DSS',
+    status: 'completed',
+    riskLevel: 'critical',
+    score: 45,
+    dueDate: '2024-02-15',
+    assessor: 'James Martinez',
+    findings: 24,
+    lastUpdated: '2024-01-06'
+  },
+  {
+    id: 'ASS-005',
+    name: 'NIST CSF Evaluation',
+    framework: 'NIST CSF',
+    status: 'in_progress',
+    riskLevel: 'medium',
+    score: 71,
+    dueDate: '2024-02-28',
+    assessor: 'David Kumar',
+    findings: 15,
+    lastUpdated: '2024-01-11'
+  },
+  {
+    id: 'ASS-006',
+    name: 'HIPAA Security Audit',
+    framework: 'HIPAA',
+    status: 'scheduled',
+    riskLevel: 'high',
+    score: 0,
+    dueDate: '2024-03-10',
+    assessor: 'Lisa Anderson',
+    findings: 0,
+    lastUpdated: '2024-01-01'
+  },
+  {
+    id: 'ASS-007',
+    name: 'Cloud Security Assessment',
+    framework: 'Cloud Security',
+    status: 'completed',
+    riskLevel: 'medium',
+    score: 75,
+    dueDate: '2024-01-25',
+    assessor: 'Robert Taylor',
+    findings: 9,
+    lastUpdated: '2024-01-09'
+  },
+  {
+    id: 'ASS-008',
+    name: 'Third-Party Risk Review',
+    framework: 'Vendor Management',
+    status: 'in_progress',
+    riskLevel: 'low',
+    score: 85,
+    dueDate: '2024-02-10',
+    assessor: 'Jennifer Brown',
+    findings: 5,
+    lastUpdated: '2024-01-07'
+  }
+];
+
+export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return Response.json(
-        { success: false, error: 'Unauthorized' } as ApiResponse<null>,
-        { status: 401 }
-      );
-    }
-
-    const body = await request.json();
-    const {
-      frameworkId,
-      name,
-      responses,
-    }: {
-      frameworkId: string;
-      name?: string;
-      responses: Array<{
-        controlId: string;
-        status: string;
-        notes?: string;
-        evidence?: string;
-      }>;
-    } = body;
-
-    // Validate required fields
-    if (!frameworkId || !responses || !Array.isArray(responses)) {
-      return Response.json(
-        {
-          success: false,
-          error: 'Missing required fields: frameworkId, responses',
-        } as ApiResponse<null>,
-        { status: 400 }
-      );
-    }
-
-    if (responses.length === 0) {
-      return Response.json(
-        {
-          success: false,
-          error: 'At least one assessment response is required',
-        } as ApiResponse<null>,
-        { status: 400 }
-      );
-    }
-
-    const supabase = await createServerSideClient();
-
-    // Fetch framework and controls
-    const { data: framework, error: frameworkError } = await supabase
-      .from('frameworks')
-      .select('id, name')
-      .eq('id', frameworkId)
-      .single();
-
-    if (frameworkError || !framework) {
-      return Response.json(
-        { success: false, error: 'Framework not found' } as ApiResponse<null>,
-        { status: 404 }
-      );
-    }
-
-    const { data: controls, error: controlsError } = await supabase
-      .from('controls')
-      .select('*')
-      .eq('frameworkId', frameworkId);
-
-    if (controlsError || !controls) {
-      return Response.json(
-        { success: false, error: 'Failed to fetch controls' } as ApiResponse<null>,
-        { status: 500 }
-      );
-    }
-
-    // Convert responses array to Map for processing
-    const responsesMap = new Map<string, AssessmentResponseInput>();
-    for (const response of responses) {
-      if (!response.controlId) {
-        return Response.json(
-          { success: false, error: 'Each response must include controlId' } as ApiResponse<null>,
-          { status: 400 }
-        );
-      }
-      responsesMap.set(response.controlId, {
-        controlId: response.controlId,
-        status: response.status,
-        notes: response.notes,
-        evidence: response.evidence,
-      });
-    }
-
-    // Validate all control IDs exist
-    const validation = validateAssessmentResponses(responsesMap, controls as Control[]);
-    if (!validation.valid) {
-      return Response.json(
-        {
-          success: false,
-          error: `Invalid control IDs: ${validation.errors.join(', ')}`,
-        } as ApiResponse<null>,
-        { status: 400 }
-      );
-    }
-
-    // Compute GRC score
-    const scoreResult = computeGRCScore(responsesMap, controls as Control[]);
-
-    // Create assessment record in database
-    const { data: assessment, error: assessmentError } = await supabase
-      .from('assessments')
-      .insert({
-        userId,
-        frameworkId,
-        name: name || `${framework.name} Assessment - ${new Date().toLocaleDateString()}`,
-        status: 'completed',
-        overallScore: scoreResult.overallScore,
-      })
-      .select()
-      .single();
-
-    if (assessmentError || !assessment) {
-      console.error('Error creating assessment:', assessmentError);
-      return Response.json(
-        { success: false, error: 'Failed to create assessment record' } as ApiResponse<null>,
-        { status: 500 }
-      );
-    }
-
-    // Store individual assessment responses
-    const responsesToInsert = responses.map((response) => ({
-      assessmentId: assessment.id,
-      controlId: response.controlId,
-      response: response.status,
-      evidence: response.evidence,
-      notes: response.notes,
-      score: 0, // Score handled at assessment level
-    }));
-
-    const { error: responsesInsertError } = await supabase
-      .from('assessment_responses')
-      .insert(responsesToInsert);
-
-    if (responsesInsertError) {
-      console.error('Error storing responses:', responsesInsertError);
-      // Assessment was created but responses failed - still return success
-      // The score is already stored in the assessment
-    }
-
-    // Return the complete result
-    const resultWithId: AssessmentResult = {
-      ...scoreResult,
-      assessmentId: assessment.id,
+    const stats = {
+      total: assessmentsData.length,
+      completed: assessmentsData.filter(a => a.status === 'completed').length,
+      inProgress: assessmentsData.filter(a => a.status === 'in_progress').length,
+      scheduled: assessmentsData.filter(a => a.status === 'scheduled').length,
+      criticalFindings: assessmentsData.reduce((sum, a) => sum + (a.riskLevel === 'critical' ? 1 : 0), 0)
     };
 
-    return Response.json(
-      {
-        success: true,
-        data: resultWithId,
-        timestamp: new Date(),
-      } as ApiResponse<AssessmentResult>,
-      { status: 201 }
-    );
+    return NextResponse.json({
+      success: true,
+      data: {
+        assessments: assessmentsData,
+        stats
+      },
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
-    console.error('Error submitting assessment:', error);
-    return Response.json(
-      { success: false, error: 'Failed to submit assessment' } as ApiResponse<null>,
+    console.error('Error fetching assessments:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch assessments',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }
 }
 
-/**
- * GET /api/assessments
- * List all assessments for authenticated user's organization
- */
-export async function GET(request: Request): Promise<Response> {
+export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return Response.json(
-        { success: false, error: 'Unauthorized' } as ApiResponse<null>,
-        { status: 401 }
+    const body = await request.json();
+
+    const { name, framework, riskLevel, dueDate, assessor } = body;
+
+    if (!name || !framework || !riskLevel || !dueDate || !assessor) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: name, framework, riskLevel, dueDate, assessor',
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
       );
     }
 
-    const supabase = await createServerSideClient();
+    const newAssessment: Assessment = {
+      id: `ASS-${String(assessmentsData.length + 1).padStart(3, '0')}`,
+      name,
+      framework,
+      status: 'scheduled',
+      riskLevel,
+      score: 0,
+      dueDate,
+      assessor,
+      findings: 0,
+      lastUpdated: new Date().toISOString()
+    };
 
-    // Get query parameters for pagination and filtering
-    const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
-    const frameworkId = searchParams.get('frameworkId');
-    const status = searchParams.get('status');
+    assessmentsData.push(newAssessment);
 
-    let query = supabase
-      .from('assessments')
-      .select('*, frameworks(name)', { count: 'exact' })
-      .eq('userId', userId)
-      .order('createdAt', { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (frameworkId) {
-      query = query.eq('frameworkId', frameworkId);
-    }
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    const { data: assessments, error, count } = await query;
-
-    if (error) {
-      console.error('Error fetching assessments:', error);
-      return Response.json(
-        { success: false, error: 'Failed to fetch assessments' } as ApiResponse<null>,
-        { status: 500 }
-      );
-    }
-
-    return Response.json(
+    return NextResponse.json(
       {
         success: true,
-        data: {
-          assessments,
-          pagination: {
-            total: count || 0,
-            limit,
-            offset,
-            hasMore: (offset + limit) < (count || 0),
-          },
-        },
-        timestamp: new Date(),
-      } as ApiResponse<{
-        assessments: Assessment[];
-        pagination: {
-          total: number;
-          limit: number;
-          offset: number;
-          hasMore: boolean;
-        };
-      }>,
-      { status: 200 }
+        data: newAssessment,
+        timestamp: new Date().toISOString()
+      },
+      { status: 201 }
     );
   } catch (error) {
-    console.error('Error fetching assessments:', error);
-    return Response.json(
-      { success: false, error: 'Failed to fetch assessments' } as ApiResponse<null>,
+    console.error('Error creating assessment:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to create assessment',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }
