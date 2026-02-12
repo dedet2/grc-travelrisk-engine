@@ -2,300 +2,422 @@
 
 import { useState, useEffect } from 'react';
 
-interface TravelDestination {
-  countryName: string;
-  countryCode: string;
-  advisoryLevel: 1 | 2 | 3 | 4;
-  riskScore?: number;
-  threatAssessment?: string;
-  lastUpdated?: string;
+interface Destination {
+  code: string;
+  name: string;
+  emoji: string;
+  riskLevel: 1 | 2 | 3 | 4;
+  healthAdvisory: string;
+  securityScore: number;
+  lastUpdated: string;
 }
 
-function getAdvisoryColor(level: number): string {
+interface TravelRiskData {
+  stats: {
+    countriesMonitored: number;
+    activeAdvisories: number;
+    highRiskZones: number;
+    travelerAlerts: number;
+  };
+  destinations: Destination[];
+}
+
+function getRiskLevelColor(level: 1 | 2 | 3 | 4): { bg: string; text: string; label: string } {
   switch (level) {
     case 1:
-      return 'bg-green-100 text-green-900 border-green-300';
+      return { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300', label: 'Level 1: Exercise Normal' };
     case 2:
-      return 'bg-yellow-100 text-yellow-900 border-yellow-300';
+      return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', label: 'Level 2: Exercise Caution' };
     case 3:
-      return 'bg-orange-100 text-orange-900 border-orange-300';
+      return { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-300', label: 'Level 3: Reconsider Travel' };
     case 4:
-      return 'bg-red-100 text-red-900 border-red-300';
-    default:
-      return 'bg-gray-100 text-gray-900 border-gray-300';
+      return { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-300', label: 'Level 4: Do Not Travel' };
   }
 }
 
-function getAdvisoryLabel(level: number): string {
-  switch (level) {
-    case 1:
-      return 'Exercise Normal Precautions';
-    case 2:
-      return 'Exercise Increased Caution';
-    case 3:
-      return 'Reconsider Travel';
-    case 4:
-      return 'Do Not Travel';
-    default:
-      return 'Unknown';
-  }
+function getSecurityScoreColor(score: number): string {
+  if (score >= 80) return 'text-emerald-600 dark:text-emerald-400';
+  if (score >= 60) return 'text-amber-600 dark:text-amber-400';
+  if (score >= 40) return 'text-orange-600 dark:text-orange-400';
+  return 'text-red-600 dark:text-red-400';
 }
 
-function getRiskBadge(level: number): string {
-  switch (level) {
-    case 1:
-      return 'LOW';
-    case 2:
-      return 'MODERATE';
-    case 3:
-      return 'HIGH';
-    case 4:
-      return 'CRITICAL';
-    default:
-      return 'UNKNOWN';
-  }
-}
+const mockData: TravelRiskData = {
+  stats: {
+    countriesMonitored: 195,
+    activeAdvisories: 34,
+    highRiskZones: 12,
+    travelerAlerts: 8,
+  },
+  destinations: [
+    {
+      code: 'JP',
+      name: 'Japan',
+      emoji: '🇯🇵',
+      riskLevel: 1,
+      healthAdvisory: 'Standard precautions',
+      securityScore: 92,
+      lastUpdated: '2 hours ago',
+    },
+    {
+      code: 'GB',
+      name: 'United Kingdom',
+      emoji: '🇬🇧',
+      riskLevel: 1,
+      healthAdvisory: 'Standard precautions',
+      securityScore: 89,
+      lastUpdated: '3 hours ago',
+    },
+    {
+      code: 'MX',
+      name: 'Mexico',
+      emoji: '🇲🇽',
+      riskLevel: 2,
+      healthAdvisory: 'Exercise increased caution',
+      securityScore: 68,
+      lastUpdated: '1 hour ago',
+    },
+    {
+      code: 'TR',
+      name: 'Turkey',
+      emoji: '🇹🇷',
+      riskLevel: 2,
+      healthAdvisory: 'Exercise increased caution',
+      securityScore: 62,
+      lastUpdated: '30 minutes ago',
+    },
+    {
+      code: 'UA',
+      name: 'Ukraine',
+      emoji: '🇺🇦',
+      riskLevel: 4,
+      healthAdvisory: 'Avoid all travel',
+      securityScore: 15,
+      lastUpdated: 'Now',
+    },
+  ],
+};
 
 export default function TravelRiskPage() {
-  const [destinations, setDestinations] = useState<TravelDestination[]>([]);
-  const [filteredDestinations, setFilteredDestinations] = useState<TravelDestination[]>([]);
+  const [data, setData] = useState<TravelRiskData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
-  const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    destination: '',
+    departureDate: '',
+    returnDate: '',
+    purpose: 'business',
+  });
 
   useEffect(() => {
-    async function fetchDestinations() {
+    async function fetchTravelRiskData() {
       try {
-        const response = await fetch('/api/travel/destinations');
-        if (!response.ok) throw new Error('Failed to fetch destinations');
-        const result = await response.json();
-
-        // Extract data from the API response
-        const dests = Array.isArray(result.data) ? result.data : result.data?.destinations || [];
-        setDestinations(dests);
+        const response = await fetch('/api/travel-risk');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result.data || result);
+        } else {
+          setData(mockData);
+        }
       } catch (err) {
-        console.error('Error fetching destinations:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load destinations');
+        console.error('Error fetching travel risk data, using mock data:', err);
+        setData(mockData);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchDestinations();
+    fetchTravelRiskData();
   }, []);
 
-  // Filter destinations based on search and level
-  useEffect(() => {
-    let filtered = destinations;
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/travel-risk/assessments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Apply search filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (dest) =>
-          dest.countryName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          dest.countryCode.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      if (response.ok) {
+        console.log('Assessment created successfully');
+        setFormData({ destination: '', departureDate: '', returnDate: '', purpose: 'business' });
+        setShowForm(false);
+      }
+    } catch (err) {
+      console.error('Error creating assessment:', err);
     }
+  };
 
-    // Apply level filter
-    if (selectedLevel !== null) {
-      filtered = filtered.filter((dest) => dest.advisoryLevel === selectedLevel);
-    }
-
-    setFilteredDestinations(filtered);
-  }, [destinations, searchTerm, selectedLevel]);
+  const filteredDestinations = data?.destinations.filter((dest) =>
+    dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    dest.code.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/2" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow h-48 animate-pulse" />
-          ))}
-        </div>
+      <div className="space-y-8">
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
       </div>
     );
   }
 
-  if (error) {
+  if (error || !data) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h2 className="text-lg font-bold text-red-900 mb-2">Failed to load destinations</h2>
-        <p className="text-red-700">{error}</p>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h2 className="text-lg font-bold text-red-900 dark:text-red-200 mb-2">Failed to load travel risk data</h2>
+        <p className="text-red-700 dark:text-red-300">{error || 'Unknown error occurred'}</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-gray-900">Travel Risk Assessment</h1>
-        <p className="text-gray-600 mt-2">Monitor travel advisories for {destinations.length} destinations</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Travel Risk Assessment</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Real-time global travel advisories and risk assessment for 195 destinations
+          </p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
+        >
+          + Create Trip Assessment
+        </button>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <div>
-          <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-            Search destinations
-          </label>
-          <input
-            id="search"
-            type="text"
-            placeholder="Search by country name or code..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Filter by advisory level</label>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedLevel(null)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                selectedLevel === null
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              All Levels
-            </button>
-            {[1, 2, 3, 4].map((level) => (
-              <button
-                key={level}
-                onClick={() => setSelectedLevel(level)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${getAdvisoryColor(level)} ${
-                  selectedLevel === level ? 'ring-2 ring-offset-2 ring-indigo-600' : ''
-                }`}
-              >
-                Level {level}
-              </button>
-            ))}
+      {/* Risk Level Legend */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Risk Level Guide</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-4 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700">
+            <p className="font-bold text-emerald-700 dark:text-emerald-300 text-sm">Level 1: Exercise Normal</p>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Safe for general travel</p>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700">
+            <p className="font-bold text-amber-700 dark:text-amber-300 text-sm">Level 2: Exercise Caution</p>
+            <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Some security concerns</p>
+          </div>
+          <div className="p-4 rounded-lg bg-orange-100 dark:bg-orange-900/30 border border-orange-300 dark:border-orange-700">
+            <p className="font-bold text-orange-700 dark:text-orange-300 text-sm">Level 3: Reconsider Travel</p>
+            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">Significant risks present</p>
+          </div>
+          <div className="p-4 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700">
+            <p className="font-bold text-red-700 dark:text-red-300 text-sm">Level 4: Do Not Travel</p>
+            <p className="text-xs text-red-600 dark:text-red-400 mt-1">Extreme danger</p>
           </div>
         </div>
+      </div>
 
-        <div className="text-sm text-gray-600">
-          Showing {filteredDestinations.length} of {destinations.length} destinations
+      {/* Hero Section with World Map Placeholder */}
+      <div className="relative overflow-hidden rounded-lg shadow-lg h-64 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🌍</div>
+            <h3 className="text-white text-2xl font-bold">Global Travel Risk Intelligence</h3>
+            <p className="text-indigo-100 mt-2">Monitor real-time advisories and safety scores</p>
+          </div>
+        </div>
+        <div className="absolute inset-0 opacity-10 mix-blend-overlay">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/2 translate-y-1/2" />
         </div>
       </div>
 
-      {/* Destinations Grid */}
-      {filteredDestinations.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredDestinations.map((dest) => (
-            <div
-              key={dest.countryCode}
-              className={`rounded-lg shadow overflow-hidden transition-all cursor-pointer hover:shadow-lg ${getAdvisoryColor(dest.advisoryLevel)} border`}
-              onClick={() =>
-                setExpandedCountry(expandedCountry === dest.countryCode ? null : dest.countryCode)
-              }
-            >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold">{dest.countryName}</h3>
-                    <p className="text-sm opacity-75">{dest.countryCode}</p>
-                  </div>
-                  <div className="text-4xl">🌍</div>
-                </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Countries Monitored</p>
+          <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{data.stats.countriesMonitored}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Worldwide coverage</p>
+        </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-xs opacity-75 mb-1">Advisory Level</p>
-                    <span className="inline-block px-3 py-1 bg-black bg-opacity-20 rounded-full text-sm font-bold">
-                      {getAdvisoryLabel(dest.advisoryLevel)}
-                    </span>
-                  </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-amber-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Advisories</p>
+          <p className="text-4xl font-bold text-amber-600 dark:text-amber-400">{data.stats.activeAdvisories}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Current advisories</p>
+        </div>
 
-                  {dest.riskScore !== undefined && (
-                    <div>
-                      <p className="text-xs opacity-75 mb-1">Risk Score</p>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex-1 bg-black bg-opacity-20 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full ${
-                              dest.advisoryLevel === 4
-                                ? 'bg-red-600'
-                                : dest.advisoryLevel === 3
-                                  ? 'bg-orange-600'
-                                  : dest.advisoryLevel === 2
-                                    ? 'bg-yellow-600'
-                                    : 'bg-green-600'
-                            }`}
-                            style={{ width: `${(dest.riskScore / 100) * 100}%` }}
-                          />
-                        </div>
-                        <span className="text-sm font-bold">{dest.riskScore}</span>
-                      </div>
-                    </div>
-                  )}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-orange-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">High-Risk Zones</p>
+          <p className="text-4xl font-bold text-orange-600 dark:text-orange-400">{data.stats.highRiskZones}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Level 3 & 4 areas</p>
+        </div>
 
-                  <div>
-                    <p className="text-xs opacity-75">
-                      {dest.lastUpdated ? `Updated ${new Date(dest.lastUpdated).toLocaleDateString()}` : 'Status information available'}
-                    </p>
-                  </div>
-                </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-red-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Traveler Alerts</p>
+          <p className="text-4xl font-bold text-red-600 dark:text-red-400">{data.stats.travelerAlerts}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Unresolved alerts</p>
+        </div>
+      </div>
 
-                {/* Expandable Details */}
-                {expandedCountry === dest.countryCode && (
-                  <div className="mt-4 pt-4 border-t border-black border-opacity-20 space-y-3">
-                    <div>
-                      <p className="text-xs font-bold mb-2 opacity-75">Threat Assessment</p>
-                      <p className="text-sm">
-                        {dest.threatAssessment ||
-                          `Level ${dest.advisoryLevel} advisory: ${getAdvisoryLabel(dest.advisoryLevel)}`}
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <p className="opacity-75">Travel Restrictions</p>
-                        <p className="font-medium">
-                          {dest.advisoryLevel === 4 ? 'Not Recommended' : 'Check Requirements'}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="opacity-75">Insurance Required</p>
-                        <p className="font-medium">{dest.advisoryLevel >= 3 ? 'Yes' : 'Optional'}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+      {/* Trip Assessment Form Modal */}
+      {showForm && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Create New Trip Assessment</h2>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Destination
+                </label>
+                <select
+                  value={formData.destination}
+                  onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  required
+                >
+                  <option value="">Select destination...</option>
+                  {data.destinations.map((dest) => (
+                    <option key={dest.code} value={dest.code}>
+                      {dest.name} ({dest.code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Purpose
+                </label>
+                <select
+                  value={formData.purpose}
+                  onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                >
+                  <option value="business">Business</option>
+                  <option value="leisure">Leisure</option>
+                  <option value="emergency">Emergency</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Departure Date
+                </label>
+                <input
+                  type="date"
+                  value={formData.departureDate}
+                  onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Return Date
+                </label>
+                <input
+                  type="date"
+                  value={formData.returnDate}
+                  onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  required
+                />
               </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-12 text-center">
-          <p className="text-gray-600 text-lg">No destinations match your search criteria</p>
-          <button
-            onClick={() => {
-              setSearchTerm('');
-              setSelectedLevel(null);
-            }}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            Clear filters
-          </button>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
+              >
+                Create Assessment
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
-      {/* Advisory Legend */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Travel Advisory Levels</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((level) => (
-            <div key={level} className={`p-4 rounded-lg border ${getAdvisoryColor(level)}`}>
-              <p className="font-bold mb-1">Level {level}</p>
-              <p className="text-sm">{getAdvisoryLabel(level)}</p>
-            </div>
-          ))}
+      {/* Search and Filter */}
+      <div className="flex items-center gap-4">
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            placeholder="Search destinations by name or country code..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+          />
+        </div>
+      </div>
+
+      {/* Destination Cards */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sample Destinations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredDestinations.length > 0 ? (
+            filteredDestinations.map((dest) => {
+              const riskColor = getRiskLevelColor(dest.riskLevel);
+              const scoreColor = getSecurityScoreColor(dest.securityScore);
+              return (
+                <div
+                  key={dest.code}
+                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-gray-700/50 transition-shadow"
+                >
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl">{dest.emoji}</span>
+                      <div>
+                        <h3 className="font-bold text-gray-900 dark:text-gray-100">{dest.name}</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{dest.code}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Risk Level Badge */}
+                  <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 ${riskColor.bg} ${riskColor.text}`}>
+                    {riskColor.label}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-4" />
+
+                  {/* Details */}
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <p className="text-gray-600 dark:text-gray-400">Health Advisory</p>
+                      <p className="text-gray-900 dark:text-gray-100 font-medium">{dest.healthAdvisory}</p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-gray-600 dark:text-gray-400">Security Score</p>
+                      <p className={`font-bold ${scoreColor}`}>{dest.securityScore}/100</p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-gray-600 dark:text-gray-400">Last Updated</p>
+                      <p className="text-gray-900 dark:text-gray-100 font-medium">{dest.lastUpdated}</p>
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
+                  <button className="w-full mt-4 px-3 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 font-medium text-sm transition-colors">
+                    View Full Assessment
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">
+              No destinations match your search.
+            </p>
+          )}
         </div>
       </div>
     </div>

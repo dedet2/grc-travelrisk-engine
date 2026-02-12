@@ -3,414 +3,186 @@
 import { useState, useEffect } from 'react';
 
 interface Agent {
+  id: string;
   name: string;
-  description: string;
-  enabled: boolean;
-  status: 'idle' | 'running' | 'completed' | 'failed';
-  lastRunAt?: Date;
-  latencyMs?: number;
-  successCount: number;
-  failureCount: number;
-  averageLatencyMs: number;
-  schedule?: string;
+  category: string;
+  status: 'active' | 'idle' | 'offline';
+  lastRun: string;
+  tasksCompleted: number;
 }
 
-interface AgentListResponse {
-  summary: {
+interface AgentsData {
+  stats: {
     totalAgents: number;
-    runningCount: number;
-    completedCount: number;
-    failedCount: number;
+    activeNow: number;
+    tasksCompletedToday: number;
+    avgResponseTime: number;
   };
   agents: Agent[];
-  timestamp: Date;
 }
 
-interface ApprovalItem {
-  id: string;
-  agentName: string;
-  action: string;
-  proposedOutput: Record<string, unknown>;
-  autonomyLevel: 'L1' | 'L2' | 'L3';
-  timestamp: Date;
+function getStatusColor(status: string): { bg: string; text: string; dot: string } {
+  switch (status) {
+    case 'active':
+      return { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300', dot: 'bg-emerald-500' };
+    case 'idle':
+      return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', dot: 'bg-amber-500' };
+    case 'offline':
+      return { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-gray-500' };
+    default:
+      return { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-gray-500' };
+  }
 }
 
-interface ActivityLog {
-  id: string;
-  timestamp: Date;
-  agent: string;
-  action: string;
-  status: 'success' | 'failed';
-  latency: number;
-  humanReviewed: boolean;
+function getCategoryColor(category: string): string {
+  switch (category) {
+    case 'Compliance':
+      return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30';
+    case 'Risk':
+      return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30';
+    case 'Security':
+      return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30';
+    case 'Operations':
+      return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30';
+    case 'Intelligence':
+      return 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30';
+    case 'Executive':
+      return 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30';
+    case 'Health':
+      return 'text-pink-600 dark:text-pink-400 bg-pink-100 dark:bg-pink-900/30';
+    case 'Finance':
+      return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30';
+    case 'Calendar':
+      return 'text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/30';
+    case 'Productivity':
+      return 'text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/30';
+    case 'Learning':
+      return 'text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-100 dark:bg-fuchsia-900/30';
+    case 'Wellness':
+      return 'text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/30';
+    default:
+      return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/30';
+  }
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const statusConfig = {
-    idle: { bg: 'bg-gray-100', text: 'text-gray-700', dot: 'bg-gray-500' },
-    running: { bg: 'bg-blue-100', text: 'text-blue-700', dot: 'bg-blue-500 animate-pulse' },
-    completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-    failed: { bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500' },
-  };
+const mockData: AgentsData = {
+  stats: {
+    totalAgents: 34,
+    activeNow: 12,
+    tasksCompletedToday: 247,
+    avgResponseTime: 342,
+  },
+  agents: [
+    // GRC Agents - Compliance (A1-A5)
+    { id: 'A1', name: 'Policy Manager', category: 'Compliance', status: 'active', lastRun: '2 minutes ago', tasksCompleted: 48 },
+    { id: 'A2', name: 'Control Auditor', category: 'Compliance', status: 'active', lastRun: '5 minutes ago', tasksCompleted: 32 },
+    { id: 'A3', name: 'Compliance Reporter', category: 'Compliance', status: 'idle', lastRun: '1 hour ago', tasksCompleted: 156 },
+    { id: 'A4', name: 'Framework Mapper', category: 'Compliance', status: 'idle', lastRun: '3 hours ago', tasksCompleted: 24 },
+    { id: 'A5', name: 'Requirement Tracker', category: 'Compliance', status: 'offline', lastRun: '12 hours ago', tasksCompleted: 89 },
 
-  const config =
-    statusConfig[status as keyof typeof statusConfig] || statusConfig.idle;
+    // GRC Agents - Risk (A6-A10)
+    { id: 'A6', name: 'Risk Assessor', category: 'Risk', status: 'active', lastRun: '1 minute ago', tasksCompleted: 67 },
+    { id: 'A7', name: 'Threat Intelligence', category: 'Risk', status: 'active', lastRun: '3 minutes ago', tasksCompleted: 45 },
+    { id: 'A8', name: 'Vulnerability Scanner', category: 'Risk', status: 'active', lastRun: '4 minutes ago', tasksCompleted: 123 },
+    { id: 'A9', name: 'Impact Analyzer', category: 'Risk', status: 'idle', lastRun: '2 hours ago', tasksCompleted: 34 },
+    { id: 'A10', name: 'Risk Mitigation Planner', category: 'Risk', status: 'idle', lastRun: '5 hours ago', tasksCompleted: 56 },
 
-  return (
-    <div className="flex items-center space-x-2">
-      <div className={`w-2 h-2 rounded-full ${config.dot}`} />
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
-        {status}
-      </span>
-    </div>
-  );
-}
+    // GRC Agents - Security (A11-A15)
+    { id: 'A11', name: 'Security Monitor', category: 'Security', status: 'active', lastRun: 'Now', tasksCompleted: 204 },
+    { id: 'A12', name: 'Access Control Manager', category: 'Security', status: 'active', lastRun: '1 minute ago', tasksCompleted: 78 },
+    { id: 'A13', name: 'Incident Responder', category: 'Security', status: 'active', lastRun: '2 minutes ago', tasksCompleted: 12 },
+    { id: 'A14', name: 'Identity Verifier', category: 'Security', status: 'idle', lastRun: '30 minutes ago', tasksCompleted: 93 },
+    { id: 'A15', name: 'Encryption Manager', category: 'Security', status: 'offline', lastRun: '8 hours ago', tasksCompleted: 41 },
 
-function AgentCard({
-  agent,
-  onRun,
-  isRunning,
-}: {
-  agent: Agent;
-  onRun: () => void;
-  isRunning: boolean;
-}) {
-  const successRate =
-    agent.successCount + agent.failureCount > 0
-      ? Math.round(
-          (agent.successCount / (agent.successCount + agent.failureCount)) * 100
-        )
-      : 0;
+    // GRC Agents - Operations (A16-A20)
+    { id: 'A16', name: 'Asset Manager', category: 'Operations', status: 'active', lastRun: '3 minutes ago', tasksCompleted: 156 },
+    { id: 'A17', name: 'Change Manager', category: 'Operations', status: 'active', lastRun: '5 minutes ago', tasksCompleted: 67 },
+    { id: 'A18', name: 'Maintenance Scheduler', category: 'Operations', status: 'idle', lastRun: '1 hour ago', tasksCompleted: 34 },
+    { id: 'A19', name: 'Incident Logger', category: 'Operations', status: 'idle', lastRun: '2 hours ago', tasksCompleted: 89 },
+    { id: 'A20', name: 'Performance Monitor', category: 'Operations', status: 'offline', lastRun: '6 hours ago', tasksCompleted: 102 },
 
-  return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="font-bold text-gray-900 text-lg">{agent.name}</h3>
-          <p className="text-sm text-gray-600 mt-1">{agent.description}</p>
-        </div>
-        <StatusBadge status={agent.status} />
-      </div>
+    // GRC Agents - Intelligence (A21-A25)
+    { id: 'A21', name: 'Data Collector', category: 'Intelligence', status: 'active', lastRun: '1 minute ago', tasksCompleted: 178 },
+    { id: 'A22', name: 'Analytics Engine', category: 'Intelligence', status: 'active', lastRun: '2 minutes ago', tasksCompleted: 134 },
+    { id: 'A23', name: 'Report Generator', category: 'Intelligence', status: 'active', lastRun: '4 minutes ago', tasksCompleted: 89 },
+    { id: 'A24', name: 'Trend Analyzer', category: 'Intelligence', status: 'idle', lastRun: '30 minutes ago', tasksCompleted: 45 },
+    { id: 'A25', name: 'Insight Provider', category: 'Intelligence', status: 'idle', lastRun: '1 hour ago', tasksCompleted: 67 },
 
-      <div className="space-y-3 mb-4">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Success Rate</span>
-          <span className="font-medium text-gray-900">{successRate}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-emerald-600 h-2 rounded-full transition-all"
-            style={{ width: `${successRate}%` }}
-          />
-        </div>
-      </div>
+    // GRC Agents - Executive (A26-A28)
+    { id: 'A26', name: 'Dashboard Curator', category: 'Executive', status: 'active', lastRun: '2 minutes ago', tasksCompleted: 56 },
+    { id: 'A27', name: 'Executive Briefer', category: 'Executive', status: 'active', lastRun: '3 minutes ago', tasksCompleted: 23 },
+    { id: 'A28', name: 'Strategic Planner', category: 'Executive', status: 'idle', lastRun: '1 hour ago', tasksCompleted: 34 },
 
-      <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
-        <div className="bg-gray-50 p-2 rounded">
-          <p className="text-gray-600">Last Run</p>
-          <p className="font-medium text-gray-900">
-            {agent.lastRunAt
-              ? new Date(agent.lastRunAt).toLocaleDateString()
-              : 'Never'}
-          </p>
-        </div>
-        <div className="bg-gray-50 p-2 rounded">
-          <p className="text-gray-600">Avg Latency</p>
-          <p className="font-medium text-gray-900">{agent.averageLatencyMs}ms</p>
-        </div>
-      </div>
-
-      <button
-        onClick={onRun}
-        disabled={!agent.enabled || isRunning}
-        className={`w-full px-4 py-2 rounded font-medium transition-colors text-sm ${
-          !agent.enabled
-            ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-            : isRunning
-              ? 'bg-blue-100 text-blue-700'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700'
-        }`}
-      >
-        {isRunning ? 'Running...' : 'Run Agent'}
-      </button>
-    </div>
-  );
-}
+    // Life Agents
+    { id: 'B1', name: 'Health Tracker', category: 'Health', status: 'active', lastRun: '1 minute ago', tasksCompleted: 89 },
+    { id: 'B2', name: 'Budget Analyzer', category: 'Finance', status: 'idle', lastRun: '2 hours ago', tasksCompleted: 45 },
+    { id: 'B3', name: 'Schedule Manager', category: 'Calendar', status: 'active', lastRun: '5 minutes ago', tasksCompleted: 76 },
+    { id: 'B4', name: 'Task Optimizer', category: 'Productivity', status: 'active', lastRun: '3 minutes ago', tasksCompleted: 112 },
+    { id: 'B5', name: 'Learning Path Guide', category: 'Learning', status: 'idle', lastRun: '4 hours ago', tasksCompleted: 28 },
+    { id: 'B6', name: 'Wellness Coach', category: 'Wellness', status: 'active', lastRun: '1 minute ago', tasksCompleted: 34 },
+  ],
+};
 
 export default function AgentsPage() {
-  const [data, setData] = useState<AgentListResponse | null>(null);
+  const [data, setData] = useState<AgentsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [runningAgents, setRunningAgents] = useState<Set<string>>(new Set());
-  const [approvalQueue, setApprovalQueue] = useState<ApprovalItem[]>([]);
-  const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
-  const [activeTab, setActiveTab] = useState<'grc' | 'life'>('grc');
+  const [running, setRunning] = useState(false);
 
   useEffect(() => {
-    fetchAgents();
-    initializeMockData();
+    async function fetchAgentsData() {
+      try {
+        const response = await fetch('/api/agents');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result.data || result);
+        } else {
+          setData(mockData);
+        }
+      } catch (err) {
+        console.error('Error fetching agents data, using mock data:', err);
+        setData(mockData);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAgentsData();
   }, []);
 
-  function initializeMockData() {
-    // Initialize with mock approval queue and activity log
-    setApprovalQueue([
-      {
-        id: '1',
-        agentName: 'GRC-Ingestion-Agent',
-        action: 'Update ISO 27001:2022 framework with 341 controls',
-        proposedOutput: {
-          frameworkId: 'iso-27001-2022-latest',
-          controlCount: 341,
-          status: 'published',
-        },
-        autonomyLevel: 'L2',
-        timestamp: new Date(Date.now() - 5 * 60000),
-      },
-    ]);
-
-    setActivityLog([
-      {
-        id: '1',
-        timestamp: new Date(Date.now() - 2 * 60000),
-        agent: 'Risk Scoring Agent (A-02)',
-        action: 'Score assessment-001',
-        status: 'success',
-        latency: 523,
-        humanReviewed: false,
-      },
-      {
-        id: '2',
-        timestamp: new Date(Date.now() - 10 * 60000),
-        agent: 'GRC-Ingestion-Agent',
-        action: 'Ingest ISO 27001:2022',
-        status: 'success',
-        latency: 1240,
-        humanReviewed: true,
-      },
-      {
-        id: '3',
-        timestamp: new Date(Date.now() - 25 * 60000),
-        agent: 'Risk Scoring Agent (A-02)',
-        action: 'Score assessment-002',
-        status: 'success',
-        latency: 445,
-        humanReviewed: false,
-      },
-    ]);
-  }
-
-  /**
-   * Validate agent response data structure
-   */
-  function isValidAgentListResponse(data: unknown): data is AgentListResponse {
-    if (!data || typeof data !== 'object') return false;
-
-    const response = data as Record<string, unknown>;
-    return (
-      response.summary &&
-      typeof response.summary === 'object' &&
-      Array.isArray(response.agents) &&
-      typeof response.timestamp === 'string' || response.timestamp instanceof Date
-    );
-  }
-
-  async function fetchAgents() {
+  const handleRunAllAgents = async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('/api/agents', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to fetch agents`);
-      }
-
-      const result = await response.json();
-
-      if (!isValidAgentListResponse(result.data)) {
-        throw new Error('Invalid response format from server');
-      }
-
-      setData(result.data);
-    } catch (err) {
-      console.error('Error fetching agents:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load agents';
-      setError(errorMessage);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function runAgent(agentName: string) {
-    if (!agentName || typeof agentName !== 'string') {
-      setError('Invalid agent name');
-      return;
-    }
-
-    try {
-      setRunningAgents((prev) => new Set([...prev, agentName]));
-      const response = await fetch(`/api/agents/${encodeURIComponent(agentName)}/run`, {
+      setRunning(true);
+      const response = await fetch('/api/agents/run-all', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to run agent`);
+      if (response.ok) {
+        console.log('All agents triggered successfully');
+        // Optionally refetch data
+        const fetchResponse = await fetch('/api/agents');
+        if (fetchResponse.ok) {
+          const result = await fetchResponse.json();
+          setData(result.data || result);
+        }
       }
-
-      // Refresh agent list after a delay
-      setTimeout(fetchAgents, 1000);
-    } catch (err) {
-      console.error('Error running agent:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to run agent';
-      setError(errorMessage);
-    } finally {
-      setRunningAgents((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(agentName);
-        return newSet;
-      });
-    }
-  }
-
-  async function runAllAgents() {
-    try {
-      const response = await fetch('/api/agents/run-all', { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to run all agents');
-      setTimeout(fetchAgents, 1000);
     } catch (err) {
       console.error('Error running all agents:', err);
-      setError(err instanceof Error ? err.message : 'Failed to run all agents');
+    } finally {
+      setRunning(false);
     }
-  }
-
-  function approveAction(id: string) {
-    setApprovalQueue(approvalQueue.filter((item) => item.id !== id));
-    setActivityLog([
-      ...activityLog,
-      {
-        id: `activity-${Date.now()}`,
-        timestamp: new Date(),
-        agent: approvalQueue.find((item) => item.id === id)?.agentName || 'Unknown',
-        action:
-          approvalQueue.find((item) => item.id === id)?.action ||
-          'Unknown action',
-        status: 'success',
-        latency: 200,
-        humanReviewed: true,
-      },
-    ]);
-  }
-
-  function rejectAction(id: string) {
-    setApprovalQueue(approvalQueue.filter((item) => item.id !== id));
-    setActivityLog([
-      ...activityLog,
-      {
-        id: `activity-${Date.now()}`,
-        timestamp: new Date(),
-        agent: approvalQueue.find((item) => item.id === id)?.agentName || 'Unknown',
-        action: 'Action rejected by human reviewer',
-        status: 'failed',
-        latency: 0,
-        humanReviewed: true,
-      },
-    ]);
-  }
-
-  const lifeAgents: Agent[] = [
-    {
-      name: 'Health Agent',
-      description: 'Monitors wellness metrics and health risk assessments',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 2 * 3600000),
-      latencyMs: 234,
-      successCount: 42,
-      failureCount: 2,
-      averageLatencyMs: 240,
-      schedule: 'Every 6 hours',
-    },
-    {
-      name: 'Legal Agent',
-      description: 'Analyzes legal compliance and regulatory requirements',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 4 * 3600000),
-      latencyMs: 456,
-      successCount: 38,
-      failureCount: 1,
-      averageLatencyMs: 445,
-      schedule: 'Daily',
-    },
-    {
-      name: 'Jobs Agent',
-      description: 'Tracks employment opportunities and career developments',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 1 * 3600000),
-      latencyMs: 312,
-      successCount: 35,
-      failureCount: 3,
-      averageLatencyMs: 318,
-      schedule: 'Every 4 hours',
-    },
-    {
-      name: 'Revenue Agent',
-      description: 'Analyzes revenue streams and financial performance metrics',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 3 * 3600000),
-      latencyMs: 567,
-      successCount: 51,
-      failureCount: 0,
-      averageLatencyMs: 573,
-      schedule: 'Every 8 hours',
-    },
-    {
-      name: 'Speaking Agent',
-      description: 'Manages speaking engagements and communication analytics',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 5 * 3600000),
-      latencyMs: 289,
-      successCount: 29,
-      failureCount: 2,
-      averageLatencyMs: 291,
-      schedule: 'Weekly',
-    },
-    {
-      name: 'LinkedIn Agent',
-      description: 'Monitors LinkedIn activity and professional network insights',
-      enabled: true,
-      status: 'idle',
-      lastRunAt: new Date(Date.now() - 30 * 60000),
-      latencyMs: 198,
-      successCount: 48,
-      failureCount: 1,
-      averageLatencyMs: 201,
-      schedule: 'Every 2 hours',
-    },
-  ];
+  };
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/2" />
-        <div className="space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-white p-6 rounded-lg shadow h-20 animate-pulse"
-            />
+      <div className="space-y-8">
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -419,281 +191,130 @@ export default function AgentsPage() {
 
   if (error || !data) {
     return (
-      <div className="space-y-4">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-lg font-bold text-red-900 mb-2">
-            Failed to load agents
-          </h2>
-          <p className="text-red-700 mb-4">{error || 'Unknown error occurred'}</p>
-          <button
-            onClick={fetchAgents}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h2 className="text-lg font-bold text-red-900 dark:text-red-200 mb-2">Failed to load agents</h2>
+        <p className="text-red-700 dark:text-red-300">{error || 'Unknown error occurred'}</p>
       </div>
     );
   }
 
-  // Validate data before rendering
-  if (
-    !data.summary ||
-    typeof data.summary.totalAgents !== 'number' ||
-    !Array.isArray(data.agents)
-  ) {
-    return (
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
-        <h2 className="text-lg font-bold text-amber-900 mb-2">
-          Invalid data format
-        </h2>
-        <p className="text-amber-700 mb-4">
-          The server returned invalid data. Please try again.
-        </p>
-        <button
-          onClick={fetchAgents}
-          className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
+  // Group agents by category
+  const agentsByCategory = data.agents.reduce((acc, agent) => {
+    if (!acc[agent.category]) {
+      acc[agent.category] = [];
+    }
+    acc[agent.category].push(agent);
+    return acc;
+  }, {} as Record<string, Agent[]>);
+
+  const categoryOrder = [
+    'Compliance', 'Risk', 'Security', 'Operations', 'Intelligence', 'Executive',
+    'Health', 'Finance', 'Calendar', 'Productivity', 'Learning', 'Wellness'
+  ];
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">
-            Agents & Automation
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Monitor autonomous agents performing GRC analysis and risk assessment
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Agent Command Center</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Monitor and manage all 34 GRC and Life Agents across your organization
           </p>
         </div>
         <button
-          onClick={runAllAgents}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+          onClick={handleRunAllAgents}
+          disabled={running}
+          className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Run All Agents
+          {running ? 'Running...' : '▶ Run All Agents'}
         </button>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="flex gap-4 border-b border-gray-200 mb-6">
-        <button
-          onClick={() => setActiveTab('grc')}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'grc'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          GRC Agents
-        </button>
-        <button
-          onClick={() => setActiveTab('life')}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'life'
-              ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          Life Agents
-        </button>
-      </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-indigo-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Agents</p>
+          <p className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">{data.stats.totalAgents}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">GRC + Life Agents</p>
+        </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm text-gray-600 mb-1">Total Agents</p>
-          <p className="text-3xl font-bold text-indigo-600">
-            {activeTab === 'grc' ? data.summary.totalAgents : 34}
-          </p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Now</p>
+          <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">{data.stats.activeNow}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Processing tasks</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm text-gray-600 mb-1">Running</p>
-          <p className="text-3xl font-bold text-blue-600">
-            {activeTab === 'grc' ? data.summary.runningCount : 0}
-          </p>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Tasks Completed Today</p>
+          <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{data.stats.tasksCompletedToday}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">All agents combined</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm text-gray-600 mb-1">Completed</p>
-          <p className="text-3xl font-bold text-emerald-600">
-            {activeTab === 'grc' ? data.summary.completedCount : 284}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-600">
-          <p className="text-sm text-gray-600 mb-1">Failed</p>
-          <p className="text-3xl font-bold text-red-600">
-            {activeTab === 'grc' ? data.summary.failedCount : 9}
-          </p>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Avg Response Time</p>
+          <p className="text-4xl font-bold text-purple-600 dark:text-purple-400">{data.stats.avgResponseTime}<span className="text-lg">ms</span></p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">System average</p>
         </div>
       </div>
 
-      {/* Agent Status Cards Grid */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {activeTab === 'grc' ? 'Sprint 1 Agents' : 'Life Agents'}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {(activeTab === 'grc' ? data.agents : lifeAgents).map((agent) => (
-            <AgentCard
-              key={agent.name}
-              agent={agent}
-              onRun={() => runAgent(agent.name)}
-              isRunning={runningAgents.has(agent.name)}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Agents Grid */}
+      <div className="space-y-8">
+        {categoryOrder.map((category) => {
+          const categoryAgents = agentsByCategory[category];
+          if (!categoryAgents || categoryAgents.length === 0) return null;
 
-      {/* Human Approval Queue */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b border-gray-200 p-6">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 flex items-center justify-center text-amber-600">!</div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Human Approval Queue
-            </h2>
-            {approvalQueue.length > 0 && (
-              <span className="ml-auto px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                {approvalQueue.length} pending
-              </span>
-            )}
-          </div>
-        </div>
+          return (
+            <div key={category}>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">{category} Agents</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {categoryAgents.map((agent) => {
+                  const statusColor = getStatusColor(agent.status);
+                  return (
+                    <div
+                      key={agent.id}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-gray-700/50 transition-shadow"
+                    >
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">{agent.name}</h3>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{agent.id}</p>
+                        </div>
+                        <div className={`flex-shrink-0 w-3 h-3 rounded-full ${statusColor.dot} animate-pulse`} />
+                      </div>
 
-        {approvalQueue.length === 0 ? (
-          <div className="p-12 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto mb-3">
-              <span className="text-2xl">✓</span>
-            </div>
-            <p className="text-gray-600">No pending approvals</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-200">
-            {approvalQueue.map((item) => (
-              <div key={item.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="font-medium text-gray-900">{item.agentName}</p>
-                    <p className="text-sm text-gray-600 mt-1">{item.action}</p>
-                  </div>
-                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium">
-                    Autonomy Level: {item.autonomyLevel}
-                  </span>
-                </div>
+                      {/* Category Badge */}
+                      <div className={`inline-block px-2 py-1 rounded text-xs font-medium mb-3 ${getCategoryColor(agent.category)}`}>
+                        {agent.category}
+                      </div>
 
-                <div className="bg-gray-50 rounded p-3 mb-4">
-                  <p className="text-xs text-gray-600 mb-1">Proposed Output</p>
-                  <pre className="text-xs text-gray-900 overflow-auto max-h-32">
-                    {JSON.stringify(item.proposedOutput, null, 2)}
-                  </pre>
-                </div>
+                      {/* Status */}
+                      <div className={`px-2 py-1 rounded text-xs font-medium ${statusColor.bg} ${statusColor.text} inline-block mb-4`}>
+                        {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
+                      </div>
 
-                <div className="flex gap-3 justify-end">
-                  <button
-                    onClick={() => rejectAction(item.id)}
-                    className="px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors font-medium text-sm"
-                  >
-                    Reject
-                  </button>
-                  <button
-                    onClick={() => approveAction(item.id)}
-                    className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors font-medium text-sm"
-                  >
-                    Approve
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+                      {/* Divider */}
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-4" />
 
-      {/* Agent Activity Log */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-2xl font-bold text-gray-900">Agent Activity Log</h2>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Timestamp
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Agent
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Action
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Latency
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                  Human Reviewed
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {activityLog.map((log) => (
-                <tr
-                  key={log.id}
-                  className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {log.timestamp.toLocaleTimeString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {log.agent}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {log.action}
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      {log.status === 'success' ? (
-                        <>
-                          <div className="w-4 h-4 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-xs">✓</div>
-                          <span className="text-emerald-700 font-medium">
-                            Success
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-4 h-4 flex items-center justify-center rounded-full bg-red-100 text-red-600 text-xs">✕</div>
-                          <span className="text-red-700 font-medium">Failed</span>
-                        </>
-                      )}
+                      {/* Details */}
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400 text-xs">Last Run</p>
+                          <p className="text-gray-900 dark:text-gray-100 font-medium">{agent.lastRun}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400 text-xs">Tasks Completed</p>
+                          <p className="text-gray-900 dark:text-gray-100 font-medium">{agent.tasksCompleted}</p>
+                        </div>
+                      </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {log.latency}ms
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {log.humanReviewed ? (
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                        Yes
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                        No
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
