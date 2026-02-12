@@ -5,22 +5,29 @@ const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 const isHomePage = createRouteMatcher(['/']);
 
 export default clerkMiddleware(async (auth, req) => {
-  // For protected routes, redirect to sign-in if not authenticated
-  if (isProtectedRoute(req)) {
-    const { userId } = await auth();
-    if (!userId) {
-      const signInUrl = new URL('/sign-in', req.url);
-      signInUrl.searchParams.set('redirect_url', req.url);
-      return NextResponse.redirect(signInUrl);
+  try {
+    // For protected routes, redirect to sign-in if not authenticated
+    if (isProtectedRoute(req)) {
+      const { userId } = await auth();
+      if (!userId) {
+        const signInUrl = new URL('/sign-in', req.url);
+        signInUrl.searchParams.set('redirect_url', req.url);
+        return NextResponse.redirect(signInUrl);
+      }
     }
-  }
 
-  // For the home page, redirect authenticated users to dashboard
-  if (isHomePage(req)) {
-    const { userId } = await auth();
-    if (userId) {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+    // For the home page, redirect authenticated users to dashboard
+    if (isHomePage(req)) {
+      const { userId } = await auth();
+      if (userId) {
+        return NextResponse.redirect(new URL('/dashboard', req.url));
+      }
     }
+  } catch (error) {
+    // If Clerk auth fails, allow the request to continue
+    // This prevents 495 errors when Clerk is misconfigured
+    console.error('Middleware auth error:', error);
+    return NextResponse.next();
   }
 });
 

@@ -1,6 +1,7 @@
+'use client';
+
 import Link from 'next/link';
-import { SignInButton, SignUpButton } from '@clerk/nextjs';
-import { currentUser } from '@clerk/nextjs/server';
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 /* ------------------------------------------------------------------ */
 /*  Inline SVG Icons for the landing page (no emoji dependency)       */
@@ -93,9 +94,7 @@ function IconX({ className = '' }: { className?: string }) {
 
 /* ------------------------------------------------------------------ */
 
-export default async function Home() {
-  const user = await currentUser();
-
+export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
       {/* Navigation */}
@@ -115,30 +114,26 @@ export default async function Home() {
             </div>
           </div>
           <div className="flex gap-4 items-center">
-            {user ? (
-              <>
-                <span className="text-gray-300 text-sm hidden sm:inline">Welcome, {user.firstName}</span>
-                <Link
-                  href="/dashboard"
-                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-500 hover:to-indigo-600 transition-all duration-200 text-sm font-medium"
-                >
-                  Dashboard
-                </Link>
-              </>
-            ) : (
-              <>
-                <SignInButton mode="modal">
-                  <button className="px-4 py-2 text-indigo-300 hover:text-indigo-100 transition-colors text-sm font-medium">
-                    Sign In
-                  </button>
-                </SignInButton>
-                <SignUpButton mode="modal">
-                  <button className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-500 hover:to-indigo-600 transition-all duration-200 text-sm font-medium">
-                    Sign Up
-                  </button>
-                </SignUpButton>
-              </>
-            )}
+            <SignedIn>
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-500 hover:to-indigo-600 transition-all duration-200 text-sm font-medium"
+              >
+                Dashboard
+              </Link>
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="px-4 py-2 text-indigo-300 hover:text-indigo-100 transition-colors text-sm font-medium">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-500 hover:to-indigo-600 transition-all duration-200 text-sm font-medium">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </SignedOut>
           </div>
         </div>
       </nav>
