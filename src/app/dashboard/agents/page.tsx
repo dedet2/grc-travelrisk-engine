@@ -135,7 +135,14 @@ export default function AgentsPage() {
         const response = await fetch('/api/agents');
         if (response.ok) {
           const result = await response.json();
-          setData(result.data || result);
+          const apiData = result.data || result;
+          // Validate the response has the expected shape
+          if (apiData && apiData.stats && Array.isArray(apiData.agents)) {
+            setData(apiData);
+          } else {
+            // API returned different format, use mock data
+            setData(mockData);
+          }
         } else {
           setData(mockData);
         }
