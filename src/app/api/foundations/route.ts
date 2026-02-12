@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,20 +56,55 @@ const mockFoundations: Foundation[] = [
 ];
 
 export async function GET() {
-  return NextResponse.json(mockFoundations);
+  return NextResponse.json(
+    {
+      success: true,
+      data: mockFoundations,
+      timestamp: new Date(),
+    } as ApiResponse<Foundation[]>,
+    { status: 200 }
+  );
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  
-  const newFoundation: Foundation = {
-    id: `found-${Date.now()}`,
-    name: body.name,
-    boardSeats: body.boardSeats,
-    annualBudget: body.annualBudget,
-    relationshipStatus: body.relationshipStatus || 'prospect',
-    focus: body.focus,
-  };
-  
-  return NextResponse.json(newFoundation, { status: 201 });
+  try {
+    const body = await request.json();
+
+    if (!body.name || !body.boardSeats || !body.annualBudget || !body.focus) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: name, boardSeats, annualBudget, focus',
+        } as ApiResponse<null>,
+        { status: 400 }
+      );
+    }
+
+    const newFoundation: Foundation = {
+      id: `found-${Date.now()}`,
+      name: body.name,
+      boardSeats: body.boardSeats,
+      annualBudget: body.annualBudget,
+      relationshipStatus: body.relationshipStatus || 'prospect',
+      focus: body.focus,
+    };
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: newFoundation,
+        timestamp: new Date(),
+      } as ApiResponse<Foundation>,
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error creating foundation:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create foundation',
+      } as ApiResponse<null>,
+      { status: 500 }
+    );
+  }
 }

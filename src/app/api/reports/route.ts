@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
 import type { ApiResponse, TripRiskReport } from '@/types';
+import type { Database } from '@/lib/supabase/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,23 +26,23 @@ export async function GET(request: Request): Promise<Response> {
       throw error;
     }
 
-    const reports = (data || []).map((r) => ({
+    const reports = ((data as Database['public']['Tables']['trip_risk_reports']['Row'][] | null) || []).map((r) => ({
       id: r.id,
       userId: r.user_id,
       assessmentId: r.assessment_id,
       destinationCountry: r.destination_country,
-      departureDate: new Date(r.departure_date),
-      returnDate: new Date(r.return_date),
+      departureDate: r.departure_date,
+      returnDate: r.return_date,
       grcScore: r.grc_score,
       travelScore: r.travel_score,
       combinedScore: r.combined_score,
       reportData: r.report_data,
-      createdAt: new Date(r.created_at),
-    })) as TripRiskReport[];
+      createdAt: r.created_at,
+    }));
 
     return Response.json({
       success: true,
-      data: reports,
+      data: reports as unknown as TripRiskReport[],
       timestamp: new Date(),
     } as ApiResponse<TripRiskReport[]>);
   } catch (error) {
@@ -86,7 +87,7 @@ export async function POST(request: Request): Promise<Response> {
     const combinedScore = Math.round(grcScore * 0.4 + travelScore * 0.6);
 
     const supabase = await createServerSideClient();
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('trip_risk_reports')
       .insert([
         {
@@ -108,24 +109,25 @@ export async function POST(request: Request): Promise<Response> {
       throw error;
     }
 
-    const report: TripRiskReport = {
-      id: data.id,
-      userId: data.user_id,
-      assessmentId: data.assessment_id,
-      destinationCountry: data.destination_country,
-      departureDate: new Date(data.departure_date),
-      returnDate: new Date(data.return_date),
-      grcScore: data.grc_score,
-      travelScore: data.travel_score,
-      combinedScore: data.combined_score,
-      reportData: data.report_data,
-      createdAt: new Date(data.created_at),
+    const reportRow = data as Database['public']['Tables']['trip_risk_reports']['Row'];
+    const report = {
+      id: reportRow.id,
+      userId: reportRow.user_id,
+      assessmentId: reportRow.assessment_id,
+      destinationCountry: reportRow.destination_country,
+      departureDate: reportRow.departure_date,
+      returnDate: reportRow.return_date,
+      grcScore: reportRow.grc_score,
+      travelScore: reportRow.travel_score,
+      combinedScore: reportRow.combined_score,
+      reportData: reportRow.report_data,
+      createdAt: reportRow.created_at,
     };
 
     return Response.json(
       {
         success: true,
-        data: report,
+        data: report as unknown as TripRiskReport,
         timestamp: new Date(),
       } as ApiResponse<TripRiskReport>,
       { status: 201 }

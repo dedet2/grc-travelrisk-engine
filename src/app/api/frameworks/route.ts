@@ -16,96 +16,24 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: Request): Promise<Response> {
   try {
-    let supabase;
-    let useInMemory = false;
-
-    // Try to create Supabase client, fall back to in-memory store if not configured
-    try {
-      supabase = await createServerSideClient();
-    } catch (e) {
-      console.warn('Supabase not configured, using in-memory store:', e instanceof Error ? e.message : String(e));
-      useInMemory = true;
-    }
-
     const url = new URL(request.url);
     const status = url.searchParams.get('status') || 'published';
 
-    let frameworksWithCounts: FrameworkResponse[] = [];
-
-    if (useInMemory) {
-      // Fall back to in-memory store
-      const frameworks = inMemoryStore.getFrameworks();
-      frameworksWithCounts = frameworks
-        .filter((f) => f.status === status || status === 'all')
-        .map((f) => ({
-          id: f.id,
-          name: f.name,
-          version: f.version,
-          description: f.description,
-          controlCount: f.controlCount,
-          status: f.status,
-          categories: [],
-          createdAt: f.createdAt,
-          updatedAt: f.updatedAt,
-        }));
-    } else {
-      // Fetch frameworks from database
-      const { data, error } = await supabase!
-        .from('frameworks')
-        .select('*')
-        .eq('status', status)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
-      // For each framework, get the control count
-      for (const f of (data as any[]) || []) {
-        const { count, error: countError } = await supabase!
-          .from('controls')
-          .select('*', { count: 'exact', head: true })
-          .eq('framework_id', f.id);
-
-        if (countError) {
-          console.error('Error counting controls:', countError);
-        }
-
-        // Get categories
-        const { data: controlsData } = await supabase!
-          .from('controls')
-          .select('category')
-          .eq('framework_id', f.id) as any;
-
-        const categories = Array.from(
-          new Map(
-            (controlsData || []).map((c: any) => [
-              c.category,
-              {
-                id: c.category,
-                name: c.category,
-                description: '',
-                controlCount: (controlsData || []).filter((ctrl: any) => ctrl.category === c.category)
-                  .length,
-              } as FrameworkCategory,
-            ])
-          ).values()
-        );
-
-        frameworksWithCounts.push({
-          id: f.id,
-          name: f.name,
-          version: f.version,
-          description: f.description || '',
-          controlCount: count || 0,
-          status: f.status as 'draft' | 'published' | 'archived',
-          categories,
-          createdAt: new Date(f.created_at),
-          updatedAt: new Date(f.updated_at),
-        });
-      }
-    }
+    // Use in-memory store directly for fast response (no Supabase connection attempts)
+    const frameworks = inMemoryStore.getFrameworks();
+    const frameworksWithCounts: FrameworkResponse[] = frameworks
+      .filter((f) => f.status === status || status === 'all')
+      .map((f) => ({
+        id: f.id,
+        name: f.name,
+        version: f.version,
+        description: f.description,
+        controlCount: f.controlCount,
+        status: f.status,
+        categories: [],
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+      }));
 
     return Response.json(
       {

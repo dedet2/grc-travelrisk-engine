@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,20 +55,55 @@ const mockProviders: HealthProvider[] = [
 ];
 
 export async function GET() {
-  return NextResponse.json(mockProviders);
+  return NextResponse.json(
+    {
+      success: true,
+      data: mockProviders,
+      timestamp: new Date(),
+    } as ApiResponse<HealthProvider[]>,
+    { status: 200 }
+  );
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  
-  const newProvider: HealthProvider = {
-    id: `prov-${Date.now()}`,
-    name: body.name,
-    specialty: body.specialty,
-    phone: body.phone,
-    email: body.email,
-    nextAppointment: body.nextAppointment,
-  };
-  
-  return NextResponse.json(newProvider, { status: 201 });
+  try {
+    const body = await request.json();
+
+    if (!body.name || !body.specialty || !body.phone || !body.email) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: name, specialty, phone, email',
+        } as ApiResponse<null>,
+        { status: 400 }
+      );
+    }
+
+    const newProvider: HealthProvider = {
+      id: `prov-${Date.now()}`,
+      name: body.name,
+      specialty: body.specialty,
+      phone: body.phone,
+      email: body.email,
+      nextAppointment: body.nextAppointment,
+    };
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: newProvider,
+        timestamp: new Date(),
+      } as ApiResponse<HealthProvider>,
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error creating health provider:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create health provider',
+      } as ApiResponse<null>,
+      { status: 500 }
+    );
+  }
 }
