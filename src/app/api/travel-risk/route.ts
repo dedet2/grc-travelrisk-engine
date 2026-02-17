@@ -1,10 +1,16 @@
 import { auth } from '@clerk/nextjs/server';
 import { getAdvisoryClient } from '@/lib/travel-risk/advisory-client';
 import { calculateTravelRiskScore } from '@/lib/travel-risk/scorer';
+import { dataService } from '@/lib/supabase/data-service';
 import type { ApiResponse, TravelRiskScore } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * POST /api/travel-risk
+ * Calculate travel risk score for a destination
+ * Uses DataService to fetch travel advisories from Supabase (with fallback)
+ */
 export async function POST(request: Request): Promise<Response> {
   try {
     const { userId } = await auth();
@@ -28,9 +34,22 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
-    // Fetch travel advisory
-    const advisoryClient = getAdvisoryClient();
-    const advisory = await advisoryClient.getAdvisory(countryCode);
+    // Try to fetch travel advisory from DataService (Supabase first, fallback gracefully)
+    let advisory;
+    try {
+      advisory = await dataService.getTravelAdvisory(countryCode);
+    } catch (error) {
+      console.warn('Failed to fetch advisory from DataService, using client:', error);
+      // Fallback to advisory client
+      const advisoryClient = getAdvisoryClient();
+      advisory = await advisoryClient.getAdvisory(countryCode);
+    }
+
+    // If no advisory from DataService, try the advisory client
+    if (!advisory) {
+      const advisoryClient = getAdvisoryClient();
+      advisory = await advisoryClient.getAdvisory(countryCode);
+    }
 
     // Calculate travel risk score
     const result = calculateTravelRiskScore(destination, advisory);

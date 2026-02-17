@@ -3,6 +3,7 @@ import { createServerSideClient } from '@/lib/supabase/server';
 import { validateFramework, normalizeControlId } from '@/lib/grc/parser';
 import { getFramework } from '@/lib/grc/frameworks';
 import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { dataService } from '@/lib/supabase/data-service';
 import type { ApiResponse } from '@/types';
 import type { Framework } from '@/types';
 import type { FrameworkResponse, FrameworkCategory } from '@/types/grc';
@@ -13,14 +14,15 @@ export const dynamic = 'force-dynamic';
  * GET /api/frameworks
  * List all frameworks with control counts
  * Public endpoint (no auth required for reading published frameworks)
+ * Uses DataService with Supabase-first, in-memory fallback pattern
  */
 export async function GET(request: Request): Promise<Response> {
   try {
     const url = new URL(request.url);
     const status = url.searchParams.get('status') || 'published';
 
-    // Use in-memory store directly for fast response (no Supabase connection attempts)
-    const frameworks = inMemoryStore.getFrameworks();
+    // Use DataService to fetch frameworks (Supabase first, fallback to in-memory)
+    const frameworks = await dataService.getFrameworks();
     const frameworksWithCounts: FrameworkResponse[] = frameworks
       .filter((f) => f.status === status || status === 'all')
       .map((f) => ({
@@ -150,6 +152,10 @@ export async function POST(request: Request): Promise<Response> {
         { status: 400 }
       );
     }
+
+    // Log the data source being used
+    const dataSourceMode = dataService.getMode();
+    console.log(`Creating framework with DataService (mode: ${dataSourceMode})`);
 
     let supabase;
     let useInMemory = false;

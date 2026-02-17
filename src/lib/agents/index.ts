@@ -235,3 +235,15 @@ export {
   type RiskMitigationStrategy,
   type ResourceAllocationPlan,
 } from './strategic-planning-agent';
+
+// Agent Orchestrator
+export {
+  AgentOrchestrator,
+  getOrchestrator,
+  resetOrchestrator,
+  type AgentCategory,
+  type AgentInfo,
+  type ExecutionTracker,
+  type CategoryExecutionResult,
+  type OrchestrationResult,
+} from './orchestrator';

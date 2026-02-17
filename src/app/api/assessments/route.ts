@@ -1,6 +1,9 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { dataService } from '@/lib/supabase/data-service';
+import { inMemoryStore } from '@/lib/store/in-memory-store';
 
 interface Assessment {
   id: string;
@@ -15,6 +18,7 @@ interface Assessment {
   lastUpdated: string;
 }
 
+// Legacy fallback assessments data for in-memory mode
 const assessmentsData: Assessment[] = [
   {
     id: 'ASS-001',
@@ -114,20 +118,56 @@ const assessmentsData: Assessment[] = [
   }
 ];
 
+/**
+ * GET /api/assessments
+ * List all assessments for the authenticated user
+ * Uses DataService with Supabase-first, in-memory fallback pattern
+ */
 export async function GET(request: NextRequest) {
   try {
+    const { userId } = await auth();
+
+    // If not authenticated, return empty list or error
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Unauthorized',
+          timestamp: new Date().toISOString()
+        },
+        { status: 401 }
+      );
+    }
+
+    // Use DataService to fetch assessments (Supabase first, fallback to in-memory)
+    const storedAssessments = await dataService.getAssessments(userId);
+
+    // Convert stored assessments to API format
+    const assessments: Assessment[] = storedAssessments.map((a) => ({
+      id: a.id,
+      name: a.name,
+      framework: a.frameworkId,
+      status: a.status as 'completed' | 'in_progress' | 'scheduled',
+      riskLevel: 'medium', // Default risk level (could be enhanced)
+      score: a.overallScore || 0,
+      dueDate: new Date().toISOString().split('T')[0], // Placeholder
+      assessor: userId,
+      findings: 0, // Could be enhanced with actual findings count
+      lastUpdated: a.updatedAt.toISOString().split('T')[0],
+    }));
+
     const stats = {
-      total: assessmentsData.length,
-      completed: assessmentsData.filter(a => a.status === 'completed').length,
-      inProgress: assessmentsData.filter(a => a.status === 'in_progress').length,
-      scheduled: assessmentsData.filter(a => a.status === 'scheduled').length,
-      criticalFindings: assessmentsData.reduce((sum, a) => sum + (a.riskLevel === 'critical' ? 1 : 0), 0)
+      total: assessments.length,
+      completed: assessments.filter(a => a.status === 'completed').length,
+      inProgress: assessments.filter(a => a.status === 'in_progress').length,
+      scheduled: assessments.filter(a => a.status === 'scheduled').length,
+      criticalFindings: assessments.reduce((sum, a) => sum + (a.riskLevel === 'critical' ? 1 : 0), 0)
     };
 
     return NextResponse.json({
       success: true,
       data: {
-        assessments: assessmentsData,
+        assessments,
         stats
       },
       timestamp: new Date().toISOString()
@@ -145,37 +185,73 @@ export async function GET(request: NextRequest) {
   }
 }
 
+/**
+ * POST /api/assessments
+ * Create a new assessment for the authenticated user
+ * Uses DataService with Supabase-first, in-memory fallback pattern
+ */
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Unauthorized',
+          timestamp: new Date().toISOString()
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
 
     const { name, framework, riskLevel, dueDate, assessor } = body;
 
-    if (!name || !framework || !riskLevel || !dueDate || !assessor) {
+    if (!name || !framework) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required fields: name, framework, riskLevel, dueDate, assessor',
+          error: 'Missing required fields: name, framework',
           timestamp: new Date().toISOString()
         },
         { status: 400 }
       );
     }
 
-    const newAssessment: Assessment = {
-      id: `ASS-${String(assessmentsData.length + 1).padStart(3, '0')}`,
+    // Create assessment using DataService (Supabase first, fallback to in-memory)
+    const createdAssessment = await dataService.createAssessment({
+      userId,
       name,
-      framework,
+      frameworkId: framework,
       status: 'scheduled',
-      riskLevel,
-      score: 0,
-      dueDate,
-      assessor,
-      findings: 0,
-      lastUpdated: new Date().toISOString()
-    };
+      overallScore: 0,
+    });
 
-    assessmentsData.push(newAssessment);
+    if (!createdAssessment) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Failed to create assessment',
+          timestamp: new Date().toISOString()
+        },
+        { status: 500 }
+      );
+    }
+
+    const newAssessment: Assessment = {
+      id: createdAssessment.id,
+      name: createdAssessment.name,
+      framework: createdAssessment.frameworkId,
+      status: createdAssessment.status as 'completed' | 'in_progress' | 'scheduled',
+      riskLevel: riskLevel || 'medium',
+      score: createdAssessment.overallScore || 0,
+      dueDate: dueDate || new Date().toISOString().split('T')[0],
+      assessor: assessor || userId,
+      findings: 0,
+      lastUpdated: createdAssessment.updatedAt.toISOString().split('T')[0],
+    };
 
     return NextResponse.json(
       {
