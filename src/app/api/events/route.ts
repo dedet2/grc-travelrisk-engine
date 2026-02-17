@@ -83,13 +83,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
  * POST /api/events
  * Publish a new event to the event bus
  *
- * Request body:
- * {
- *   "type": "agent.completed|agent.failed|risk.threshold|compliance.change|travel.alert|crm.update|assessment.due|framework.updated",
- *   "payload": { /* event-specific payload */ },
- *   "source": "agent|api|webhook|automation|system" (optional, defaults to "api"),
- *   "userId": "string" (optional)
- * }
+ * Request body with event-specific payload
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
