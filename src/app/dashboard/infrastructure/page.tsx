@@ -99,7 +99,7 @@ function getStatusColor(status: string): string {
     case 'red':
       return 'bg-red-100 text-red-700';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-violet-100 text-violet-700';
   }
 }
 
@@ -114,7 +114,7 @@ function getSeverityColor(severity: string): string {
     case 'low':
       return 'bg-blue-100 text-blue-700 border-blue-300';
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-300';
+      return 'bg-violet-100 text-violet-700 border-violet-300';
   }
 }
 
@@ -177,7 +177,7 @@ export default function InfrastructurePage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
@@ -200,59 +200,59 @@ export default function InfrastructurePage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Infrastructure Health</h1>
-        <p className="text-gray-600 mt-2">System health, security posture, and cost optimization</p>
+        <h1 className="text-4xl font-bold text-violet-950">Infrastructure Health</h1>
+        <p className="text-violet-600 mt-2">System health, security posture, and cost optimization</p>
       </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Uptime */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Uptime</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Uptime</p>
           <p className="text-4xl font-bold text-emerald-600">
             {data.metrics.uptime}%
           </p>
-          <p className="text-xs text-gray-600 mt-2">30-day average</p>
+          <p className="text-xs text-violet-600 mt-2">30-day average</p>
         </div>
 
         {/* Response Time */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Response Time</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Response Time</p>
           <p className="text-4xl font-bold text-blue-600">
             {data.metrics.responseTime}ms
           </p>
-          <p className="text-xs text-gray-600 mt-2">Average latency</p>
+          <p className="text-xs text-violet-600 mt-2">Average latency</p>
         </div>
 
         {/* Monthly Cost */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Monthly Cost</p>
-          <p className="text-4xl font-bold text-indigo-600">
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Monthly Cost</p>
+          <p className="text-4xl font-bold text-violet-600">
             ${(data.metrics.totalCost / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">All services</p>
+          <p className="text-xs text-violet-600 mt-2">All services</p>
         </div>
 
         {/* Cost Reduction */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Cost Reduction</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Cost Reduction</p>
           <p className="text-4xl font-bold text-purple-600">
             {data.metrics.costReduction}%
           </p>
-          <p className="text-xs text-gray-600 mt-2">YoY optimization</p>
+          <p className="text-xs text-violet-600 mt-2">YoY optimization</p>
         </div>
       </div>
 
       {/* System Health */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">System Health Status</h2>
+        <h2 className="text-xl font-bold text-violet-950 mb-6">System Health Status</h2>
         <div className="space-y-4">
           {Array.isArray(data.health) && data.health.map((metric) => (
             <div key={metric.name} className="space-y-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-gray-900">{metric.name}</p>
-                  <p className="text-xs text-gray-600">
+                  <p className="font-medium text-violet-950">{metric.name}</p>
+                  <p className="text-xs text-violet-600">
                     Threshold: {metric.threshold}%
                   </p>
                 </div>
@@ -268,12 +268,12 @@ export default function InfrastructurePage() {
                         ? 'Warning'
                         : 'Critical'}
                   </span>
-                  <span className="text-lg font-bold text-gray-900 w-12 text-right">
+                  <span className="text-lg font-bold text-violet-950 w-12 text-right">
                     {metric.value}%
                   </span>
                 </div>
               </div>
-              <div className="bg-gray-200 rounded-full h-3">
+              <div className="bg-violet-200 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full transition-all ${
                     metric.status === 'green'
@@ -292,24 +292,24 @@ export default function InfrastructurePage() {
 
       {/* Security Audit Results */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">Security Audit Results</h2>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="border-b border-violet-200 p-6">
+          <h2 className="text-xl font-bold text-violet-950">Security Audit Results</h2>
+          <p className="text-sm text-violet-600 mt-1">
             Latest security findings and remediation status
           </p>
         </div>
 
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-violet-200">
           {Array.isArray(data.security) && data.security.length > 0 ? (
             data.security.slice(0, 8).map((finding) => (
               <div
                 key={finding.id}
-                className="p-6 hover:bg-gray-50 transition-colors"
+                className="p-6 hover:bg-violet-50/30 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="font-bold text-gray-900">{finding.title}</h3>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <h3 className="font-bold text-violet-950">{finding.title}</h3>
+                    <p className="text-xs text-violet-600 mt-1">
                       Updated {new Date(finding.lastUpdated).toLocaleDateString()}
                     </p>
                   </div>
@@ -339,7 +339,7 @@ export default function InfrastructurePage() {
               </div>
             ))
           ) : (
-            <div className="p-12 text-center text-gray-500">
+            <div className="p-12 text-center text-violet-500">
               No security findings
             </div>
           )}
@@ -348,19 +348,19 @@ export default function InfrastructurePage() {
 
       {/* Cost Breakdown */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Cost Breakdown by Service</h2>
+        <h2 className="text-xl font-bold text-violet-950 mb-6">Cost Breakdown by Service</h2>
         <div className="space-y-4">
           {Array.isArray(data.costs) && data.costs.map((cost) => (
             <div key={cost.service} className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">{cost.service}</p>
-                  <p className="text-xs text-gray-600">
+                  <p className="font-medium text-violet-950">{cost.service}</p>
+                  <p className="text-xs text-violet-600">
                     {cost.percentOfTotal}% of total
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-gray-900">
+                  <p className="font-bold text-violet-950">
                     ${(cost.monthlyCost / 1000).toFixed(1)}k
                   </p>
                   <p
@@ -369,7 +369,7 @@ export default function InfrastructurePage() {
                         ? 'text-emerald-600'
                         : cost.trend === 'up'
                           ? 'text-red-600'
-                          : 'text-gray-600'
+                          : 'text-violet-600'
                     }`}
                   >
                     {getTrendIndicator(cost.trend)}{' '}
@@ -377,9 +377,9 @@ export default function InfrastructurePage() {
                   </p>
                 </div>
               </div>
-              <div className="bg-gray-200 rounded-full h-2">
+              <div className="bg-violet-200 rounded-full h-2">
                 <div
-                  className="bg-indigo-600 h-2 rounded-full"
+                  className="bg-violet-600 h-2 rounded-full"
                   style={{ width: `${cost.percentOfTotal}%` }}
                 />
               </div>

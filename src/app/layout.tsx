@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="bg-slate-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100">
+        <body className="bg-violet-50/30 text-gray-900 dark:bg-[hsl(265,35%,12%)] dark:text-gray-100">
           {children}
         </body>
       </html>

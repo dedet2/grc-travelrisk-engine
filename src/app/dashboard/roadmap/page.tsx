@@ -51,10 +51,10 @@ interface KPIMetric {
 
 function StatusBadge({ status }: { status: string }) {
   const statusStyles = {
-    'planned': 'bg-gray-100 text-gray-800',
+    'planned': 'bg-violet-100 text-violet-800',
     'in-progress': 'bg-blue-100 text-blue-800',
     'completed': 'bg-green-100 text-green-800',
-    'not-started': 'bg-gray-100 text-gray-600',
+    'not-started': 'bg-violet-100 text-violet-600',
     'at-risk': 'bg-orange-100 text-orange-800',
     'complete': 'bg-green-100 text-green-800',
   };
@@ -73,7 +73,7 @@ function StatusBadge({ status }: { status: string }) {
 function ProgressBar({ value, max = 100 }: { value: number; max?: number }) {
   const percentage = Math.min((value / max) * 100, 100);
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2">
+    <div className="w-full bg-violet-200 rounded-full h-2">
       <div
         className="bg-blue-600 h-2 rounded-full transition-all duration-300"
         style={{ width: `${percentage}%` }}
@@ -100,7 +100,7 @@ function TrendIcon({ trend }: { trend: 'up' | 'down' | 'stable' }) {
     );
   }
   return (
-    <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+    <svg className="w-4 h-4 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
       <path d="M5 9a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" />
     </svg>
   );
@@ -365,7 +365,7 @@ export default function RoadmapPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading roadmap data...</p>
+          <p className="mt-4 text-violet-600">Loading roadmap data...</p>
         </div>
       </div>
     );
@@ -383,7 +383,7 @@ export default function RoadmapPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-4 border-b border-gray-200">
+      <div className="flex space-x-4 border-b border-violet-200">
         {(['roadmap', 'execution', 'metrics'] as const).map(tab => (
           <button
             key={tab}
@@ -391,7 +391,7 @@ export default function RoadmapPage() {
             className={`px-4 py-2 font-medium text-sm transition-colors ${
               activeTab === tab
                 ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
+                : 'text-violet-600 hover:text-violet-950'
             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -404,25 +404,25 @@ export default function RoadmapPage() {
         <div className="space-y-6">
           {roadmapQuarters.map(quarter => (
             <div key={quarter.quarter} className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">{quarter.quarter}</h2>
+              <h2 className="text-2xl font-bold mb-6 text-violet-950">{quarter.quarter}</h2>
 
               {/* Months Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {quarter.months.map(month => (
                   <div
                     key={month.month}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="font-semibold text-gray-900">{month.month}</h3>
+                      <h3 className="font-semibold text-violet-950">{month.month}</h3>
                       <StatusBadge status={month.status} />
                     </div>
 
                     {month.completionPercent !== undefined && (
                       <div className="mb-3">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-600">Progress</span>
-                          <span className="text-xs font-medium text-gray-900">
+                          <span className="text-xs text-violet-600">Progress</span>
+                          <span className="text-xs font-medium text-violet-950">
                             {month.completionPercent}%
                           </span>
                         </div>
@@ -432,16 +432,16 @@ export default function RoadmapPage() {
 
                     <div className="space-y-2 text-sm">
                       <div>
-                        <p className="text-gray-600 text-xs uppercase tracking-wide">Focus</p>
-                        <p className="text-gray-900 font-medium">{month.focus}</p>
+                        <p className="text-violet-600 text-xs uppercase tracking-wide">Focus</p>
+                        <p className="text-violet-950 font-medium">{month.focus}</p>
                       </div>
                       <div>
-                        <p className="text-gray-600 text-xs uppercase tracking-wide">Key Actions</p>
-                        <p className="text-gray-900">{month.keyActions}</p>
+                        <p className="text-violet-600 text-xs uppercase tracking-wide">Key Actions</p>
+                        <p className="text-violet-950">{month.keyActions}</p>
                       </div>
                       <div>
-                        <p className="text-gray-600 text-xs uppercase tracking-wide">Targets</p>
-                        <p className="text-gray-900 font-medium">{month.metricTargets}</p>
+                        <p className="text-violet-600 text-xs uppercase tracking-wide">Targets</p>
+                        <p className="text-violet-950 font-medium">{month.metricTargets}</p>
                       </div>
                     </div>
                   </div>
@@ -449,23 +449,23 @@ export default function RoadmapPage() {
               </div>
 
               {/* OKRs */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-bold mb-4 text-gray-900">Objectives & Key Results</h3>
+              <div className="bg-violet-50/30 rounded-lg p-6">
+                <h3 className="text-lg font-bold mb-4 text-violet-950">Objectives & Key Results</h3>
                 <div className="space-y-4">
                   {quarter.okrs.map((okr, idx) => (
-                    <div key={idx} className="bg-white border border-gray-200 rounded p-4">
+                    <div key={idx} className="bg-white border border-violet-200 rounded p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 mb-1">{okr.objective}</h4>
+                          <h4 className="font-semibold text-violet-950 mb-1">{okr.objective}</h4>
                           {okr.owner && (
-                            <p className="text-xs text-gray-600">Owner: {okr.owner}</p>
+                            <p className="text-xs text-violet-600">Owner: {okr.owner}</p>
                           )}
                         </div>
                         <StatusBadge status={okr.status} />
                       </div>
                       <ul className="space-y-2">
                         {okr.keyResults.map((kr, krIdx) => (
-                          <li key={krIdx} className="flex items-start text-sm text-gray-700">
+                          <li key={krIdx} className="flex items-start text-sm text-violet-700">
                             <span className="mr-2">•</span>
                             <span>{kr}</span>
                           </li>
@@ -484,58 +484,58 @@ export default function RoadmapPage() {
       {activeTab === 'execution' && (
         <div className="space-y-4">
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">12-Week Execution Plan</h2>
+            <h2 className="text-2xl font-bold mb-6 text-violet-950">12-Week Execution Plan</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {executionWeeks.map(week => (
                 <div
                   key={week.week}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold text-gray-900">{week.week}</h3>
-                      <p className="text-sm text-gray-600">{week.theme}</p>
+                      <h3 className="font-semibold text-violet-950">{week.week}</h3>
+                      <p className="text-sm text-violet-600">{week.theme}</p>
                     </div>
                     <StatusBadge status={week.completionStatus} />
                   </div>
 
                   <div className="space-y-3 text-sm">
                     <div>
-                      <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">Targets</p>
+                      <p className="text-xs text-violet-600 uppercase tracking-wide mb-1">Targets</p>
                       <div className="flex space-x-3">
                         <div className="flex-1">
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-2xl font-bold text-violet-950">
                             {week.weeklyTargets.leadsTarget}
                           </p>
-                          <p className="text-xs text-gray-600">Leads</p>
+                          <p className="text-xs text-violet-600">Leads</p>
                         </div>
                         <div className="flex-1">
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-2xl font-bold text-violet-950">
                             {week.weeklyTargets.callsTarget}
                           </p>
-                          <p className="text-xs text-gray-600">Calls</p>
+                          <p className="text-xs text-violet-600">Calls</p>
                         </div>
                         <div className="flex-1">
-                          <p className="text-2xl font-bold text-gray-900">
+                          <p className="text-2xl font-bold text-violet-950">
                             {week.weeklyTargets.contentPieces}
                           </p>
-                          <p className="text-xs text-gray-600">Content</p>
+                          <p className="text-xs text-violet-600">Content</p>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">
+                      <p className="text-xs text-violet-600 uppercase tracking-wide mb-1">
                         Objectives
                       </p>
                       <ul className="space-y-1">
                         {week.objectives.slice(0, 2).map((obj, idx) => (
-                          <li key={idx} className="text-xs text-gray-700 truncate">
+                          <li key={idx} className="text-xs text-violet-700 truncate">
                             • {obj}
                           </li>
                         ))}
                         {week.objectives.length > 2 && (
-                          <li className="text-xs text-gray-500">
+                          <li className="text-xs text-violet-500">
                             +{week.objectives.length - 2} more
                           </li>
                         )}
@@ -555,22 +555,22 @@ export default function RoadmapPage() {
           {/* Group metrics by category */}
           {Array.from(new Set(kpiMetrics.map(m => m.category))).map(category => (
             <div key={category} className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-bold mb-4 text-gray-900">{category}</h2>
+              <h2 className="text-xl font-bold mb-4 text-violet-950">{category}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {kpiMetrics
                   .filter(m => m.category === category)
                   .map(metric => (
-                    <div key={metric.id} className="border border-gray-200 rounded-lg p-4">
+                    <div key={metric.id} className="border border-violet-200 rounded-lg p-4">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-semibold text-gray-900 text-sm">{metric.name}</h3>
-                          <p className="text-xs text-gray-600 mt-1">{metric.unit}</p>
+                          <h3 className="font-semibold text-violet-950 text-sm">{metric.name}</h3>
+                          <p className="text-xs text-violet-600 mt-1">{metric.unit}</p>
                         </div>
                         <TrendIcon trend={metric.trend} />
                       </div>
 
                       <div className="flex items-baseline space-x-2 mb-3">
-                        <span className="text-2xl font-bold text-gray-900">
+                        <span className="text-2xl font-bold text-violet-950">
                           {metric.current.toLocaleString()}
                         </span>
                         <span
@@ -579,7 +579,7 @@ export default function RoadmapPage() {
                               ? 'text-green-600'
                               : metric.trend === 'down'
                                 ? 'text-red-600'
-                                : 'text-gray-600'
+                                : 'text-violet-600'
                           }`}
                         >
                           {metric.trend === 'up' ? '+' : ''}
@@ -587,7 +587,7 @@ export default function RoadmapPage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                      <div className="flex items-center justify-between text-xs text-violet-600 mb-2">
                         <span>Target: {metric.target.toLocaleString()}</span>
                         <span>
                           {Math.round((metric.current / metric.target) * 100)}%

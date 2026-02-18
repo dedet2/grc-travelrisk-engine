@@ -107,7 +107,7 @@ function NewsletterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="px-5 py-2 bg-gray-200 hover:bg-gray-100 text-gray-900 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          className="px-5 py-2 bg-violet-200 hover:bg-violet-100 text-violet-950 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
         >
           {isLoading ? '...' : 'Subscribe'}
         </button>
@@ -127,13 +127,13 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white border-t border-gray-700 mt-20">
+    <footer className="bg-gradient-to-br from-violet-950 via-violet-800 to-violet-950 text-white border-t border-violet-700 mt-20">
       {/* Newsletter Section */}
-      <div className="border-b border-gray-700">
+      <div className="border-b border-violet-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-2xl font-bold mb-3">Stay Updated</h3>
-            <p className="text-gray-300 mb-6">Get the latest insights on AI governance, tech equity, and inclusive innovation delivered to your inbox.</p>
+            <p className="text-violet-300 mb-6">Get the latest insights on AI governance, tech equity, and inclusive innovation delivered to your inbox.</p>
             <NewsletterForm />
           </div>
         </div>
@@ -146,10 +146,10 @@ export function Footer() {
             <div className="text-2xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-purple-500 bg-clip-text text-transparent mb-4">
               Dr. Dédé Tetsubayashi
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed mb-6">
+            <p className="text-sm text-violet-300 leading-relaxed mb-6">
               AI Governance Expert | Digital Equity Pioneer | Tech Ethics Thought Leader
             </p>
-            <p className="text-xs text-gray-400 leading-relaxed">
+            <p className="text-xs text-violet-400 leading-relaxed">
               Transforming tech equity into competitive advantage through strategic AI governance and disability
               advocacy.
             </p>
@@ -158,7 +158,7 @@ export function Footer() {
           {/* Services */}
           <div>
             <h3 className="font-bold text-lg mb-4 text-white">Services</h3>
-            <ul className="space-y-3 text-sm text-gray-300">
+            <ul className="space-y-3 text-sm text-violet-300">
               <li>
                 <a href="https://www.dr-dede.com/incluu" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
@@ -207,7 +207,7 @@ export function Footer() {
           {/* Company */}
           <div>
             <h3 className="font-bold text-lg mb-4 text-white">Company</h3>
-            <ul className="space-y-3 text-sm text-gray-300">
+            <ul className="space-y-3 text-sm text-violet-300">
               <li>
                 <a href="https://www.dr-dede.com/dr-dede" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
@@ -238,73 +238,73 @@ export function Footer() {
           {/* Connect - Enhanced social media section */}
           <div>
             <h3 className="font-bold text-lg mb-4 text-white">Connect With Us</h3>
-            <p className="text-sm text-gray-300 mb-6 leading-relaxed">
+            <p className="text-sm text-violet-300 mb-6 leading-relaxed">
               Follow Dr. Dédé for insights on AI governance, tech equity, and inclusive innovation.
             </p>
             <div className="flex flex-wrap gap-3">
               <a
                 href="https://www.linkedin.com/in/dr-dede/"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="LinkedIn"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <LinkedinIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <LinkedinIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
               <a
                 href="https://www.youtube.com/@the_drdede"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-red-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-red-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="YouTube"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <YoutubeIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <YoutubeIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
               <a
                 href="https://www.dr-dede.com/blog"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-purple-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-purple-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="Dr. Dédé Blog"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <BlogIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <BlogIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
               <a
                 href="https://www.instagram.com/the_drdede/"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="Instagram"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <InstagramIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <InstagramIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
               <a
                 href="https://www.facebook.com/thedrdede/"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-blue-700 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-blue-700 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="Facebook"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FacebookIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <FacebookIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
               <a
                 href="https://bsky.app/profile/drdede.bsky.social"
-                className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-sky-500 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
+                className="h-10 w-10 rounded-lg bg-violet-800 hover:bg-sky-500 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-tranviolet-y-1 group"
                 aria-label="BlueSky"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <BlueSkyIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                <BlueSkyIcon className="h-5 w-5 text-violet-300 group-hover:text-white transition-colors" />
               </a>
             </div>
           </div>
         </div>
 
         {/* Bottom section with copyright and additional links */}
-        <div className="pt-8 border-t border-gray-700">
+        <div className="pt-8 border-t border-violet-700">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-400">&copy; {currentYear} Dr. Dédé Tetsubayashi. All rights reserved.</p>
-            <div className="flex gap-6 text-sm text-gray-400">
+            <p className="text-sm text-violet-400">&copy; {currentYear} Dr. Dédé Tetsubayashi. All rights reserved.</p>
+            <div className="flex gap-6 text-sm text-violet-400">
               <a href="https://www.dr-dede.com/resources/privacy-policy" className="hover:text-blue-400 transition-colors duration-200">
                 Privacy Policy
               </a>

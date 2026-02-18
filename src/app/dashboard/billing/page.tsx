@@ -85,7 +85,7 @@ function getStatusColor(status: string): string {
     case 'overdue':
       return 'bg-red-100 text-red-700 border-red-300';
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-300';
+      return 'bg-violet-100 text-violet-700 border-violet-300';
   }
 }
 
@@ -160,13 +160,13 @@ export default function BillingPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div key={i} className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
-        <div className="bg-white p-6 rounded-lg shadow h-96 animate-pulse" />
+        <div className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-96 animate-pulse" />
       </div>
     );
   }
@@ -185,10 +185,10 @@ export default function BillingPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Billing & Invoices</h1>
-          <p className="text-gray-600 mt-2">Manage invoices, payments, and revenue metrics</p>
+          <h1 className="text-4xl font-bold text-violet-950">Billing & Invoices</h1>
+          <p className="text-violet-600 mt-2">Manage invoices, payments, and revenue metrics</p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-violet-500 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -196,7 +196,7 @@ export default function BillingPage() {
         <button
           onClick={fetchBillingData}
           disabled={loading}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors disabled:opacity-50"
+          className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium transition-colors disabled:opacity-50"
         >
           Refresh
         </button>
@@ -205,71 +205,71 @@ export default function BillingPage() {
       {/* Metric Cards - 4 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Revenue */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
-          <p className="text-4xl font-bold text-indigo-600">
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Total Revenue</p>
+          <p className="text-4xl font-bold text-violet-600">
             ${(data.metrics.totalRevenue / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">All-time invoiced</p>
+          <p className="text-xs text-violet-600 mt-2">All-time invoiced</p>
         </div>
 
         {/* Outstanding Amount */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Outstanding</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Outstanding</p>
           <p className="text-4xl font-bold text-blue-600">
             ${(data.metrics.outstandingAmount / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">Pending & overdue</p>
+          <p className="text-xs text-violet-600 mt-2">Pending & overdue</p>
         </div>
 
         {/* Paid Amount */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Paid</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Paid</p>
           <p className="text-4xl font-bold text-emerald-600">
             ${(data.metrics.paidAmount / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">Received payments</p>
+          <p className="text-xs text-violet-600 mt-2">Received payments</p>
         </div>
 
         {/* Overdue Amount */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Overdue</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow p-6 border-l-4 border-red-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Overdue</p>
           <p className="text-4xl font-bold text-red-600">
             ${(data.metrics.overdueAmount / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">Action required</p>
+          <p className="text-xs text-violet-600 mt-2">Action required</p>
         </div>
       </div>
 
       {/* Invoices Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">Recent Invoices</h2>
-          <p className="text-sm text-gray-600 mt-1">
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow overflow-hidden">
+        <div className="border-b border-violet-200 p-6">
+          <h2 className="text-xl font-bold text-violet-950">Recent Invoices</h2>
+          <p className="text-sm text-violet-600 mt-1">
             {data.invoices.length} invoices total
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-violet-50/30 border-b border-violet-200">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Invoice ID
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Client
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Invoice Date
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Due Date
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-right text-sm font-bold text-violet-950">
                   Amount
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Status
                 </th>
               </tr>
@@ -279,21 +279,21 @@ export default function BillingPage() {
                 data.invoices.map((invoice) => (
                   <tr
                     key={invoice.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="border-b border-violet-200 hover:bg-violet-50/30 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950">
                       {invoice.id}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {invoice.clientName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {new Date(invoice.invoiceDate).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {new Date(invoice.dueDate).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950 text-right">
                       ${invoice.amount.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -309,7 +309,7 @@ export default function BillingPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-violet-500">
                     No invoices found
                   </td>
                 </tr>
@@ -320,11 +320,11 @@ export default function BillingPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Billing Summary</h2>
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow p-6">
+        <h2 className="text-lg font-bold text-violet-950 mb-6">Billing Summary</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="text-sm text-gray-600 mb-2">Collection Rate</p>
+            <p className="text-sm text-violet-600 mb-2">Collection Rate</p>
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-bold text-emerald-600">
                 {data.metrics.totalRevenue > 0
@@ -333,9 +333,9 @@ export default function BillingPage() {
                     )
                   : 0}
               </span>
-              <span className="text-gray-600">%</span>
+              <span className="text-violet-600">%</span>
             </div>
-            <div className="mt-3 bg-gray-200 rounded-full h-2">
+            <div className="mt-3 bg-violet-200 rounded-full h-2">
               <div
                 className="bg-emerald-600 h-2 rounded-full"
                 style={{
@@ -350,7 +350,7 @@ export default function BillingPage() {
           </div>
 
           <div>
-            <p className="text-sm text-gray-600 mb-2">Outstanding Rate</p>
+            <p className="text-sm text-violet-600 mb-2">Outstanding Rate</p>
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-bold text-blue-600">
                 {data.metrics.totalRevenue > 0
@@ -359,9 +359,9 @@ export default function BillingPage() {
                     )
                   : 0}
               </span>
-              <span className="text-gray-600">%</span>
+              <span className="text-violet-600">%</span>
             </div>
-            <div className="mt-3 bg-gray-200 rounded-full h-2">
+            <div className="mt-3 bg-violet-200 rounded-full h-2">
               <div
                 className="bg-blue-600 h-2 rounded-full"
                 style={{
@@ -376,7 +376,7 @@ export default function BillingPage() {
           </div>
 
           <div>
-            <p className="text-sm text-gray-600 mb-2">Overdue Rate</p>
+            <p className="text-sm text-violet-600 mb-2">Overdue Rate</p>
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-bold text-red-600">
                 {data.metrics.totalRevenue > 0
@@ -385,9 +385,9 @@ export default function BillingPage() {
                     )
                   : 0}
               </span>
-              <span className="text-gray-600">%</span>
+              <span className="text-violet-600">%</span>
             </div>
-            <div className="mt-3 bg-gray-200 rounded-full h-2">
+            <div className="mt-3 bg-violet-200 rounded-full h-2">
               <div
                 className="bg-red-600 h-2 rounded-full"
                 style={{

@@ -172,8 +172,8 @@ export default function TravelRiskPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
-        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        <div className="h-12 bg-violet-200 dark:bg-violet-700 rounded animate-pulse w-1/3" />
+        <div className="h-64 bg-violet-200 dark:bg-violet-700 rounded animate-pulse" />
       </div>
     );
   }
@@ -192,12 +192,12 @@ export default function TravelRiskPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Travel Risk Assessment</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-violet-50">Travel Risk Assessment</h1>
+          <p className="text-violet-600 dark:text-violet-300 mt-2">
             Real-time global travel advisories and risk assessment for 195 destinations
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -206,13 +206,13 @@ export default function TravelRiskPage() {
           <button
             onClick={fetchTravelRiskData}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors disabled:opacity-50"
           >
             Refresh
           </button>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
+            className="px-6 py-3 bg-violet-600 dark:bg-violet-700 text-white rounded-lg hover:bg-violet-700 dark:hover:bg-violet-800 font-medium transition-colors"
           >
             + Create Trip Assessment
           </button>
@@ -220,8 +220,8 @@ export default function TravelRiskPage() {
       </div>
 
       {/* Risk Level Legend */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Risk Level Guide</h2>
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6">
+        <h2 className="text-lg font-bold text-violet-950 dark:text-violet-50 mb-4">Risk Level Guide</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700">
             <p className="font-bold text-emerald-700 dark:text-emerald-300 text-sm">Level 1: Exercise Normal</p>
@@ -243,61 +243,61 @@ export default function TravelRiskPage() {
       </div>
 
       {/* Hero Section with World Map Placeholder */}
-      <div className="relative overflow-hidden rounded-lg shadow-lg h-64 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+      <div className="relative overflow-hidden rounded-lg shadow-lg h-64 bg-gradient-to-br from-violet-600 via-purple-600 to-pink-600 dark:from-violet-900 dark:via-purple-900 dark:to-pink-900">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="text-6xl mb-4">🌍</div>
             <h3 className="text-white text-2xl font-bold">Global Travel Risk Intelligence</h3>
-            <p className="text-indigo-100 mt-2">Monitor real-time advisories and safety scores</p>
+            <p className="text-violet-100 mt-2">Monitor real-time advisories and safety scores</p>
           </div>
         </div>
         <div className="absolute inset-0 opacity-10 mix-blend-overlay">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -tranviolet-x-1/2 -tranviolet-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full tranviolet-x-1/2 tranviolet-y-1/2" />
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Countries Monitored</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Countries Monitored</p>
           <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{data.stats.countriesMonitored}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Worldwide coverage</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Worldwide coverage</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-amber-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Advisories</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-amber-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Active Advisories</p>
           <p className="text-4xl font-bold text-amber-600 dark:text-amber-400">{data.stats.activeAdvisories}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Current advisories</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Current advisories</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-orange-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">High-Risk Zones</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-orange-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">High-Risk Zones</p>
           <p className="text-4xl font-bold text-orange-600 dark:text-orange-400">{data.stats.highRiskZones}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Level 3 & 4 areas</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Level 3 & 4 areas</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-red-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Traveler Alerts</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-red-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Traveler Alerts</p>
           <p className="text-4xl font-bold text-red-600 dark:text-red-400">{data.stats.travelerAlerts}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Unresolved alerts</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Unresolved alerts</p>
         </div>
       </div>
 
       {/* Trip Assessment Form Modal */}
       {showForm && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Create New Trip Assessment</h2>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border border-violet-200 dark:border-violet-700">
+          <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50 mb-4">Create New Trip Assessment</h2>
           <form onSubmit={handleFormSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-violet-700 dark:text-violet-200 mb-1">
                   Destination
                 </label>
                 <select
                   value={formData.destination}
                   onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-violet-300 dark:border-violet-600 rounded-lg bg-white dark:bg-violet-700 text-violet-950 dark:text-violet-50"
                   required
                 >
                   <option value="">Select destination...</option>
@@ -310,13 +310,13 @@ export default function TravelRiskPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-violet-700 dark:text-violet-200 mb-1">
                   Purpose
                 </label>
                 <select
                   value={formData.purpose}
                   onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-violet-300 dark:border-violet-600 rounded-lg bg-white dark:bg-violet-700 text-violet-950 dark:text-violet-50"
                 >
                   <option value="business">Business</option>
                   <option value="leisure">Leisure</option>
@@ -325,43 +325,43 @@ export default function TravelRiskPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-violet-700 dark:text-violet-200 mb-1">
                   Departure Date
                 </label>
                 <input
                   type="date"
                   value={formData.departureDate}
                   onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-violet-300 dark:border-violet-600 rounded-lg bg-white dark:bg-violet-700 text-violet-950 dark:text-violet-50"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-violet-700 dark:text-violet-200 mb-1">
                   Return Date
                 </label>
                 <input
                   type="date"
                   value={formData.returnDate}
                   onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-violet-300 dark:border-violet-600 rounded-lg bg-white dark:bg-violet-700 text-violet-950 dark:text-violet-50"
                   required
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-end gap-3 pt-4 border-t border-violet-200 dark:border-violet-700">
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors"
+                className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
+                className="px-4 py-2 bg-violet-600 dark:bg-violet-700 text-white rounded-lg hover:bg-violet-700 dark:hover:bg-violet-800 font-medium transition-colors"
               >
                 Create Assessment
               </button>
@@ -378,14 +378,14 @@ export default function TravelRiskPage() {
             placeholder="Search destinations by name or country code..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+            className="w-full px-4 py-3 border border-violet-300 dark:border-violet-600 rounded-lg bg-white dark:bg-violet-800 text-violet-950 dark:text-violet-50 placeholder-violet-500 dark:placeholder-violet-400"
           />
         </div>
       </div>
 
       {/* Destination Cards */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sample Destinations</h2>
+        <h2 className="text-2xl font-bold text-violet-950 dark:text-violet-50">Sample Destinations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDestinations.length > 0 ? (
             filteredDestinations.map((dest) => {
@@ -394,15 +394,15 @@ export default function TravelRiskPage() {
               return (
                 <div
                   key={dest.code}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-gray-700/50 transition-shadow"
+                  className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border border-violet-200 dark:border-violet-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-violet-700/50 transition-shadow"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <span className="text-4xl">{dest.emoji}</span>
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-gray-100">{dest.name}</h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{dest.code}</p>
+                        <h3 className="font-bold text-violet-950 dark:text-violet-50">{dest.name}</h3>
+                        <p className="text-xs text-violet-500 dark:text-violet-300">{dest.code}</p>
                       </div>
                     </div>
                   </div>
@@ -413,33 +413,33 @@ export default function TravelRiskPage() {
                   </div>
 
                   {/* Divider */}
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-4" />
+                  <div className="border-t border-violet-200 dark:border-violet-700 my-4" />
 
                   {/* Details */}
                   <div className="space-y-3 text-sm">
                     <div className="flex items-center justify-between">
-                      <p className="text-gray-600 dark:text-gray-400">Health Advisory</p>
-                      <p className="text-gray-900 dark:text-gray-100 font-medium">{dest.healthAdvisory}</p>
+                      <p className="text-violet-600 dark:text-violet-300">Health Advisory</p>
+                      <p className="text-violet-950 dark:text-violet-50 font-medium">{dest.healthAdvisory}</p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-gray-600 dark:text-gray-400">Security Score</p>
+                      <p className="text-violet-600 dark:text-violet-300">Security Score</p>
                       <p className={`font-bold ${scoreColor}`}>{dest.securityScore}/100</p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-gray-600 dark:text-gray-400">Last Updated</p>
-                      <p className="text-gray-900 dark:text-gray-100 font-medium">{dest.lastUpdated}</p>
+                      <p className="text-violet-600 dark:text-violet-300">Last Updated</p>
+                      <p className="text-violet-950 dark:text-violet-50 font-medium">{dest.lastUpdated}</p>
                     </div>
                   </div>
 
                   {/* CTA Button */}
-                  <button className="w-full mt-4 px-3 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 font-medium text-sm transition-colors">
+                  <button className="w-full mt-4 px-3 py-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-200 dark:hover:bg-violet-900/50 font-medium text-sm transition-colors">
                     View Full Assessment
                   </button>
                 </div>
               );
             })
           ) : (
-            <p className="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">
+            <p className="text-violet-500 dark:text-violet-300 col-span-full text-center py-8">
               No destinations match your search.
             </p>
           )}

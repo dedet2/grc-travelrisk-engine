@@ -136,11 +136,11 @@ function getStatusColor(status: string) {
     case 'connected':
       return 'bg-emerald-100 text-emerald-700';
     case 'disconnected':
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-violet-100 text-violet-700';
     case 'error':
       return 'bg-red-100 text-red-700';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-violet-100 text-violet-700';
   }
 }
 
@@ -328,7 +328,7 @@ export default function IntegrationsPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div
@@ -358,12 +358,12 @@ export default function IntegrationsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Integrations</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950">Integrations</h1>
+          <p className="text-violet-600 mt-2">
             Manage and monitor all connected services and data sources
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-violet-500 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -372,14 +372,14 @@ export default function IntegrationsPage() {
           <button
             onClick={fetchIntegrations}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 font-medium transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-violet-200 text-violet-950 rounded-lg hover:bg-violet-300 font-medium transition-colors disabled:opacity-50"
           >
             Refresh
           </button>
           <button
             onClick={handleTestAllConnections}
             disabled={testingIds.size > 0}
-            className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {testingIds.size > 0 ? 'Testing...' : 'Test All Connections'}
           </button>
@@ -388,47 +388,47 @@ export default function IntegrationsPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">
             Total Integrations
           </p>
-          <p className="text-4xl font-bold text-indigo-600">{stats.total}</p>
-          <p className="text-xs text-gray-600 mt-2">Active services</p>
+          <p className="text-4xl font-bold text-violet-600">{stats.total}</p>
+          <p className="text-xs text-violet-600 mt-2">Active services</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Connected</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Connected</p>
           <p className="text-4xl font-bold text-emerald-600">{stats.connected}</p>
-          <p className="text-xs text-gray-600 mt-2">Fully operational</p>
+          <p className="text-xs text-violet-600 mt-2">Fully operational</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Errors</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Errors</p>
           <p className="text-4xl font-bold text-red-600">{stats.errors}</p>
-          <p className="text-xs text-gray-600 mt-2">Attention required</p>
+          <p className="text-xs text-violet-600 mt-2">Attention required</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">
+          <p className="text-sm font-medium text-violet-600 mb-1">
             Data Points Synced
           </p>
           <p className="text-4xl font-bold text-blue-600">
             {formatDataPoints(stats.totalDataPoints)}
           </p>
-          <p className="text-xs text-gray-600 mt-2">Total records</p>
+          <p className="text-xs text-violet-600 mt-2">Total records</p>
         </div>
       </div>
 
       {/* Category Filter */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Filter by Category</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-4">Filter by Category</h2>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory(null)}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               selectedCategory === null
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-violet-600 text-white'
+                : 'bg-violet-100 text-violet-700 hover:bg-violet-200'
             }`}
           >
             All Categories
@@ -439,8 +439,8 @@ export default function IntegrationsPage() {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 selectedCategory === category
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-violet-100 text-violet-700 hover:bg-violet-200'
               }`}
             >
               {category}
@@ -456,15 +456,15 @@ export default function IntegrationsPage() {
           return (
             <div
               key={integration.id}
-              className="bg-white rounded-lg shadow p-6 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all"
+              className="bg-white rounded-lg shadow p-6 border border-violet-200 hover:border-violet-300 hover:shadow-md transition-all"
             >
               {/* Header with Name and Status */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-violet-950">
                     {integration.name}
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1 font-medium uppercase">
+                  <p className="text-xs text-violet-500 mt-1 font-medium uppercase">
                     {integration.category}
                   </p>
                 </div>
@@ -482,22 +482,22 @@ export default function IntegrationsPage() {
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-violet-600 mb-4">
                 {integration.description}
               </p>
 
               {/* Details */}
-              <div className="space-y-3 mb-4 pt-4 border-t border-gray-200">
+              <div className="space-y-3 mb-4 pt-4 border-t border-violet-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Last Sync</span>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm text-violet-600">Last Sync</span>
+                  <span className="text-sm font-medium text-violet-950">
                     {formatLastSync(integration.lastSync)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Data Points</span>
-                  <span className="text-sm font-bold text-indigo-600">
+                  <span className="text-sm text-violet-600">Data Points</span>
+                  <span className="text-sm font-bold text-violet-600">
                     {formatDataPoints(integration.dataPoints)}
                   </span>
                 </div>
@@ -507,7 +507,7 @@ export default function IntegrationsPage() {
               <button
                 onClick={() => handleTestConnection(integration.id)}
                 disabled={isTesting}
-                className="w-full px-4 py-2 bg-indigo-50 text-indigo-700 font-medium rounded-lg hover:bg-indigo-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-2 bg-violet-50 text-violet-700 font-medium rounded-lg hover:bg-violet-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isTesting ? (
                   <span className="flex items-center justify-center space-x-2">
@@ -543,9 +543,9 @@ export default function IntegrationsPage() {
 
       {/* Empty State */}
       {filteredIntegrations.length === 0 && (
-        <div className="bg-gray-50 rounded-lg p-12 text-center">
+        <div className="bg-violet-50/30 rounded-lg p-12 text-center">
           <svg
-            className="w-12 h-12 text-gray-400 mx-auto mb-4"
+            className="w-12 h-12 text-violet-400 mx-auto mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -557,7 +557,7 @@ export default function IntegrationsPage() {
               d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.5a1 1 0 00-1 1v3a1 1 0 11-2 0v-3a1 1 0 00-1-1H7a2 2 0 00-2 2v4a2 2 0 002 2z"
             />
           </svg>
-          <p className="text-gray-600 text-lg">
+          <p className="text-violet-600 text-lg">
             No integrations found for this category
           </p>
         </div>
@@ -565,7 +565,7 @@ export default function IntegrationsPage() {
 
       {/* Integration Status Summary */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Integration Health</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-6">Integration Health</h2>
         <div className="space-y-4">
           {/* Connected */}
           <div>
@@ -582,13 +582,13 @@ export default function IntegrationsPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-medium text-gray-900">Connected</span>
+                <span className="text-sm font-medium text-violet-950">Connected</span>
               </div>
               <span className="text-sm font-bold text-emerald-600">
                 {stats.connected} / {stats.total}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-violet-200 rounded-full h-2">
               <div
                 className="bg-emerald-600 h-2 rounded-full transition-all"
                 style={{
@@ -603,7 +603,7 @@ export default function IntegrationsPage() {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5 text-violet-600"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -613,15 +613,15 @@ export default function IntegrationsPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-medium text-gray-900">Disconnected</span>
+                <span className="text-sm font-medium text-violet-950">Disconnected</span>
               </div>
-              <span className="text-sm font-bold text-gray-600">
+              <span className="text-sm font-bold text-violet-600">
                 {stats.total - stats.connected - stats.errors} / {stats.total}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-violet-200 rounded-full h-2">
               <div
-                className="bg-gray-600 h-2 rounded-full transition-all"
+                className="bg-violet-600 h-2 rounded-full transition-all"
                 style={{
                   width: `${((stats.total - stats.connected - stats.errors) / stats.total) * 100}%`,
                 }}
@@ -644,13 +644,13 @@ export default function IntegrationsPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-medium text-gray-900">Errors</span>
+                <span className="text-sm font-medium text-violet-950">Errors</span>
               </div>
               <span className="text-sm font-bold text-red-600">
                 {stats.errors} / {stats.total}
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-violet-200 rounded-full h-2">
               <div
                 className="bg-red-600 h-2 rounded-full transition-all"
                 style={{

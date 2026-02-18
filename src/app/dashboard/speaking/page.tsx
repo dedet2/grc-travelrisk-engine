@@ -76,7 +76,7 @@ function getStatusColor(status: string): string {
     case 'Proposed':
       return 'bg-amber-100 text-amber-700 border-amber-300';
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-300';
+      return 'bg-violet-100 text-violet-700 border-violet-300';
   }
 }
 
@@ -119,8 +119,8 @@ export default function SpeakingPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Speaking & Media Opportunities</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-4xl font-bold text-violet-950">Speaking & Media Opportunities</h1>
+        <p className="text-violet-600 mt-2">
           Build authority and generate revenue through speaking engagements
         </p>
       </div>
@@ -128,41 +128,41 @@ export default function SpeakingPage() {
       {/* Metric Cards - 4 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Opportunities */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Total Opportunities</p>
-          <p className="text-4xl font-bold text-indigo-600">{metrics.totalOpportunities}</p>
-          <p className="text-xs text-gray-600 mt-2">Active engagements</p>
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Total Opportunities</p>
+          <p className="text-4xl font-bold text-violet-600">{metrics.totalOpportunities}</p>
+          <p className="text-xs text-violet-600 mt-2">Active engagements</p>
         </div>
 
         {/* Confirmed Events */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Confirmed Events</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Confirmed Events</p>
           <p className="text-4xl font-bold text-emerald-600">{metrics.confirmedEvents}</p>
-          <p className="text-xs text-gray-600 mt-2">Locked in schedule</p>
+          <p className="text-xs text-violet-600 mt-2">Locked in schedule</p>
         </div>
 
         {/* Total Revenue */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Total Revenue</p>
           <p className="text-4xl font-bold text-blue-600">
             ${(metrics.totalRevenue / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">All opportunities</p>
+          <p className="text-xs text-violet-600 mt-2">All opportunities</p>
         </div>
 
         {/* Avg Speaking Fee */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Avg Speaking Fee</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Avg Speaking Fee</p>
           <p className="text-4xl font-bold text-purple-600">
             ${(metrics.avgSpeakingFee / 1000).toFixed(1)}k
           </p>
-          <p className="text-xs text-gray-600 mt-2">Per engagement</p>
+          <p className="text-xs text-violet-600 mt-2">Per engagement</p>
         </div>
       </div>
 
       {/* Filter Tabs and Search */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Filter by Type</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-4">Filter by Type</h2>
         <div className="flex flex-wrap gap-3">
           {typeOptions.map((type) => (
             <button
@@ -170,8 +170,8 @@ export default function SpeakingPage() {
               onClick={() => setSelectedType(type)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedType === type
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-violet-100 text-violet-700 hover:bg-violet-200'
               }`}
             >
               {type}
@@ -182,33 +182,33 @@ export default function SpeakingPage() {
 
       {/* Speaking Opportunities List */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">Speaking Opportunities</h2>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="border-b border-violet-200 p-6">
+          <h2 className="text-xl font-bold text-violet-950">Speaking Opportunities</h2>
+          <p className="text-sm text-violet-600 mt-1">
             {filteredOpportunities.length} opportunities found
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-violet-50/30 border-b border-violet-200">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Event Name
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Type
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Date
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Audience Size
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-right text-sm font-bold text-violet-950">
                   Fee
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Status
                 </th>
               </tr>
@@ -218,19 +218,19 @@ export default function SpeakingPage() {
                 filteredOpportunities.map((opp) => (
                   <tr
                     key={opp.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="border-b border-violet-200 hover:bg-violet-50/30 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950">
                       {opp.eventName}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{opp.type}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">{opp.type}</td>
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {new Date(opp.date).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {opp.audienceSize.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950 text-right">
                       ${opp.fee.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -246,7 +246,7 @@ export default function SpeakingPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-violet-500">
                     No opportunities found for this type
                   </td>
                 </tr>
@@ -258,18 +258,18 @@ export default function SpeakingPage() {
 
       {/* Upcoming Confirmed Events */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Upcoming Confirmed Events</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-6">Upcoming Confirmed Events</h2>
         <div className="space-y-4">
           {upcomingConfirmed.length > 0 ? (
             upcomingConfirmed.map((event) => (
               <div
                 key={event.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-gray-900">{event.eventName}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h3 className="font-bold text-violet-950">{event.eventName}</h3>
+                    <p className="text-sm text-violet-600 mt-1">
                       {event.type} • {new Date(event.date).toLocaleDateString()} •{' '}
                       {event.audienceSize.toLocaleString()} attendees
                     </p>
@@ -286,7 +286,7 @@ export default function SpeakingPage() {
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-8">No confirmed events scheduled</p>
+            <p className="text-violet-500 text-center py-8">No confirmed events scheduled</p>
           )}
         </div>
       </div>

@@ -129,14 +129,14 @@ export default function RevenuePage() {
   const chartHeight = 200;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-violet-100 dark:from-violet-900 dark:to-violet-800 p-8">
       {/* Header */}
       <div className="mb-12 flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Subscription Revenue</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Monitor your SaaS revenue and subscription metrics</p>
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-white mb-2">Subscription Revenue</h1>
+          <p className="text-lg text-violet-600 dark:text-violet-200">Monitor your SaaS revenue and subscription metrics</p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -144,7 +144,7 @@ export default function RevenuePage() {
         <button
           onClick={fetchBillingData}
           disabled={isLoading}
-          className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50"
+          className="px-4 py-2 bg-violet-600 dark:bg-violet-700 text-white rounded-lg hover:bg-violet-700 dark:hover:bg-violet-800 font-medium transition-colors disabled:opacity-50"
         >
           Refresh
         </button>
@@ -153,50 +153,50 @@ export default function RevenuePage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* MRR Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-violet-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-violet-200 dark:border-violet-700">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Recurring Revenue</span>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-300">Monthly Recurring Revenue</span>
             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
               <IconDollar />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">${billingData.mrr.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-violet-950 dark:text-white mb-2">${billingData.mrr.toLocaleString()}</p>
           <p className="text-sm text-green-600 dark:text-green-400 font-medium">+12% vs last month</p>
         </div>
 
         {/* ARR Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-violet-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-violet-200 dark:border-violet-700">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Annual Recurring Revenue</span>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-300">Annual Recurring Revenue</span>
             <div className="p-2 bg-emerald-100 dark:bg-emerald-900 rounded-lg">
               <IconTrendingUp />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">${billingData.arr.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-violet-950 dark:text-white mb-2">${billingData.arr.toLocaleString()}</p>
           <p className="text-sm text-green-600 dark:text-green-400 font-medium">+144% YoY</p>
         </div>
 
         {/* Active Subscriptions Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-violet-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-violet-200 dark:border-violet-700">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Subscriptions</span>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-300">Active Subscriptions</span>
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
               <IconUsers />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{billingData.subscriptions}</p>
+          <p className="text-3xl font-bold text-violet-950 dark:text-white mb-2">{billingData.subscriptions}</p>
           <p className="text-sm text-green-600 dark:text-green-400 font-medium">+4 this month</p>
         </div>
 
         {/* Churn Rate Card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-violet-800 rounded-xl shadow-sm hover:shadow-md transition p-6 border border-violet-200 dark:border-violet-700">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Churn Rate</span>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-300">Monthly Churn Rate</span>
             <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
               <IconPercentage />
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{billingData.churnRate}%</p>
+          <p className="text-3xl font-bold text-violet-950 dark:text-white mb-2">{billingData.churnRate}%</p>
           <p className="text-sm text-green-600 dark:text-green-400 font-medium">-0.3% improvement</p>
         </div>
       </div>
@@ -204,22 +204,22 @@ export default function RevenuePage() {
       {/* Revenue Breakdown and Chart Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Revenue Breakdown Table */}
-        <div className="lg:col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Plan Breakdown</h2>
+        <div className="lg:col-span-1 bg-white dark:bg-violet-800 rounded-xl shadow-sm p-6 border border-violet-200 dark:border-violet-700">
+          <h2 className="text-lg font-bold text-violet-950 dark:text-white mb-6">Plan Breakdown</h2>
           <div className="space-y-4">
             {billingData.breakdown.map((plan, idx) => (
-              <div key={idx} className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700 last:border-0">
+              <div key={idx} className="flex items-center justify-between pb-4 border-b border-violet-100 dark:border-violet-700 last:border-0">
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{plan.plan}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{plan.seats} seats</p>
+                  <p className="font-medium text-violet-950 dark:text-white">{plan.plan}</p>
+                  <p className="text-sm text-violet-500 dark:text-violet-300">{plan.seats} seats</p>
                 </div>
-                <p className="font-bold text-gray-900 dark:text-white">${plan.monthly.toLocaleString()}/mo</p>
+                <p className="font-bold text-violet-950 dark:text-white">${plan.monthly.toLocaleString()}/mo</p>
               </div>
             ))}
           </div>
-          <div className="mt-6 pt-4 border-t-2 border-gray-200 dark:border-slate-700">
+          <div className="mt-6 pt-4 border-t-2 border-violet-200 dark:border-violet-700">
             <div className="flex justify-between items-center">
-              <p className="font-semibold text-gray-900 dark:text-white">Total</p>
+              <p className="font-semibold text-violet-950 dark:text-white">Total</p>
               <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                 ${billingData.breakdown.reduce((sum, p) => sum + p.monthly, 0).toLocaleString()}/mo
               </p>
@@ -228,8 +228,8 @@ export default function RevenuePage() {
         </div>
 
         {/* Revenue Trend Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Revenue Trend (Last 6 Months)</h2>
+        <div className="lg:col-span-2 bg-white dark:bg-violet-800 rounded-xl shadow-sm p-6 border border-violet-200 dark:border-violet-700">
+          <h2 className="text-lg font-bold text-violet-950 dark:text-white mb-6">Revenue Trend (Last 6 Months)</h2>
           <div className="flex items-end justify-between gap-2" style={{ height: chartHeight }}>
             {revenueData.map((data, idx) => {
               const heightPercent = (data.value / maxValue) * 100;
@@ -239,16 +239,16 @@ export default function RevenuePage() {
                     className="w-full bg-gradient-to-t from-blue-500 to-blue-400 dark:from-blue-600 dark:to-blue-500 rounded-t-md transition-all group-hover:from-blue-600 group-hover:to-blue-500 relative"
                     style={{ height: `${heightPercent}%` }}
                   >
-                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-700 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -tranviolet-x-1/2 bg-violet-950 dark:bg-violet-700 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
                       ${data.value.toLocaleString()}
                     </div>
                   </div>
-                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400 mt-2">{data.month}</span>
+                  <span className="text-xs font-medium text-violet-600 dark:text-violet-300 mt-2">{data.month}</span>
                 </div>
               );
             })}
           </div>
-          <div className="mt-6 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="mt-6 flex items-center gap-2 text-sm text-violet-600 dark:text-violet-300">
             <div className="w-3 h-3 bg-blue-500 rounded"></div>
             <span>Revenue growth: ${revenueData[0].value.toLocaleString()} → ${revenueData[revenueData.length - 1].value.toLocaleString()}</span>
           </div>
@@ -256,28 +256,28 @@ export default function RevenuePage() {
       </div>
 
       {/* Recent Transactions Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Recent Transactions</h2>
+      <div className="bg-white dark:bg-violet-800 rounded-xl shadow-sm border border-violet-200 dark:border-violet-700 overflow-hidden">
+        <div className="p-6 border-b border-violet-200 dark:border-violet-700">
+          <h2 className="text-lg font-bold text-violet-950 dark:text-white">Recent Transactions</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-slate-700/50">
-              <tr className="border-b border-gray-200 dark:border-slate-700">
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 dark:text-gray-100">Date</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 dark:text-gray-100">Customer</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 dark:text-gray-100">Plan</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 dark:text-gray-100">Amount</th>
-                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900 dark:text-gray-100">Status</th>
+            <thead className="bg-violet-50/30 dark:bg-violet-700/50">
+              <tr className="border-b border-violet-200 dark:border-violet-700">
+                <th className="text-left py-4 px-6 text-sm font-semibold text-violet-950 dark:text-violet-50">Date</th>
+                <th className="text-left py-4 px-6 text-sm font-semibold text-violet-950 dark:text-violet-50">Customer</th>
+                <th className="text-left py-4 px-6 text-sm font-semibold text-violet-950 dark:text-violet-50">Plan</th>
+                <th className="text-left py-4 px-6 text-sm font-semibold text-violet-950 dark:text-violet-50">Amount</th>
+                <th className="text-left py-4 px-6 text-sm font-semibold text-violet-950 dark:text-violet-50">Status</th>
               </tr>
             </thead>
             <tbody>
               {billingData.recentTransactions.map((transaction, idx) => (
-                <tr key={idx} className="border-b border-gray-100 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/30 transition">
-                  <td className="py-4 px-6 text-sm text-gray-600 dark:text-gray-300">{transaction.date}</td>
-                  <td className="py-4 px-6 text-sm font-medium text-gray-900 dark:text-white">{transaction.customer}</td>
-                  <td className="py-4 px-6 text-sm text-gray-600 dark:text-gray-300">{transaction.plan}</td>
-                  <td className="py-4 px-6 text-sm font-semibold text-gray-900 dark:text-white">${transaction.amount}</td>
+                <tr key={idx} className="border-b border-violet-100 dark:border-violet-700 hover:bg-violet-50/30 dark:hover:bg-violet-700/30 transition">
+                  <td className="py-4 px-6 text-sm text-violet-600 dark:text-violet-200">{transaction.date}</td>
+                  <td className="py-4 px-6 text-sm font-medium text-violet-950 dark:text-white">{transaction.customer}</td>
+                  <td className="py-4 px-6 text-sm text-violet-600 dark:text-violet-200">{transaction.plan}</td>
+                  <td className="py-4 px-6 text-sm font-semibold text-violet-950 dark:text-white">${transaction.amount}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
                       {transaction.status === 'Completed' ? (

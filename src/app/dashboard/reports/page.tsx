@@ -175,7 +175,7 @@ export default function ReportsPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="bg-white p-6 rounded-lg shadow h-64 animate-pulse" />
@@ -215,12 +215,12 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Advanced Reports</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950">Advanced Reports</h1>
+          <p className="text-violet-600 mt-2">
             Comprehensive GRC assessment and risk analysis dashboard
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-violet-500 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -229,13 +229,13 @@ export default function ReportsPage() {
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 font-medium transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-violet-200 text-violet-950 rounded-lg hover:bg-violet-300 font-medium transition-colors disabled:opacity-50"
           >
             Refresh
           </button>
           <button
             onClick={handleExport}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center gap-2"
+            className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium transition-colors flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -252,16 +252,16 @@ export default function ReportsPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-2">Overall Risk Score</p>
-          <p className="text-4xl font-bold text-indigo-600">{displayStats.riskScore.overall}</p>
-          <p className="text-xs text-gray-600 mt-2">Level: {displayStats.riskScore.level}</p>
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-2">Overall Risk Score</p>
+          <p className="text-4xl font-bold text-violet-600">{displayStats.riskScore.overall}</p>
+          <p className="text-xs text-violet-600 mt-2">Level: {displayStats.riskScore.level}</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-2">Compliance Rate</p>
+          <p className="text-sm font-medium text-violet-600 mb-2">Compliance Rate</p>
           <p className="text-4xl font-bold text-emerald-600">{displayStats.compliance.rate}%</p>
-          <div className="mt-3 bg-gray-200 rounded-full h-2">
+          <div className="mt-3 bg-violet-200 rounded-full h-2">
             <div
               className="bg-emerald-600 h-2 rounded-full transition-all"
               style={{ width: `${displayStats.compliance.rate}%` }}
@@ -270,15 +270,15 @@ export default function ReportsPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-2">Active Assessments</p>
+          <p className="text-sm font-medium text-violet-600 mb-2">Active Assessments</p>
           <p className="text-4xl font-bold text-blue-600">{displayStats.assessments.active}</p>
-          <p className="text-xs text-gray-600 mt-2">In Progress</p>
+          <p className="text-xs text-violet-600 mt-2">In Progress</p>
         </div>
       </div>
 
       {/* Risk Score Trend Chart */}
       <div className="bg-white rounded-lg shadow p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Risk Score Trend (Last 7 Days)</h2>
+        <h2 className="text-2xl font-bold text-violet-950 mb-6">Risk Score Trend (Last 7 Days)</h2>
 
         <div className="space-y-4">
           {safeTrendScores.map((item, idx) => {
@@ -293,10 +293,10 @@ export default function ReportsPage() {
             return (
               <div key={idx}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">{item.date}</span>
-                  <span className="text-sm font-bold text-gray-900">{item.score}</span>
+                  <span className="text-sm font-medium text-violet-700">{item.date}</span>
+                  <span className="text-sm font-bold text-violet-950">{item.score}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-violet-200 rounded-full h-3">
                   <div
                     className={`${riskColor} h-3 rounded-full transition-all`}
                     style={{ width: `${percentage}%` }}
@@ -310,7 +310,7 @@ export default function ReportsPage() {
 
       {/* Compliance by Framework */}
       <div className="bg-white rounded-lg shadow p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Compliance by Framework</h2>
+        <h2 className="text-2xl font-bold text-violet-950 mb-6">Compliance by Framework</h2>
 
         <div className="space-y-6">
           {safeCompliance.map((framework, idx) => {
@@ -320,14 +320,14 @@ export default function ReportsPage() {
               <div key={idx}>
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{framework.framework}</h3>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <h3 className="font-semibold text-violet-950">{framework.framework}</h3>
+                    <p className="text-xs text-violet-600 mt-1">
                       {framework.implemented} of {framework.total} controls implemented
                     </p>
                   </div>
-                  <span className="text-lg font-bold text-gray-900">{Math.round(percentage)}%</span>
+                  <span className="text-lg font-bold text-violet-950">{Math.round(percentage)}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-4">
+                <div className="w-full bg-violet-200 rounded-full h-4">
                   <div
                     className={`h-4 rounded-full transition-all ${
                       percentage >= 75
@@ -347,7 +347,7 @@ export default function ReportsPage() {
 
       {/* Agent Activity Feed */}
       <div className="bg-white rounded-lg shadow p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Agent Activity Timeline</h2>
+        <h2 className="text-2xl font-bold text-violet-950 mb-6">Agent Activity Timeline</h2>
 
         <div className="space-y-4">
           {safeAgentActivity.map((activity, idx) => {
@@ -361,24 +361,24 @@ export default function ReportsPage() {
             return (
               <div
                 key={idx}
-                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                className="border border-violet-200 rounded-lg p-4 hover:bg-violet-50/30 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <p className="font-semibold text-gray-900">{activity.agent}</p>
+                      <p className="font-semibold text-violet-950">{activity.agent}</p>
                       <span className={`text-xs px-2 py-1 rounded-full font-medium ${statusColor}`}>
                         {activity.status}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-violet-600">
                       <span>{new Date(activity.timestamp).toLocaleTimeString()}</span>
                       <div className="flex items-center gap-1">
                         <span className="text-xs">Latency:</span>
-                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="w-20 bg-violet-200 rounded-full h-2">
                           <div
-                            className="bg-indigo-600 h-2 rounded-full"
+                            className="bg-violet-600 h-2 rounded-full"
                             style={{
                               width: `${(activity.latencyMs / maxLatency) * 100}%`,
                             }}
@@ -397,7 +397,7 @@ export default function ReportsPage() {
 
       {/* Travel Risk Heatmap */}
       <div className="bg-white rounded-lg shadow p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Travel Risk Heatmap</h2>
+        <h2 className="text-2xl font-bold text-violet-950 mb-6">Travel Risk Heatmap</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {safeTravelRisks.map((country, idx) => {
@@ -420,13 +420,13 @@ export default function ReportsPage() {
               <div key={idx} className={`rounded-lg border-2 ${bgColor} p-4`}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{country.country}</p>
-                    <p className="text-xs text-gray-600">{country.code}</p>
+                    <p className="font-semibold text-violet-950 text-sm">{country.country}</p>
+                    <p className="text-xs text-violet-600">{country.code}</p>
                   </div>
                   <span className={`text-2xl font-bold ${textColor}`}>{country.score}</span>
                 </div>
 
-                <div className="w-full bg-gray-300 rounded-full h-2">
+                <div className="w-full bg-violet-300 rounded-full h-2">
                   <div
                     className={`${
                       country.score >= 75
@@ -445,14 +445,14 @@ export default function ReportsPage() {
       </div>
 
       {/* Export Info */}
-      <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-        <h3 className="font-semibold text-indigo-900 mb-2">Export Data</h3>
-        <p className="text-sm text-indigo-800 mb-4">
+      <div className="bg-violet-50 border border-violet-200 rounded-lg p-6">
+        <h3 className="font-semibold text-violet-900 mb-2">Export Data</h3>
+        <p className="text-sm text-violet-800 mb-4">
           Click the export button at the top to download all report data as JSON for further
           analysis or integration with other tools.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-indigo-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-violet-800">
           <div>
             <p className="font-medium mb-2">Risk Score Trend: {safeTrendScores.length} data points</p>
             <p className="font-medium">Frameworks: {safeCompliance.length} frameworks</p>

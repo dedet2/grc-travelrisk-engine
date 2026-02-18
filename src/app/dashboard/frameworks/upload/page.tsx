@@ -120,8 +120,8 @@ export default function FrameworkUploadPage() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Import Framework</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-4xl font-bold text-violet-950">Import Framework</h1>
+        <p className="text-violet-600 mt-2">
           Upload a PDF containing GRC framework controls and automatically parse the structure
         </p>
       </div>
@@ -130,8 +130,8 @@ export default function FrameworkUploadPage() {
       <div
         className={`border-2 border-dashed rounded-lg p-12 text-center transition-all ${
           isDragging
-            ? 'border-indigo-500 bg-indigo-50'
-            : 'border-gray-300 bg-gray-50 hover:border-indigo-400'
+            ? 'border-violet-500 bg-violet-50'
+            : 'border-violet-300 bg-violet-50/30 hover:border-violet-400'
         }`}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -150,7 +150,7 @@ export default function FrameworkUploadPage() {
         <div className="mb-4">
           <svg
             className={`mx-auto h-12 w-12 transition-colors ${
-              isDragging ? 'text-indigo-600' : 'text-gray-400'
+              isDragging ? 'text-violet-600' : 'text-violet-400'
             }`}
             fill="none"
             stroke="currentColor"
@@ -165,33 +165,33 @@ export default function FrameworkUploadPage() {
           </svg>
         </div>
 
-        <p className="text-lg font-medium text-gray-900 mb-2">
+        <p className="text-lg font-medium text-violet-950 mb-2">
           {isLoading ? 'Uploading...' : 'Drag and drop your PDF here'}
         </p>
-        <p className="text-gray-600 mb-4">or</p>
+        <p className="text-violet-600 mb-4">or</p>
 
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isLoading}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           {isLoading ? 'Processing...' : 'Select PDF'}
         </button>
 
-        <p className="text-sm text-gray-500 mt-4">
+        <p className="text-sm text-violet-500 mt-4">
           PDF files only • Supports ISO 27001, NIST, SOC 2, and other frameworks
         </p>
 
         {/* Progress Bar */}
         {isLoading && uploadProgress > 0 && (
           <div className="mt-6">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-violet-200 rounded-full h-2">
               <div
-                className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                className="bg-violet-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
-            <p className="text-sm text-gray-600 mt-2">{uploadProgress}% complete</p>
+            <p className="text-sm text-violet-600 mt-2">{uploadProgress}% complete</p>
           </div>
         )}
       </div>
@@ -199,14 +199,14 @@ export default function FrameworkUploadPage() {
       {/* Framework Metadata Override */}
       {!successData && (
         <div className="bg-white rounded-lg shadow p-6 space-y-4">
-          <h2 className="text-lg font-bold text-gray-900">Optional Metadata Override</h2>
-          <p className="text-sm text-gray-600">
+          <h2 className="text-lg font-bold text-violet-950">Optional Metadata Override</h2>
+          <p className="text-sm text-violet-600">
             The framework will be automatically parsed from the PDF. Override these fields if needed:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Framework Name
               </label>
               <input
@@ -215,19 +215,19 @@ export default function FrameworkUploadPage() {
                 onChange={(e) => setFrameworkName(e.target.value)}
                 placeholder="e.g., ISO 27001:2022"
                 disabled={isLoading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-violet-100 disabled:cursor-not-allowed"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Version</label>
+              <label className="block text-sm font-medium text-violet-700 mb-2">Version</label>
               <input
                 type="text"
                 value={frameworkVersion}
                 onChange={(e) => setFrameworkVersion(e.target.value)}
                 placeholder="e.g., 1.0"
                 disabled={isLoading}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-violet-100 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -288,50 +288,50 @@ export default function FrameworkUploadPage() {
                 <div className="bg-white rounded-lg p-6 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Framework Name</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-sm font-medium text-violet-600">Framework Name</p>
+                      <p className="text-lg font-semibold text-violet-950">
                         {successData.framework.name}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600">Version</p>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-sm font-medium text-violet-600">Version</p>
+                      <p className="text-lg font-semibold text-violet-950">
                         {successData.framework.version}
                       </p>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-200">
-                    <p className="text-sm font-medium text-gray-600 mb-2">Import Summary</p>
+                  <div className="pt-4 border-t border-violet-200">
+                    <p className="text-sm font-medium text-violet-600 mb-2">Import Summary</p>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center">
-                        <p className="text-2xl font-bold text-indigo-600">
+                        <p className="text-2xl font-bold text-violet-600">
                           {successData.framework.controlCount}
                         </p>
-                        <p className="text-sm text-gray-600">Controls Imported</p>
+                        <p className="text-sm text-violet-600">Controls Imported</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold text-emerald-600">
                           {successData.framework.categories.length}
                         </p>
-                        <p className="text-sm text-gray-600">Categories Detected</p>
+                        <p className="text-sm text-violet-600">Categories Detected</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold text-blue-600">Draft</p>
-                        <p className="text-sm text-gray-600">Status</p>
+                        <p className="text-sm text-violet-600">Status</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Categories */}
                   {successData.framework.categories.length > 0 && (
-                    <div className="pt-4 border-t border-gray-200">
-                      <p className="text-sm font-medium text-gray-600 mb-3">Framework Categories</p>
+                    <div className="pt-4 border-t border-violet-200">
+                      <p className="text-sm font-medium text-violet-600 mb-3">Framework Categories</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {successData.framework.categories.map((cat) => (
-                          <div key={cat.id} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                            <span className="text-sm font-medium text-gray-900">{cat.name}</span>
-                            <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                          <div key={cat.id} className="flex items-center justify-between bg-violet-50/30 px-3 py-2 rounded">
+                            <span className="text-sm font-medium text-violet-950">{cat.name}</span>
+                            <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">
                               {cat.controlCount}
                             </span>
                           </div>
@@ -343,18 +343,18 @@ export default function FrameworkUploadPage() {
 
                 {/* Next Steps */}
                 <div className="bg-white rounded-lg p-6">
-                  <p className="text-sm font-medium text-gray-600 mb-3">Next Steps</p>
-                  <ul className="space-y-2 text-sm text-gray-600">
+                  <p className="text-sm font-medium text-violet-600 mb-3">Next Steps</p>
+                  <ul className="space-y-2 text-sm text-violet-600">
                     <li className="flex items-start">
-                      <span className="text-indigo-600 font-bold mr-3">1.</span>
+                      <span className="text-violet-600 font-bold mr-3">1.</span>
                       <span>Review the imported controls and categories</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-indigo-600 font-bold mr-3">2.</span>
+                      <span className="text-violet-600 font-bold mr-3">2.</span>
                       <span>Publish the framework when ready to use it for assessments</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-indigo-600 font-bold mr-3">3.</span>
+                      <span className="text-violet-600 font-bold mr-3">3.</span>
                       <span>Create assessments based on this framework</span>
                     </li>
                   </ul>
@@ -364,7 +364,7 @@ export default function FrameworkUploadPage() {
                 <div className="flex gap-3 pt-4">
                   <a
                     href="/dashboard/frameworks"
-                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-center font-medium transition-colors"
+                    className="flex-1 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 text-center font-medium transition-colors"
                   >
                     View All Frameworks
                   </a>
@@ -373,7 +373,7 @@ export default function FrameworkUploadPage() {
                       setSuccessData(null);
                       setError(null);
                     }}
-                    className="flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                    className="flex-1 px-4 py-2 bg-white border border-violet-300 text-violet-950 rounded-lg hover:bg-violet-50/30 font-medium transition-colors"
                   >
                     Import Another
                   </button>

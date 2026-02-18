@@ -152,19 +152,19 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/2" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/2" />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-4 space-y-2">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-10 bg-gray-200 rounded animate-pulse" />
+                <div key={i} className="h-10 bg-violet-200 rounded animate-pulse" />
               ))}
             </div>
           </div>
           <div className="lg:col-span-3">
             <div className="bg-white rounded-lg shadow p-6 space-y-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-12 bg-gray-200 rounded animate-pulse" />
+                <div key={i} className="h-12 bg-violet-200 rounded animate-pulse" />
               ))}
             </div>
           </div>
@@ -176,8 +176,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">Manage your account, organization, and integrations</p>
+        <h1 className="text-4xl font-bold text-violet-950">Settings</h1>
+        <p className="text-violet-600 mt-2">Manage your account, organization, and integrations</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -197,8 +197,8 @@ export default function SettingsPage() {
                   onClick={() => setActiveTab(item.id as any)}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-colors font-medium text-sm ${
                     activeTab === item.id
-                      ? 'bg-indigo-100 text-indigo-900 border-l-4 border-indigo-600'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-violet-100 text-violet-900 border-l-4 border-violet-600'
+                      : 'text-violet-700 hover:bg-violet-50/30'
                   }`}
                 >
                   {item.label}
@@ -212,39 +212,39 @@ export default function SettingsPage() {
           {activeTab === 'general' && tenant && (
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">General Settings</h2>
+                <h2 className="text-2xl font-bold text-violet-950 mb-6">General Settings</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Organization Name</p>
-                    <p className="text-lg font-bold text-gray-900">{tenant.name}</p>
+                  <div className="bg-violet-50/30 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-violet-600 uppercase tracking-wide mb-2">Organization Name</p>
+                    <p className="text-lg font-bold text-violet-950">{tenant.name}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Current Plan</p>
+                  <div className="bg-violet-50/30 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-violet-600 uppercase tracking-wide mb-2">Current Plan</p>
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold text-gray-900">{tenant.plan.charAt(0).toUpperCase() + tenant.plan.slice(1)}</span>
+                      <span className="text-lg font-bold text-violet-950">{tenant.plan.charAt(0).toUpperCase() + tenant.plan.slice(1)}</span>
                       <span className={`px-2 py-1 rounded text-xs font-semibold ${
                         tenant.plan === 'enterprise' ? 'bg-purple-100 text-purple-700' :
                         tenant.plan === 'professional' ? 'bg-blue-100 text-blue-700' :
-                        'bg-gray-200 text-gray-700'
+                        'bg-violet-200 text-violet-700'
                       }`}>Active</span>
                     </div>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Team Members</p>
-                    <p className="text-lg font-bold text-gray-900">{tenant.memberCount || teamMembers.length}</p>
+                  <div className="bg-violet-50/30 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-violet-600 uppercase tracking-wide mb-2">Team Members</p>
+                    <p className="text-lg font-bold text-violet-950">{tenant.memberCount || teamMembers.length}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Organization Slug</p>
-                    <p className="text-lg font-bold text-gray-900 font-mono">{tenant.slug}</p>
+                  <div className="bg-violet-50/30 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-violet-600 uppercase tracking-wide mb-2">Organization Slug</p>
+                    <p className="text-lg font-bold text-violet-950 font-mono">{tenant.slug}</p>
                   </div>
                 </div>
 
-                <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Organization Plan</h3>
-                  <p className="text-gray-600 mb-4">Your current plan includes all features suitable for your organization size.</p>
+                <div className="border-t border-violet-200 pt-6">
+                  <h3 className="text-lg font-bold text-violet-950 mb-4">Organization Plan</h3>
+                  <p className="text-violet-600 mb-4">Your current plan includes all features suitable for your organization size.</p>
                   {tenant.plan !== 'enterprise' && (
-                    <button className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                    <button className="px-6 py-2 bg-violet-600 text-white font-semibold rounded-lg hover:bg-violet-700 transition-colors">
                       Upgrade Plan
                     </button>
                   )}
@@ -256,16 +256,16 @@ export default function SettingsPage() {
           {activeTab === 'integrations' && (
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Integrations</h2>
-                <p className="text-gray-600 mb-6">Connect and manage all your integrated tools</p>
+                <h2 className="text-2xl font-bold text-violet-950 mb-2">Integrations</h2>
+                <p className="text-violet-600 mb-6">Connect and manage all your integrated tools</p>
 
                 <div className="grid gap-4">
                   {integrations.map((integration) => (
-                    <div key={integration.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition-colors">
+                    <div key={integration.id} className="border border-violet-200 rounded-lg p-4 hover:border-violet-300 transition-colors">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{integration.name}</h4>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <h4 className="font-medium text-violet-950">{integration.name}</h4>
+                          <p className="text-sm text-violet-600 mt-1">
                             {integration.status === 'connected' ? `Last synced ${integration.lastSync}` : 'Not connected'}
                           </p>
                         </div>
@@ -273,7 +273,7 @@ export default function SettingsPage() {
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             integration.status === 'connected'
                               ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-gray-100 text-gray-700'
+                              : 'bg-violet-100 text-violet-700'
                           }`}>
                             {integration.status === 'connected' ? 'Connected' : 'Disconnected'}
                           </span>
@@ -282,17 +282,17 @@ export default function SettingsPage() {
                               type="checkbox"
                               checked={integration.enabled}
                               onChange={() => toggleIntegration(integration.id)}
-                              className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              className="w-4 h-4 rounded border-violet-300 text-violet-600 focus:ring-violet-500"
                             />
-                            <span className="ml-2 text-sm text-gray-600">Enable</span>
+                            <span className="ml-2 text-sm text-violet-600">Enable</span>
                           </label>
                         </div>
                       </div>
                       <div className="flex space-x-3 mt-4">
-                        <button className="px-3 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition-colors">
+                        <button className="px-3 py-2 bg-violet-600 text-white text-sm font-medium rounded hover:bg-violet-700 transition-colors">
                           Configure
                         </button>
-                        <button className="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
+                        <button className="px-3 py-2 border border-violet-300 text-violet-700 text-sm font-medium rounded hover:bg-violet-50/30 transition-colors">
                           Test
                         </button>
                       </div>
@@ -306,7 +306,7 @@ export default function SettingsPage() {
           {activeTab === 'api' && (
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">API Key Management</h2>
+                <h2 className="text-2xl font-bold text-violet-950 mb-6">API Key Management</h2>
 
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
                   <p className="text-sm text-amber-800">
@@ -315,19 +315,19 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="border border-violet-200 rounded-lg p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h4 className="font-medium text-gray-900">Production API Key</h4>
-                        <p className="text-xs text-gray-500 mt-1">Created 90 days ago</p>
+                        <h4 className="font-medium text-violet-950">Production API Key</h4>
+                        <p className="text-xs text-violet-500 mt-1">Created 90 days ago</p>
                       </div>
                       <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded">Active</span>
                     </div>
-                    <div className="bg-gray-100 p-3 rounded font-mono text-xs text-gray-600 mb-3 truncate">
+                    <div className="bg-violet-100 p-3 rounded font-mono text-xs text-violet-600 mb-3 truncate">
                       sk-proj-abc123xyz789...
                     </div>
                     <div className="flex space-x-3">
-                      <button onClick={() => copyToClipboard('sk-proj-abc123xyz789')} className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                      <button onClick={() => copyToClipboard('sk-proj-abc123xyz789')} className="text-sm text-violet-600 hover:text-violet-700 font-medium">
                         Copy
                       </button>
                       <button className="text-sm text-amber-600 hover:text-amber-700 font-medium">
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <button className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors font-medium text-gray-700">
+                  <button className="w-full px-4 py-3 border-2 border-dashed border-violet-300 rounded-lg hover:border-violet-400 hover:bg-violet-50/30 transition-colors font-medium text-violet-700">
                     + Generate New API Key
                   </button>
                 </div>
@@ -350,7 +350,7 @@ export default function SettingsPage() {
           {activeTab === 'notifications' && (
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Notification Preferences</h2>
+                <h2 className="text-2xl font-bold text-violet-950 mb-6">Notification Preferences</h2>
 
                 <div className="space-y-4">
                   {[
@@ -359,25 +359,25 @@ export default function SettingsPage() {
                     { key: 'inApp', label: 'In-App Notifications', description: 'Show notifications in the application' },
                     { key: 'sms', label: 'SMS Notifications', description: 'Receive critical alerts via SMS' },
                   ].map((item) => (
-                    <div key={item.key} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div key={item.key} className="flex items-center justify-between p-4 border border-violet-200 rounded-lg hover:bg-violet-50/30 transition-colors">
                       <div>
-                        <h4 className="font-medium text-gray-900">{item.label}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                        <h4 className="font-medium text-violet-950">{item.label}</h4>
+                        <p className="text-sm text-violet-600 mt-1">{item.description}</p>
                       </div>
                       <label className="flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           checked={notificationPrefs[item.key as keyof typeof notificationPrefs]}
                           onChange={() => toggleNotification(item.key as keyof typeof notificationPrefs)}
-                          className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="w-5 h-5 rounded border-violet-300 text-violet-600 focus:ring-violet-500"
                         />
                       </label>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Notification Triggers</h3>
+                <div className="mt-6 pt-6 border-t border-violet-200">
+                  <h3 className="text-lg font-bold text-violet-950 mb-4">Notification Triggers</h3>
                   <div className="space-y-3">
                     {[
                       'Compliance assessment completed',
@@ -387,14 +387,14 @@ export default function SettingsPage() {
                       'AI agent error or failure',
                     ].map((trigger) => (
                       <label key={trigger} className="flex items-center">
-                        <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-indigo-600" />
-                        <span className="ml-2 text-sm text-gray-700">{trigger}</span>
+                        <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-violet-300 text-violet-600" />
+                        <span className="ml-2 text-sm text-violet-700">{trigger}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                <button className="mt-6 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                <button className="mt-6 px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors">
                   Save Preferences
                 </button>
               </div>
@@ -405,27 +405,27 @@ export default function SettingsPage() {
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Team Members</h2>
-                  <p className="text-gray-600 mt-1">Manage team members and their roles</p>
+                  <h2 className="text-2xl font-bold text-violet-950">Team Members</h2>
+                  <p className="text-violet-600 mt-1">Manage team members and their roles</p>
                 </div>
-                <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                <button className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors">
                   Invite Member
                 </button>
               </div>
 
               <div className="space-y-3">
                 {teamMembers.map((member) => (
-                  <div key={member.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={member.id} className="flex items-center justify-between p-4 border border-violet-200 rounded-lg hover:bg-violet-50/30 transition-colors">
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{member.name}</h4>
-                      <p className="text-sm text-gray-600">{member.email}</p>
-                      <p className="text-xs text-gray-500 mt-1">Joined {new Date(member.joinedAt).toLocaleDateString()}</p>
+                      <h4 className="font-medium text-violet-950">{member.name}</h4>
+                      <p className="text-sm text-violet-600">{member.email}</p>
+                      <p className="text-xs text-violet-500 mt-1">Joined {new Date(member.joinedAt).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         member.role === 'owner' ? 'bg-purple-100 text-purple-700' :
                         member.role === 'admin' ? 'bg-blue-100 text-blue-700' :
-                        'bg-gray-100 text-gray-700'
+                        'bg-violet-100 text-violet-700'
                       }`}>
                         {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
                       </span>
@@ -444,7 +444,7 @@ export default function SettingsPage() {
           {activeTab === 'usage' && usageMetrics && (
             <div className="bg-white rounded-lg shadow p-6 space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Usage & Billing</h2>
+                <h2 className="text-2xl font-bold text-violet-950 mb-6">Usage & Billing</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   {[
@@ -452,15 +452,15 @@ export default function SettingsPage() {
                     { label: 'Billing Cycle', value: 'Monthly' },
                     { label: 'Next Billing Date', value: 'Mar 15, 2026' },
                   ].map((item) => (
-                    <div key={item.label} className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{item.label}</p>
-                      <p className="text-lg font-bold text-gray-900">{item.value}</p>
+                    <div key={item.label} className="bg-violet-50/30 rounded-lg p-4">
+                      <p className="text-xs font-semibold text-violet-600 uppercase tracking-wide mb-2">{item.label}</p>
+                      <p className="text-lg font-bold text-violet-950">{item.value}</p>
                     </div>
                   ))}
                 </div>
 
-                <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-6">Usage Metrics</h3>
+                <div className="border-t border-violet-200 pt-6">
+                  <h3 className="text-lg font-bold text-violet-950 mb-6">Usage Metrics</h3>
 
                   <div className="space-y-6">
                     {[
@@ -470,30 +470,30 @@ export default function SettingsPage() {
                     ].map((item) => (
                       <div key={item.name}>
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900">{item.name}</h4>
-                          <span className="text-sm text-gray-600">
+                          <h4 className="font-medium text-violet-950">{item.name}</h4>
+                          <span className="text-sm text-violet-600">
                             {item.metric.used} / {item.metric.limit} {item.unit}
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-violet-200 rounded-full h-2">
                           <div
                             className={`h-2 rounded-full ${item.metric.percentage > 80 ? 'bg-red-500' : 'bg-emerald-500'}`}
                             style={{ width: `${item.metric.percentage}%` }}
                           />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">{item.metric.percentage}% used</p>
+                        <p className="text-xs text-violet-500 mt-1">{item.metric.percentage}% used</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {tenant?.plan !== 'enterprise' && (
-                  <div className="mt-8 p-6 bg-indigo-50 border border-indigo-200 rounded-lg">
-                    <h4 className="font-bold text-gray-900 mb-2">Approaching Usage Limits?</h4>
-                    <p className="text-sm text-gray-600 mb-4">
+                  <div className="mt-8 p-6 bg-violet-50 border border-violet-200 rounded-lg">
+                    <h4 className="font-bold text-violet-950 mb-2">Approaching Usage Limits?</h4>
+                    <p className="text-sm text-violet-600 mb-4">
                       Upgrade your plan to get higher limits and more features.
                     </p>
-                    <button className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                    <button className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors">
                       View Upgrade Options
                     </button>
                   </div>

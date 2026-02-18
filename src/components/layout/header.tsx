@@ -26,7 +26,7 @@ export function Header() {
           {isMobile && (
             <button
               onClick={toggleSidebar}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors md:hidden"
+              className="p-2 hover:bg-violet-100 rounded-lg transition-colors md:hidden"
               aria-label="Toggle sidebar"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

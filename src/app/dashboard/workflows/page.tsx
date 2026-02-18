@@ -85,7 +85,7 @@ function KPICard({
   color?: 'indigo' | 'blue' | 'emerald' | 'amber';
 }) {
   const colorMap = {
-    indigo: 'border-indigo-600',
+    indigo: 'border-violet-600',
     blue: 'border-blue-600',
     emerald: 'border-emerald-600',
     amber: 'border-amber-600',
@@ -94,14 +94,14 @@ function KPICard({
   return (
     <div className={`bg-white rounded-lg shadow p-6 border-l-4 ${colorMap[color]}`}>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm text-gray-600 font-medium">{title}</p>
+        <p className="text-sm text-violet-600 font-medium">{title}</p>
         <span className={`text-${color}-600`}>
           <Icon />
         </span>
       </div>
-      <p className="text-3xl font-bold text-gray-900">
+      <p className="text-3xl font-bold text-violet-950">
         {value}
-        {unit && <span className="text-lg text-gray-500 ml-1">{unit}</span>}
+        {unit && <span className="text-lg text-violet-500 ml-1">{unit}</span>}
       </p>
     </div>
   );
@@ -118,7 +118,7 @@ function WorkflowCard({
   const statusColors = {
     active: 'bg-emerald-100 text-emerald-800 border-emerald-300',
     paused: 'bg-amber-100 text-amber-800 border-amber-300',
-    draft: 'bg-slate-100 text-slate-800 border-slate-300',
+    draft: 'bg-violet-100 text-violet-800 border-violet-300',
   };
 
   const triggerIcons = {
@@ -133,25 +133,25 @@ function WorkflowCard({
     'Outreach': 'bg-purple-50 text-purple-700',
     'Content Creation': 'bg-pink-50 text-pink-700',
     'Job Search': 'bg-green-50 text-green-700',
-    'Board Search': 'bg-indigo-50 text-indigo-700',
+    'Board Search': 'bg-violet-50 text-violet-700',
   };
 
   const lastRunText = workflow.lastRun ? formatLastRun(new Date(workflow.lastRun)) : 'Never';
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-md p-6 border border-violet-200 hover:shadow-lg transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3 className="font-bold text-gray-900 text-lg">{workflow.name}</h3>
-          <p className="text-sm text-gray-600 mt-1">{workflow.description}</p>
+          <h3 className="font-bold text-violet-950 text-lg">{workflow.name}</h3>
+          <p className="text-sm text-violet-600 mt-1">{workflow.description}</p>
         </div>
         <button
           onClick={() => onStatusToggle(workflow.id)}
           className={`p-2 rounded-full transition-colors ${
             workflow.status === 'active'
               ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              : 'bg-violet-100 text-violet-600 hover:bg-violet-200'
           }`}
           title={workflow.status === 'active' ? 'Pause workflow' : 'Activate workflow'}
         >
@@ -167,7 +167,7 @@ function WorkflowCard({
         <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${categoryColors[workflow.category]}`}>
           {workflow.category}
         </span>
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700">
           {triggerIcons[workflow.triggerType]} {workflow.triggerType}
         </span>
       </div>
@@ -175,26 +175,26 @@ function WorkflowCard({
       {/* Success Rate Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-gray-600">Success Rate</span>
-          <span className="text-sm font-semibold text-gray-900">{workflow.successRate}%</span>
+          <span className="text-sm text-violet-600">Success Rate</span>
+          <span className="text-sm font-semibold text-violet-950">{workflow.successRate}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-violet-200 rounded-full h-2">
           <div
-            className="bg-indigo-600 h-2 rounded-full transition-all"
+            className="bg-violet-600 h-2 rounded-full transition-all"
             style={{ width: `${workflow.successRate}%` }}
           />
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-200">
+      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-violet-200">
         <div className="flex items-center gap-2 text-sm">
           <span className="text-emerald-600">
             <IconActivity />
           </span>
           <div>
-            <p className="text-gray-600">Executions</p>
-            <p className="font-semibold text-gray-900">{workflow.executionCount}</p>
+            <p className="text-violet-600">Executions</p>
+            <p className="font-semibold text-violet-950">{workflow.executionCount}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm">
@@ -202,8 +202,8 @@ function WorkflowCard({
             <IconClock />
           </span>
           <div>
-            <p className="text-gray-600">Last Run</p>
-            <p className="font-semibold text-gray-900">{lastRunText}</p>
+            <p className="text-violet-600">Last Run</p>
+            <p className="font-semibold text-violet-950">{lastRunText}</p>
           </div>
         </div>
       </div>
@@ -377,10 +377,10 @@ export default function WorkflowsDashboard() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 rounded animate-pulse w-1/2" />
+        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/2" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-gray-200 p-6 rounded-lg shadow h-28 animate-pulse" />
+            <div key={i} className="bg-violet-200 p-6 rounded-lg shadow h-28 animate-pulse" />
           ))}
         </div>
         <div className="space-y-4">
@@ -413,8 +413,8 @@ export default function WorkflowsDashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Workflows</h1>
-        <p className="text-gray-600 mt-2">Manage and monitor automation workflows for Dr. Dédé's GRC consulting empire</p>
+        <h1 className="text-4xl font-bold text-violet-950">Workflows</h1>
+        <p className="text-violet-600 mt-2">Manage and monitor automation workflows for Dr. Dédé's GRC consulting empire</p>
       </div>
 
       {/* KPI Cards */}
@@ -449,15 +449,15 @@ export default function WorkflowsDashboard() {
       )}
 
       {/* Category Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-4">
+      <div className="flex flex-wrap gap-2 border-b border-violet-200 pb-4">
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => setActiveCategory(category)}
             className={`px-4 py-2 font-medium text-sm rounded-lg transition-colors ${
               activeCategory === category
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-violet-600 text-white'
+                : 'bg-violet-100 text-violet-700 hover:bg-violet-200'
             }`}
           >
             {category}
@@ -473,7 +473,7 @@ export default function WorkflowsDashboard() {
       {/* Workflows Grid */}
       {filteredWorkflows.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">No workflows found in this category</p>
+          <p className="text-violet-600 text-lg">No workflows found in this category</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -28,9 +28,9 @@ function getStatusColor(status: string): { bg: string; text: string; dot: string
     case 'idle':
       return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', dot: 'bg-amber-500' };
     case 'offline':
-      return { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-gray-500' };
+      return { bg: 'bg-violet-100 dark:bg-violet-700', text: 'text-violet-700 dark:text-violet-200', dot: 'bg-violet-500' };
     default:
-      return { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-gray-500' };
+      return { bg: 'bg-violet-100 dark:bg-violet-700', text: 'text-violet-700 dark:text-violet-200', dot: 'bg-violet-500' };
   }
 }
 
@@ -45,7 +45,7 @@ function getCategoryColor(category: string): string {
     case 'Operations':
       return 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30';
     case 'Intelligence':
-      return 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30';
+      return 'text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/30';
     case 'Executive':
       return 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30';
     case 'Health':
@@ -61,7 +61,7 @@ function getCategoryColor(category: string): string {
     case 'Wellness':
       return 'text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/30';
     default:
-      return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/30';
+      return 'text-violet-600 dark:text-violet-300 bg-violet-100 dark:bg-violet-950/30';
   }
 }
 
@@ -190,10 +190,10 @@ export default function AgentsPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 dark:bg-violet-700 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div key={i} className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -228,12 +228,12 @@ export default function AgentsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">AI Agent Command Center</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-violet-50">AI Agent Command Center</h1>
+          <p className="text-violet-600 dark:text-violet-300 mt-2">
             Monitor and manage all 34 GRC and Life Agents across your organization
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -242,14 +242,14 @@ export default function AgentsPage() {
           <button
             onClick={fetchAgentsData}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors disabled:opacity-50"
           >
             Refresh
           </button>
           <button
             onClick={handleRunAllAgents}
             disabled={running}
-            className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-violet-600 dark:bg-violet-700 text-white rounded-lg hover:bg-violet-700 dark:hover:bg-violet-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {running ? 'Running...' : '▶ Run All Agents'}
           </button>
@@ -258,28 +258,28 @@ export default function AgentsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Agents</p>
-          <p className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">{data.stats.totalAgents}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">GRC + Life Agents</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Total Agents</p>
+          <p className="text-4xl font-bold text-violet-600 dark:text-violet-400">{data.stats.totalAgents}</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">GRC + Life Agents</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Now</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Active Now</p>
           <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">{data.stats.activeNow}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Processing tasks</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Processing tasks</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Tasks Completed Today</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Tasks Completed Today</p>
           <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{data.stats.tasksCompletedToday}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">All agents combined</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">All agents combined</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Avg Response Time</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Avg Response Time</p>
           <p className="text-4xl font-bold text-purple-600 dark:text-purple-400">{data.stats.avgResponseTime}<span className="text-lg">ms</span></p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">System average</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">System average</p>
         </div>
       </div>
 
@@ -291,20 +291,20 @@ export default function AgentsPage() {
 
           return (
             <div key={category}>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">{category} Agents</h2>
+              <h2 className="text-2xl font-bold text-violet-950 dark:text-violet-50 mb-4">{category} Agents</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {categoryAgents.map((agent) => {
                   const statusColor = getStatusColor(agent.status);
                   return (
                     <div
                       key={agent.id}
-                      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-gray-700/50 transition-shadow"
+                      className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-5 border border-violet-200 dark:border-violet-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-violet-700/50 transition-shadow"
                     >
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">{agent.name}</h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{agent.id}</p>
+                          <h3 className="font-bold text-violet-950 dark:text-violet-50 text-sm">{agent.name}</h3>
+                          <p className="text-xs text-violet-500 dark:text-violet-300 mt-1">{agent.id}</p>
                         </div>
                         <div className={`flex-shrink-0 w-3 h-3 rounded-full ${statusColor.dot} animate-pulse`} />
                       </div>
@@ -320,17 +320,17 @@ export default function AgentsPage() {
                       </div>
 
                       {/* Divider */}
-                      <div className="border-t border-gray-200 dark:border-gray-700 my-4" />
+                      <div className="border-t border-violet-200 dark:border-violet-700 my-4" />
 
                       {/* Details */}
                       <div className="space-y-3 text-sm">
                         <div>
-                          <p className="text-gray-600 dark:text-gray-400 text-xs">Last Run</p>
-                          <p className="text-gray-900 dark:text-gray-100 font-medium">{agent.lastRun}</p>
+                          <p className="text-violet-600 dark:text-violet-300 text-xs">Last Run</p>
+                          <p className="text-violet-950 dark:text-violet-50 font-medium">{agent.lastRun}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600 dark:text-gray-400 text-xs">Tasks Completed</p>
-                          <p className="text-gray-900 dark:text-gray-100 font-medium">{agent.tasksCompleted}</p>
+                          <p className="text-violet-600 dark:text-violet-300 text-xs">Tasks Completed</p>
+                          <p className="text-violet-950 dark:text-violet-50 font-medium">{agent.tasksCompleted}</p>
                         </div>
                       </div>
                     </div>

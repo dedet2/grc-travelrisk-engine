@@ -95,65 +95,65 @@ const CampaignsDashboard = () => {
   const statusColors: Record<CampaignStatus, string> = {
     'Active': 'bg-emerald-100 text-emerald-800',
     'Paused': 'bg-amber-100 text-amber-800',
-    'Completed': 'bg-slate-100 text-slate-800',
+    'Completed': 'bg-violet-100 text-violet-800',
   };
 
   const statusDot: Record<CampaignStatus, string> = {
     'Active': 'bg-emerald-500',
     'Paused': 'bg-amber-500',
-    'Completed': 'bg-slate-500',
+    'Completed': 'bg-violet-500',
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-violet-950 via-violet-900 to-violet-950 p-6 text-violet-50">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
           Campaigns
         </h1>
-        <p className="text-slate-400">Automated outreach and marketing campaigns</p>
+        <p className="text-violet-300">Automated outreach and marketing campaigns</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Active Campaigns */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-cyan-400/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Active Campaigns</h3>
+            <h3 className="text-sm font-medium text-violet-300">Active Campaigns</h3>
             <span className="text-cyan-400"><IconZap /></span>
           </div>
           <div className="text-3xl font-bold text-white">{activeCampaigns}</div>
-          <p className="text-xs text-slate-400 mt-3">Currently running</p>
+          <p className="text-xs text-violet-300 mt-3">Currently running</p>
         </div>
 
         {/* Total Reach */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-blue-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-blue-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Total Reach</h3>
+            <h3 className="text-sm font-medium text-violet-300">Total Reach</h3>
             <span className="text-blue-400"><IconUsers /></span>
           </div>
           <div className="text-3xl font-bold text-white">{(totalReach / 1000).toFixed(1)}K</div>
-          <p className="text-xs text-slate-400 mt-3">Total impressions</p>
+          <p className="text-xs text-violet-300 mt-3">Total impressions</p>
         </div>
 
         {/* Response Rate */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Response Rate</h3>
+            <h3 className="text-sm font-medium text-violet-300">Response Rate</h3>
             <span className="text-purple-400"><IconTrendingUp /></span>
           </div>
           <div className="text-3xl font-bold text-white">{avgResponseRate}%</div>
-          <p className="text-xs text-slate-400 mt-3">Average across all</p>
+          <p className="text-xs text-violet-300 mt-3">Average across all</p>
         </div>
 
         {/* Meetings Booked */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-amber-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-amber-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Meetings Booked</h3>
+            <h3 className="text-sm font-medium text-violet-300">Meetings Booked</h3>
             <span className="text-amber-400"><IconMegaphone /></span>
           </div>
           <div className="text-3xl font-bold text-white">{meetingsBooked}</div>
-          <p className="text-xs text-slate-400 mt-3">From campaign responses</p>
+          <p className="text-xs text-violet-300 mt-3">From campaign responses</p>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ const CampaignsDashboard = () => {
             className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
               activeFilter === filter
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20'
-                : 'bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-slate-600'
+                : 'bg-violet-800/50 border border-violet-700/50 text-violet-200 hover:border-violet-600'
             }`}
           >
             {filter}
@@ -183,25 +183,25 @@ const CampaignsDashboard = () => {
       </div>
 
       {/* Campaigns Table */}
-      <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg backdrop-blur-sm overflow-hidden">
+      <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg backdrop-blur-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-700/50 bg-slate-700/20">
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Name</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Type</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Status</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Reach</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Responses</th>
-                <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Conversion Rate</th>
+              <tr className="border-b border-violet-700/50 bg-violet-700/20">
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Name</th>
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Type</th>
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Status</th>
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Reach</th>
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Responses</th>
+                <th className="text-left py-4 px-6 text-xs font-semibold text-violet-300">Conversion Rate</th>
               </tr>
             </thead>
             <tbody>
               {filteredCampaigns.map((campaign, idx) => (
                 <tr
                   key={campaign.id}
-                  className={`border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors ${
-                    idx % 2 === 0 ? 'bg-slate-800/20' : ''
+                  className={`border-b border-violet-700/30 hover:bg-violet-700/20 transition-colors ${
+                    idx % 2 === 0 ? 'bg-violet-800/20' : ''
                   }`}
                 >
                   <td className="py-4 px-6 font-medium text-white">{campaign.name}</td>
@@ -218,17 +218,17 @@ const CampaignsDashboard = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-slate-300">{campaign.reach.toLocaleString()}</td>
+                  <td className="py-4 px-6 text-violet-200">{campaign.reach.toLocaleString()}</td>
                   <td className="py-4 px-6 text-cyan-400 font-semibold">{campaign.responses}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
-                      <div className="w-16 bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                      <div className="w-16 bg-violet-700/50 rounded-full h-2 overflow-hidden">
                         <div
                           className="bg-gradient-to-r from-cyan-500 to-blue-500 h-full"
                           style={{ width: `${Math.min(campaign.conversionRate * 10, 100)}%` }}
                         ></div>
                       </div>
-                      <span className="text-slate-300 text-xs font-medium">{campaign.conversionRate.toFixed(1)}%</span>
+                      <span className="text-violet-200 text-xs font-medium">{campaign.conversionRate.toFixed(1)}%</span>
                     </div>
                   </td>
                 </tr>
@@ -247,7 +247,7 @@ const CampaignsDashboard = () => {
             return (
               <div
                 key={campaign.id}
-                className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-5 backdrop-blur-sm hover:border-cyan-500/30 transition-colors"
+                className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-5 backdrop-blur-sm hover:border-cyan-400/30 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-medium text-white text-sm">{campaign.name}</h3>
@@ -259,15 +259,15 @@ const CampaignsDashboard = () => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Reach</span>
+                    <span className="text-violet-300">Reach</span>
                     <span className="text-white font-medium">{campaign.reach.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Engagement</span>
+                    <span className="text-violet-300">Engagement</span>
                     <span className="text-cyan-400 font-medium">{engagementRate}%</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Conversion</span>
+                    <span className="text-violet-300">Conversion</span>
                     <span className="text-blue-400 font-medium">{campaign.conversionRate.toFixed(1)}%</span>
                   </div>
                 </div>

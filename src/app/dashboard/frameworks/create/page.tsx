@@ -217,8 +217,8 @@ export default function CreateFrameworkPage() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Create Custom Framework</h1>
-        <p className="text-gray-600 mt-2">Build a custom GRC framework tailored to your organization</p>
+        <h1 className="text-4xl font-bold text-violet-950">Create Custom Framework</h1>
+        <p className="text-violet-600 mt-2">Build a custom GRC framework tailored to your organization</p>
       </div>
 
       {/* Progress Indicator */}
@@ -229,19 +229,19 @@ export default function CreateFrameworkPage() {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${
                   currentStep >= step.number
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-200 text-gray-700'
+                    ? 'bg-violet-600 text-white'
+                    : 'bg-violet-200 text-violet-700'
                 }`}
               >
                 {step.number}
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-gray-900">{step.title}</p>
+                <p className="text-sm font-medium text-violet-950">{step.title}</p>
               </div>
               {index < steps.length - 1 && (
                 <div
                   className={`h-1 mx-2 transition-colors ${
-                    currentStep > step.number ? 'bg-indigo-600' : 'bg-gray-200'
+                    currentStep > step.number ? 'bg-violet-600' : 'bg-violet-200'
                   }`}
                   style={{ width: '100%' }}
                 />
@@ -261,10 +261,10 @@ export default function CreateFrameworkPage() {
       {/* Step 1: Framework Basics */}
       {currentStep === 1 && (
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Framework Basics</h2>
+          <h2 className="text-2xl font-bold text-violet-950">Framework Basics</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-violet-700 mb-2">
               Framework Name
             </label>
             <input
@@ -272,13 +272,13 @@ export default function CreateFrameworkPage() {
               value={framework.name}
               onChange={(e) => handleBasicsChange('name', e.target.value)}
               placeholder="e.g., Enterprise Security Controls"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Version
               </label>
               <input
@@ -286,12 +286,12 @@ export default function CreateFrameworkPage() {
                 value={framework.version}
                 onChange={(e) => handleBasicsChange('version', e.target.value)}
                 placeholder="e.g., 1.0.0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Standard Body (Optional)
               </label>
               <input
@@ -299,13 +299,13 @@ export default function CreateFrameworkPage() {
                 value={framework.standardBody || ''}
                 onChange={(e) => handleBasicsChange('standardBody', e.target.value)}
                 placeholder="e.g., NIST, ISO 27001"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-violet-700 mb-2">
               Description
             </label>
             <textarea
@@ -313,14 +313,14 @@ export default function CreateFrameworkPage() {
               onChange={(e) => handleBasicsChange('description', e.target.value)}
               placeholder="Describe the purpose and scope of this framework"
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
             />
           </div>
 
           <div className="flex justify-end space-x-3">
             <button
               onClick={() => router.push('/dashboard/frameworks')}
-              className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-violet-300 text-violet-700 font-medium rounded-lg hover:bg-violet-50/30 transition-colors"
             >
               Cancel
             </button>
@@ -332,7 +332,7 @@ export default function CreateFrameworkPage() {
                 }
                 setCurrentStep(2);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors"
             >
               Next: Add Categories
             </button>
@@ -343,7 +343,7 @@ export default function CreateFrameworkPage() {
       {/* Step 2: Categories */}
       {currentStep === 2 && (
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Add Categories</h2>
+          <h2 className="text-2xl font-bold text-violet-950">Add Categories</h2>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
@@ -353,7 +353,7 @@ export default function CreateFrameworkPage() {
 
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Category Name
               </label>
               <input
@@ -361,12 +361,12 @@ export default function CreateFrameworkPage() {
                 value={newCategory.name}
                 onChange={(e) => setNewCategory((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., Access Control"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Description (Optional)
               </label>
               <textarea
@@ -376,13 +376,13 @@ export default function CreateFrameworkPage() {
                 }
                 placeholder="Describe this category"
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <button
               onClick={handleAddCategory}
-              className="w-full px-4 py-2 border-2 border-dashed border-indigo-300 text-indigo-600 font-medium rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
+              className="w-full px-4 py-2 border-2 border-dashed border-violet-300 text-violet-600 font-medium rounded-lg hover:border-violet-400 hover:bg-violet-50 transition-colors"
             >
               + Add Category
             </button>
@@ -390,14 +390,14 @@ export default function CreateFrameworkPage() {
 
           {/* Listed Categories */}
           {framework.categories.length > 0 && (
-            <div className="space-y-3 pt-6 border-t border-gray-200">
-              <h3 className="font-bold text-gray-900">Categories ({framework.categories.length})</h3>
+            <div className="space-y-3 pt-6 border-t border-violet-200">
+              <h3 className="font-bold text-violet-950">Categories ({framework.categories.length})</h3>
               {framework.categories.map((category) => (
-                <div key={category.id} className="border border-gray-200 rounded-lg p-4 flex items-start justify-between">
+                <div key={category.id} className="border border-violet-200 rounded-lg p-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{category.name}</h4>
+                    <h4 className="font-medium text-violet-950">{category.name}</h4>
                     {category.description && (
-                      <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                      <p className="text-sm text-violet-600 mt-1">{category.description}</p>
                     )}
                   </div>
                   <button
@@ -414,7 +414,7 @@ export default function CreateFrameworkPage() {
           <div className="flex justify-between space-x-3">
             <button
               onClick={() => setCurrentStep(1)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-violet-300 text-violet-700 font-medium rounded-lg hover:bg-violet-50/30 transition-colors"
             >
               Back
             </button>
@@ -426,7 +426,7 @@ export default function CreateFrameworkPage() {
                 }
                 setCurrentStep(3);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors"
             >
               Next: Add Controls
             </button>
@@ -437,7 +437,7 @@ export default function CreateFrameworkPage() {
       {/* Step 3: Controls */}
       {currentStep === 3 && (
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Add Controls</h2>
+          <h2 className="text-2xl font-bold text-violet-950">Add Controls</h2>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
@@ -447,7 +447,7 @@ export default function CreateFrameworkPage() {
 
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Category
               </label>
               <select
@@ -455,7 +455,7 @@ export default function CreateFrameworkPage() {
                 onChange={(e) =>
                   setNewControl((prev) => ({ ...prev, categoryId: e.target.value }))
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="">Select a category</option>
                 {framework.categories.map((cat) => (
@@ -467,7 +467,7 @@ export default function CreateFrameworkPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Control Title
               </label>
               <input
@@ -477,12 +477,12 @@ export default function CreateFrameworkPage() {
                   setNewControl((prev) => ({ ...prev, title: e.target.value }))
                 }
                 placeholder="e.g., User Authentication"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Description
               </label>
               <textarea
@@ -492,12 +492,12 @@ export default function CreateFrameworkPage() {
                 }
                 placeholder="Describe this control"
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-violet-700 mb-2">
                 Weight (1-10)
               </label>
               <input
@@ -511,13 +511,13 @@ export default function CreateFrameworkPage() {
                     weight: parseInt(e.target.value) || 1,
                   }))
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-2 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
 
             <button
               onClick={handleAddControl}
-              className="w-full px-4 py-2 border-2 border-dashed border-indigo-300 text-indigo-600 font-medium rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors"
+              className="w-full px-4 py-2 border-2 border-dashed border-violet-300 text-violet-600 font-medium rounded-lg hover:border-violet-400 hover:bg-violet-50 transition-colors"
             >
               + Add Control
             </button>
@@ -525,24 +525,24 @@ export default function CreateFrameworkPage() {
 
           {/* Listed Controls */}
           {totalControls > 0 && (
-            <div className="space-y-3 pt-6 border-t border-gray-200">
-              <h3 className="font-bold text-gray-900">Controls ({totalControls})</h3>
+            <div className="space-y-3 pt-6 border-t border-violet-200">
+              <h3 className="font-bold text-violet-950">Controls ({totalControls})</h3>
               {framework.categories.map((category) => (
                 <div key={category.id} className="space-y-2">
                   {category.controls.length > 0 && (
                     <>
-                      <h4 className="text-sm font-medium text-gray-700 text-indigo-600">
+                      <h4 className="text-sm font-medium text-violet-700 text-violet-600">
                         {category.name}
                       </h4>
                       {category.controls.map((control) => (
                         <div
                           key={control.id}
-                          className="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-start justify-between"
+                          className="bg-violet-50/30 border border-violet-200 rounded-lg p-3 flex items-start justify-between"
                         >
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900">{control.title}</p>
+                            <p className="font-medium text-violet-950">{control.title}</p>
                             {control.description && (
-                              <p className="text-sm text-gray-600 mt-1">{control.description}</p>
+                              <p className="text-sm text-violet-600 mt-1">{control.description}</p>
                             )}
                           </div>
                           <button
@@ -565,13 +565,13 @@ export default function CreateFrameworkPage() {
           <div className="flex justify-between space-x-3">
             <button
               onClick={() => setCurrentStep(2)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-violet-300 text-violet-700 font-medium rounded-lg hover:bg-violet-50/30 transition-colors"
             >
               Back
             </button>
             <button
               onClick={() => setCurrentStep(4)}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors"
             >
               Next: Review
             </button>
@@ -582,48 +582,48 @@ export default function CreateFrameworkPage() {
       {/* Step 4: Review */}
       {currentStep === 4 && (
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Review Framework</h2>
+          <h2 className="text-2xl font-bold text-violet-950">Review Framework</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Framework Name</p>
-              <p className="text-lg font-bold text-gray-900">{framework.name}</p>
+            <div className="bg-violet-50/30 rounded-lg p-4">
+              <p className="text-xs font-semibold text-violet-600 uppercase mb-1">Framework Name</p>
+              <p className="text-lg font-bold text-violet-950">{framework.name}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Version</p>
-              <p className="text-lg font-bold text-gray-900">{framework.version}</p>
+            <div className="bg-violet-50/30 rounded-lg p-4">
+              <p className="text-xs font-semibold text-violet-600 uppercase mb-1">Version</p>
+              <p className="text-lg font-bold text-violet-950">{framework.version}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Categories</p>
-              <p className="text-lg font-bold text-gray-900">{framework.categories.length}</p>
+            <div className="bg-violet-50/30 rounded-lg p-4">
+              <p className="text-xs font-semibold text-violet-600 uppercase mb-1">Categories</p>
+              <p className="text-lg font-bold text-violet-950">{framework.categories.length}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Total Controls</p>
-              <p className="text-lg font-bold text-gray-900">{totalControls}</p>
+            <div className="bg-violet-50/30 rounded-lg p-4">
+              <p className="text-xs font-semibold text-violet-600 uppercase mb-1">Total Controls</p>
+              <p className="text-lg font-bold text-violet-950">{totalControls}</p>
             </div>
           </div>
 
           {framework.description && (
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Description</h3>
-              <p className="text-gray-700 whitespace-pre-wrap">{framework.description}</p>
+              <h3 className="font-bold text-violet-950 mb-2">Description</h3>
+              <p className="text-violet-700 whitespace-pre-wrap">{framework.description}</p>
             </div>
           )}
 
           <div className="space-y-4">
-            <h3 className="font-bold text-gray-900">Framework Structure</h3>
+            <h3 className="font-bold text-violet-950">Framework Structure</h3>
             {framework.categories.map((category) => (
-              <div key={category.id} className="border border-gray-200 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900">{category.name}</h4>
+              <div key={category.id} className="border border-violet-200 rounded-lg p-4">
+                <h4 className="font-medium text-violet-950">{category.name}</h4>
                 {category.description && (
-                  <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                  <p className="text-sm text-violet-600 mt-1">{category.description}</p>
                 )}
                 <div className="mt-3 space-y-2">
                   {category.controls.map((control) => (
-                    <div key={control.id} className="bg-gray-50 rounded p-2 text-sm">
-                      <p className="font-medium text-gray-900">{control.title}</p>
+                    <div key={control.id} className="bg-violet-50/30 rounded p-2 text-sm">
+                      <p className="font-medium text-violet-950">{control.title}</p>
                       {control.description && (
-                        <p className="text-xs text-gray-600 mt-1">{control.description}</p>
+                        <p className="text-xs text-violet-600 mt-1">{control.description}</p>
                       )}
                     </div>
                   ))}
@@ -635,13 +635,13 @@ export default function CreateFrameworkPage() {
           <div className="flex justify-between space-x-3">
             <button
               onClick={() => setCurrentStep(3)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-violet-300 text-violet-700 font-medium rounded-lg hover:bg-violet-50/30 transition-colors"
             >
               Back
             </button>
             <button
               onClick={() => setCurrentStep(5)}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors"
             >
               Next: Save
             </button>
@@ -652,28 +652,28 @@ export default function CreateFrameworkPage() {
       {/* Step 5: Save */}
       {currentStep === 5 && (
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Save Framework</h2>
+          <h2 className="text-2xl font-bold text-violet-950">Save Framework</h2>
 
           <div className="space-y-4">
             <div
               onClick={() => setFramework((prev) => ({ ...prev, status: 'draft' }))}
               className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
                 framework.status === 'draft'
-                  ? 'border-indigo-600 bg-indigo-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-violet-600 bg-violet-50'
+                  : 'border-violet-200 hover:border-violet-300'
               }`}
             >
               <div className="flex items-start">
                 <div
                   className={`w-5 h-5 rounded border-2 mr-3 mt-0.5 ${
                     framework.status === 'draft'
-                      ? 'bg-indigo-600 border-indigo-600'
-                      : 'border-gray-300'
+                      ? 'bg-violet-600 border-violet-600'
+                      : 'border-violet-300'
                   }`}
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Save as Draft</h4>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h4 className="font-bold text-violet-950">Save as Draft</h4>
+                  <p className="text-sm text-violet-600 mt-1">
                     Save your framework and continue editing later
                   </p>
                 </div>
@@ -684,21 +684,21 @@ export default function CreateFrameworkPage() {
               onClick={() => setFramework((prev) => ({ ...prev, status: 'published' }))}
               className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
                 framework.status === 'published'
-                  ? 'border-indigo-600 bg-indigo-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-violet-600 bg-violet-50'
+                  : 'border-violet-200 hover:border-violet-300'
               }`}
             >
               <div className="flex items-start">
                 <div
                   className={`w-5 h-5 rounded border-2 mr-3 mt-0.5 ${
                     framework.status === 'published'
-                      ? 'bg-indigo-600 border-indigo-600'
-                      : 'border-gray-300'
+                      ? 'bg-violet-600 border-violet-600'
+                      : 'border-violet-300'
                   }`}
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">Publish Now</h4>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h4 className="font-bold text-violet-950">Publish Now</h4>
+                  <p className="text-sm text-violet-600 mt-1">
                     Publish and make available for assessments
                   </p>
                 </div>
@@ -706,17 +706,17 @@ export default function CreateFrameworkPage() {
             </div>
           </div>
 
-          <div className="flex justify-between space-x-3 pt-6 border-t border-gray-200">
+          <div className="flex justify-between space-x-3 pt-6 border-t border-violet-200">
             <button
               onClick={() => setCurrentStep(4)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-violet-300 text-violet-700 font-medium rounded-lg hover:bg-violet-50/30 transition-colors"
             >
               Back
             </button>
             <button
               onClick={() => handleSaveFramework(framework.status === 'published')}
               disabled={saving}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-50"
             >
               {saving ? 'Saving...' : framework.status === 'published' ? 'Publish Framework' : 'Save Draft'}
             </button>

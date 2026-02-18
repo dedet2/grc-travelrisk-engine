@@ -120,7 +120,7 @@ function getProviderTypeColor(type: string): string {
     case 'Lawyer':
       return 'bg-red-50 text-red-700';
     default:
-      return 'bg-gray-50 text-gray-700';
+      return 'bg-violet-50/30 text-violet-700';
   }
 }
 
@@ -133,7 +133,7 @@ function getPriorityColor(priority: string): string {
     case 'Low':
       return 'bg-blue-100 text-blue-700 border-blue-300';
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-300';
+      return 'bg-violet-100 text-violet-700 border-violet-300';
   }
 }
 
@@ -171,8 +171,8 @@ export default function HealthPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Health & Caregiving</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-4xl font-bold text-violet-950">Health & Caregiving</h1>
+        <p className="text-violet-600 mt-2">
           Manage your health providers and care coordination
         </p>
       </div>
@@ -180,46 +180,46 @@ export default function HealthPage() {
       {/* Metric Cards - 4 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Active Providers */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Active Providers</p>
-          <p className="text-4xl font-bold text-indigo-600">{metrics.activeProviders}</p>
-          <p className="text-xs text-gray-600 mt-2">Healthcare team</p>
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Active Providers</p>
+          <p className="text-4xl font-bold text-violet-600">{metrics.activeProviders}</p>
+          <p className="text-xs text-violet-600 mt-2">Healthcare team</p>
         </div>
 
         {/* Upcoming Appointments */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Upcoming Appointments</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Upcoming Appointments</p>
           <p className="text-4xl font-bold text-blue-600">{metrics.upcomingAppointments}</p>
-          <p className="text-xs text-gray-600 mt-2">Scheduled</p>
+          <p className="text-xs text-violet-600 mt-2">Scheduled</p>
         </div>
 
         {/* Pending Tasks */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-amber-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Pending Tasks</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Pending Tasks</p>
           <p className="text-4xl font-bold text-amber-600">{metrics.pendingTasks}</p>
-          <p className="text-xs text-gray-600 mt-2">To complete</p>
+          <p className="text-xs text-violet-600 mt-2">To complete</p>
         </div>
 
         {/* Monthly Care Cost */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Monthly Care Cost</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Monthly Care Cost</p>
           <p className="text-4xl font-bold text-purple-600">
             ${metrics.monthlyCost.toLocaleString()}
           </p>
-          <p className="text-xs text-gray-600 mt-2">Current expenses</p>
+          <p className="text-xs text-violet-600 mt-2">Current expenses</p>
         </div>
       </div>
 
       {/* Health Tasks Section */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6 flex justify-between items-center">
+        <div className="border-b border-violet-200 p-6 flex justify-between items-center">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Health Tasks</h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <h2 className="text-xl font-bold text-violet-950">Health Tasks</h2>
+            <p className="text-sm text-violet-600 mt-1">
               {incompleteTasks.length} tasks pending
             </p>
           </div>
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+          <button className="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors">
             + Add Task
           </button>
         </div>
@@ -230,17 +230,17 @@ export default function HealthPage() {
               incompleteTasks.map((task) => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                  className="flex items-center gap-4 p-4 border border-violet-200 rounded-lg hover:shadow-md transition-shadow"
                 >
                   <input
                     type="checkbox"
                     checked={task.completed}
                     onChange={() => toggleTaskCompletion(task.id)}
-                    className="w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-600 cursor-pointer"
+                    className="w-5 h-5 text-violet-600 rounded border-violet-300 focus:ring-violet-600 cursor-pointer"
                   />
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{task.title}</p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="font-medium text-violet-950">{task.title}</p>
+                    <p className="text-sm text-violet-600 mt-1">
                       Due: {new Date(task.dueDate).toLocaleDateString()}
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export default function HealthPage() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center py-8">All tasks completed!</p>
+              <p className="text-violet-500 text-center py-8">All tasks completed!</p>
             )}
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function HealthPage() {
 
       {/* Filter Tabs */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Filter by Type</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-4">Filter by Type</h2>
         <div className="flex flex-wrap gap-3">
           {typeOptions.map((type) => (
             <button
@@ -270,8 +270,8 @@ export default function HealthPage() {
               onClick={() => setSelectedType(type)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedType === type
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-violet-600 text-white'
+                  : 'bg-violet-100 text-violet-700 hover:bg-violet-200'
               }`}
             >
               {type}
@@ -282,30 +282,30 @@ export default function HealthPage() {
 
       {/* Providers Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">Healthcare Providers</h2>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="border-b border-violet-200 p-6">
+          <h2 className="text-xl font-bold text-violet-950">Healthcare Providers</h2>
+          <p className="text-sm text-violet-600 mt-1">
             {filteredProviders.length} providers found
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-violet-50/30 border-b border-violet-200">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Provider Name
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Specialty
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Type
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Next Appointment
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Status
                 </th>
               </tr>
@@ -315,12 +315,12 @@ export default function HealthPage() {
                 filteredProviders.map((provider) => (
                   <tr
                     key={provider.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="border-b border-violet-200 hover:bg-violet-50/30 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950">
                       {provider.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {provider.specialty}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -328,13 +328,13 @@ export default function HealthPage() {
                         {provider.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {provider.nextAppointment
                         ? new Date(provider.nextAppointment).toLocaleDateString()
                         : 'No appointment scheduled'}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${provider.status === 'Active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-gray-100 text-gray-700 border border-gray-300'}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${provider.status === 'Active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-violet-100 text-violet-700 border border-violet-300'}`}>
                         {provider.status}
                       </span>
                     </td>
@@ -342,7 +342,7 @@ export default function HealthPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-violet-500">
                     No providers found for this type
                   </td>
                 </tr>
@@ -354,24 +354,24 @@ export default function HealthPage() {
 
       {/* Care Team Summary */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Care Team</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-6">Care Team</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {mockProvidersData.map((provider) => (
             <div
               key={provider.id}
-              className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-gray-900">{provider.name}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{provider.specialty}</p>
+                  <h3 className="font-bold text-violet-950">{provider.name}</h3>
+                  <p className="text-sm text-violet-600 mt-1">{provider.specialty}</p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${getProviderTypeColor(provider.type)}`}>
                   {provider.type}
                 </span>
               </div>
               {provider.nextAppointment && (
-                <p className="text-sm text-indigo-600 font-medium mt-3">
+                <p className="text-sm text-violet-600 font-medium mt-3">
                   Next: {new Date(provider.nextAppointment).toLocaleDateString()}
                 </p>
               )}

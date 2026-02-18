@@ -69,7 +69,7 @@ function getStatusColor(status: string): string {
     case 'Applied':
       return 'bg-amber-100 text-amber-700 border-amber-300';
     default:
-      return 'bg-gray-100 text-gray-700 border-gray-300';
+      return 'bg-violet-100 text-violet-700 border-violet-300';
   }
 }
 
@@ -82,7 +82,7 @@ function getTypeColor(type: string): string {
     case 'Nonprofit':
       return 'bg-green-50 text-green-700';
     default:
-      return 'bg-gray-50 text-gray-700';
+      return 'bg-violet-50/30 text-violet-700';
   }
 }
 
@@ -111,8 +111,8 @@ export default function FoundationsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Foundation Network</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-4xl font-bold text-violet-950">Foundation Network</h1>
+        <p className="text-violet-600 mt-2">
           Board opportunities and philanthropic connections
         </p>
       </div>
@@ -120,65 +120,65 @@ export default function FoundationsPage() {
       {/* Metric Cards - 3 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Foundations */}
-        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Total Foundations</p>
-          <p className="text-4xl font-bold text-indigo-600">{metrics.totalFoundations}</p>
-          <p className="text-xs text-gray-600 mt-2">In your network</p>
+        <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 mb-1">Total Foundations</p>
+          <p className="text-4xl font-bold text-violet-600">{metrics.totalFoundations}</p>
+          <p className="text-xs text-violet-600 mt-2">In your network</p>
         </div>
 
         {/* Board Opportunities */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Board Opportunities</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Board Opportunities</p>
           <p className="text-4xl font-bold text-blue-600">{metrics.boardOpportunities}</p>
-          <p className="text-xs text-gray-600 mt-2">Seats available</p>
+          <p className="text-xs text-violet-600 mt-2">Seats available</p>
         </div>
 
         {/* Active Relationships */}
         <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 mb-1">Active Relationships</p>
+          <p className="text-sm font-medium text-violet-600 mb-1">Active Relationships</p>
           <p className="text-4xl font-bold text-emerald-600">{metrics.activeRelationships}</p>
-          <p className="text-xs text-gray-600 mt-2">Engaged networks</p>
+          <p className="text-xs text-violet-600 mt-2">Engaged networks</p>
         </div>
       </div>
 
       {/* Search Section */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Search Foundations & Contacts</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-4">Search Foundations & Contacts</h2>
         <input
           type="text"
           placeholder="Search by foundation name, type, or contact..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
+          className="w-full px-4 py-3 border border-violet-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-transparent"
         />
       </div>
 
       {/* Foundations Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="border-b border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900">Foundation Network</h2>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="border-b border-violet-200 p-6">
+          <h2 className="text-xl font-bold text-violet-950">Foundation Network</h2>
+          <p className="text-sm text-violet-600 mt-1">
             {filteredFoundations.length} foundations found
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-violet-50/30 border-b border-violet-200">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Foundation Name
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Type
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Board Seats Available
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Annual Budget
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                <th className="px-6 py-4 text-left text-sm font-bold text-violet-950">
                   Relationship Status
                 </th>
               </tr>
@@ -188,9 +188,9 @@ export default function FoundationsPage() {
                 filteredFoundations.map((foundation) => (
                   <tr
                     key={foundation.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="border-b border-violet-200 hover:bg-violet-50/30 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950">
                       {foundation.name}
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -198,10 +198,10 @@ export default function FoundationsPage() {
                         {foundation.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-violet-600">
                       {foundation.boardSeatsAvailable}
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-violet-950">
                       ${(foundation.annualBudget / 1000000).toFixed(0)}M
                     </td>
                     <td className="px-6 py-4 text-sm">
@@ -213,7 +213,7 @@ export default function FoundationsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={5} className="px-6 py-12 text-center text-violet-500">
                     No foundations found matching your search
                   </td>
                 </tr>
@@ -225,19 +225,19 @@ export default function FoundationsPage() {
 
       {/* Active Relationships Summary */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Active Relationships</h2>
+        <h2 className="text-lg font-bold text-violet-950 mb-6">Active Relationships</h2>
         <div className="space-y-4">
           {mockFoundationsData
             .filter((f) => f.relationshipStatus === 'Active')
             .map((foundation) => (
               <div
                 key={foundation.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-gray-900">{foundation.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h3 className="font-bold text-violet-950">{foundation.name}</h3>
+                    <p className="text-sm text-violet-600 mt-1">
                       {foundation.type} • ${(foundation.annualBudget / 1000000).toFixed(0)}M annual budget
                     </p>
                   </div>

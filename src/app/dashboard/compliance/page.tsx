@@ -35,7 +35,7 @@ function getSeverityColor(severity: string): { bg: string; text: string; dot: st
     case 'Low':
       return { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-300', dot: 'bg-blue-600' };
     default:
-      return { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-gray-600' };
+      return { bg: 'bg-violet-100 dark:bg-violet-700', text: 'text-violet-700 dark:text-violet-200', dot: 'bg-violet-600' };
   }
 }
 
@@ -137,10 +137,10 @@ export default function CompliancePage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 dark:bg-violet-700 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div key={i} className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -173,12 +173,12 @@ export default function CompliancePage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Compliance Hub</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-violet-50">Compliance Hub</h1>
+          <p className="text-violet-600 dark:text-violet-300 mt-2">
             Monitor and manage compliance across multiple regulatory frameworks
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -186,7 +186,7 @@ export default function CompliancePage() {
         <button
           onClick={fetchComplianceData}
           disabled={loading}
-          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+          className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors disabled:opacity-50"
         >
           Refresh
         </button>
@@ -194,7 +194,7 @@ export default function CompliancePage() {
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-3">
-        <button className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium text-sm transition-colors">
+        <button className="px-4 py-2 bg-violet-600 dark:bg-violet-700 text-white rounded-lg hover:bg-violet-700 dark:hover:bg-violet-800 font-medium text-sm transition-colors">
           + Start New Assessment
         </button>
         <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 font-medium text-sm transition-colors">
@@ -211,19 +211,19 @@ export default function CompliancePage() {
       {/* Framework Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {data.frameworks.map((fw) => (
-          <div key={fw.name} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <div key={fw.name} className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border border-violet-200 dark:border-violet-700">
             <div className="mb-4">
-              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">{fw.name}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Version {fw.version}</p>
+              <h3 className="font-bold text-violet-950 dark:text-violet-50 text-lg">{fw.name}</h3>
+              <p className="text-xs text-violet-500 dark:text-violet-300 mt-1">Version {fw.version}</p>
             </div>
 
             <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Compliance Score</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{fw.complianceScore}%</p>
+                  <p className="text-sm text-violet-600 dark:text-violet-300">Compliance Score</p>
+                  <p className="text-2xl font-bold text-violet-950 dark:text-violet-50">{fw.complianceScore}%</p>
                 </div>
-                <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div className="bg-violet-200 dark:bg-violet-700 rounded-full h-3 overflow-hidden">
                   <div
                     className={`h-3 rounded-full transition-all ${getComplianceScoreColor(fw.complianceScore)}`}
                     style={{ width: `${fw.complianceScore}%` }}
@@ -232,13 +232,13 @@ export default function CompliancePage() {
               </div>
 
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Total Controls</p>
-                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{fw.totalControls}</p>
+                <p className="text-xs text-violet-600 dark:text-violet-300">Total Controls</p>
+                <p className="text-lg font-bold text-violet-950 dark:text-violet-50">{fw.totalControls}</p>
               </div>
 
-              <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs text-gray-600 dark:text-gray-400">Last Assessment</p>
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <div className="pt-3 border-t border-violet-200 dark:border-violet-700">
+                <p className="text-xs text-violet-600 dark:text-violet-300">Last Assessment</p>
+                <p className="text-sm font-medium text-violet-950 dark:text-violet-50">
                   {new Date(fw.lastAssessmentDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -252,18 +252,18 @@ export default function CompliancePage() {
       </div>
 
       {/* Control Gap Analysis */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Control Gap Analysis</h2>
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border border-violet-200 dark:border-violet-700">
+        <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50 mb-6">Control Gap Analysis</h2>
         <div className="space-y-6">
           {controlGaps.map((gap) => (
             <div key={gap.name}>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium text-gray-900 dark:text-gray-100">{gap.name}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-medium text-violet-950 dark:text-violet-50">{gap.name}</h3>
+                <p className="text-sm text-violet-600 dark:text-violet-300">
                   {gap.implemented} / {gap.implemented + gap.remaining} controls
                 </p>
               </div>
-              <div className="flex gap-2 h-4 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+              <div className="flex gap-2 h-4 rounded-full overflow-hidden bg-violet-100 dark:bg-violet-700">
                 <div
                   className="bg-emerald-600 rounded-full transition-all"
                   style={{ width: `${(gap.implemented / (gap.implemented + gap.remaining)) * 100}%` }}
@@ -308,16 +308,16 @@ export default function CompliancePage() {
       </div>
 
       {/* Recent Audit Findings */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div className="border-b border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Recent Audit Findings</h2>
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm overflow-hidden border border-violet-200 dark:border-violet-700">
+        <div className="border-b border-violet-200 dark:border-violet-700 p-6">
+          <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50">Recent Audit Findings</h2>
         </div>
 
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div className="divide-y divide-violet-200 dark:divide-violet-700">
           {data.auditFindings.map((finding) => {
             const severityColor = getSeverityColor(finding.severity);
             return (
-              <div key={finding.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <div key={finding.id} className="p-6 hover:bg-violet-50/30 dark:hover:bg-violet-700/50 transition-colors">
                 <div className="flex items-start gap-4">
                   {/* Severity Indicator */}
                   <div className={`flex-shrink-0 w-3 h-3 rounded-full mt-1 ${severityColor.dot}`} />
@@ -326,24 +326,24 @@ export default function CompliancePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 dark:text-gray-100">{finding.title}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{finding.description}</p>
+                        <h3 className="font-bold text-violet-950 dark:text-violet-50">{finding.title}</h3>
+                        <p className="text-sm text-violet-600 dark:text-violet-300 mt-1">{finding.description}</p>
 
                         <div className="flex flex-wrap items-center gap-2 mt-3">
                           <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${severityColor.bg} ${severityColor.text}`}>
                             {finding.severity}
                           </span>
-                          <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200">
                             {finding.framework}
                           </span>
-                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                          <span className="text-xs text-violet-600 dark:text-violet-300">
                             Due: {new Date(finding.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                           </span>
                         </div>
                       </div>
 
                       {/* Action Button */}
-                      <button className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900/50 font-medium text-sm transition-colors whitespace-nowrap">
+                      <button className="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-lg hover:bg-violet-200 dark:hover:bg-violet-900/50 font-medium text-sm transition-colors whitespace-nowrap">
                         View Details
                       </button>
                     </div>
@@ -356,23 +356,23 @@ export default function CompliancePage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="bg-gradient-to-br from-indigo-600 to-purple-600 dark:from-indigo-900 dark:to-purple-900 rounded-lg shadow-sm p-8 text-white">
+      <div className="bg-gradient-to-br from-violet-600 to-purple-600 dark:from-violet-900 dark:to-purple-900 rounded-lg shadow-sm p-8 text-white">
         <h2 className="text-2xl font-bold mb-6">Compliance Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <p className="text-indigo-100 text-sm mb-1">Average Compliance Score</p>
+            <p className="text-violet-100 text-sm mb-1">Average Compliance Score</p>
             <p className="text-4xl font-bold">
               {Math.round(data.frameworks.reduce((acc, fw) => acc + fw.complianceScore, 0) / data.frameworks.length)}%
             </p>
           </div>
           <div>
-            <p className="text-indigo-100 text-sm mb-1">Total Controls Assessed</p>
+            <p className="text-violet-100 text-sm mb-1">Total Controls Assessed</p>
             <p className="text-4xl font-bold">
               {data.frameworks.reduce((acc, fw) => acc + fw.totalControls, 0)}
             </p>
           </div>
           <div>
-            <p className="text-indigo-100 text-sm mb-1">Active Frameworks</p>
+            <p className="text-violet-100 text-sm mb-1">Active Frameworks</p>
             <p className="text-4xl font-bold">{data.frameworks.length}</p>
           </div>
         </div>

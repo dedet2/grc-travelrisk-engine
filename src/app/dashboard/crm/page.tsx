@@ -42,7 +42,7 @@ function getStatusColor(status: string): string {
     case 'customer':
       return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700';
     default:
-      return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600';
+      return 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 border-violet-300 dark:border-violet-600';
   }
 }
 
@@ -59,7 +59,7 @@ function getStageColor(stage: string): string {
     case 'closed-lost':
       return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300';
     default:
-      return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+      return 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200';
   }
 }
 
@@ -189,10 +189,10 @@ export default function CRMPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 dark:bg-violet-700 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div key={i} className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -238,10 +238,10 @@ export default function CRMPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">CRM & Pipeline</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Manage contacts, deals, and sales pipeline</p>
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-violet-50">CRM & Pipeline</h1>
+          <p className="text-violet-600 dark:text-violet-300 mt-2">Manage contacts, deals, and sales pipeline</p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -250,7 +250,7 @@ export default function CRMPage() {
           <button
             onClick={fetchCRMData}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50 text-sm"
+            className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors disabled:opacity-50 text-sm"
           >
             Refresh
           </button>
@@ -258,8 +258,8 @@ export default function CRMPage() {
             onClick={() => setActiveView('pipeline')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeView === 'pipeline'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-violet-600 text-white'
+                : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
             }`}
           >
             Pipeline
@@ -268,8 +268,8 @@ export default function CRMPage() {
             onClick={() => setActiveView('contacts')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeView === 'contacts'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-violet-600 text-white'
+                : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
             }`}
           >
             Contacts
@@ -279,36 +279,36 @@ export default function CRMPage() {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-indigo-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Contacts</p>
-          <p className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-violet-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Total Contacts</p>
+          <p className="text-4xl font-bold text-violet-600 dark:text-violet-400">
             {data.metrics.totalContacts}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Active relationships</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Active relationships</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Active Pipeline</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Active Pipeline</p>
           <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
             ${data.metrics.activePipeline >= 1000 ? `${(data.metrics.activePipeline / 1000).toFixed(0)}k` : data.metrics.activePipeline}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">In-progress deals</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">In-progress deals</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Closure Rate</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Closure Rate</p>
           <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
             {data.metrics.closureRate}%
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Won vs total</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Won vs total</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Avg Deal Value</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Avg Deal Value</p>
           <p className="text-4xl font-bold text-purple-600 dark:text-purple-400">
             ${data.metrics.averageDealValue >= 1000 ? `${(data.metrics.averageDealValue / 1000).toFixed(0)}k` : data.metrics.averageDealValue}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Per opportunity</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Per opportunity</p>
         </div>
       </div>
 
@@ -316,7 +316,7 @@ export default function CRMPage() {
         <>
           {/* Pipeline Stages Kanban */}
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Deal Pipeline</h2>
+            <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50 mb-6">Deal Pipeline</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {stageOrder.map((stage) => {
                 const stageDeals = dealsByStage[stage] || [];
@@ -325,10 +325,10 @@ export default function CRMPage() {
                 return (
                   <div
                     key={stage}
-                    className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+                    className="bg-violet-50/30 dark:bg-violet-800 rounded-lg p-4 border border-violet-200 dark:border-violet-700"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+                      <h3 className="font-bold text-violet-950 dark:text-violet-50 text-sm">
                         {stageEmojis[stage]} {stageLabels[stage]}
                       </h3>
                       <span className={`px-2 py-1 rounded text-xs font-medium ${getStageColor(stage)}`}>
@@ -336,7 +336,7 @@ export default function CRMPage() {
                       </span>
                     </div>
 
-                    <p className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                    <p className="text-xl font-bold text-violet-950 dark:text-violet-50 mb-4">
                       ${stageValue >= 1000 ? `${(stageValue / 1000).toFixed(0)}k` : stageValue}
                     </p>
 
@@ -344,23 +344,23 @@ export default function CRMPage() {
                       {stageDeals.map((deal) => (
                         <div
                           key={deal.id}
-                          className="bg-white dark:bg-gray-700 rounded p-3 border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow"
+                          className="bg-white dark:bg-violet-700 rounded p-3 border border-violet-200 dark:border-violet-600 hover:shadow-md transition-shadow"
                         >
-                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{deal.title}</p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">${deal.value.toLocaleString()}</p>
-                          <div className="mt-2 bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                          <p className="text-sm font-medium text-violet-950 dark:text-violet-50">{deal.title}</p>
+                          <p className="text-xs text-violet-600 dark:text-violet-300 mt-1">${deal.value.toLocaleString()}</p>
+                          <div className="mt-2 bg-violet-200 dark:bg-violet-600 rounded-full h-1.5">
                             <div
-                              className="bg-indigo-600 h-1.5 rounded-full"
+                              className="bg-violet-600 h-1.5 rounded-full"
                               style={{ width: `${deal.probability}%` }}
                             />
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          <p className="text-xs text-violet-500 dark:text-violet-300 mt-1">
                             {deal.probability}% • {deal.contact}
                           </p>
                         </div>
                       ))}
                       {stageDeals.length === 0 && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-4">
+                        <p className="text-xs text-violet-500 dark:text-violet-300 text-center py-4">
                           No deals
                         </p>
                       )}
@@ -372,8 +372,8 @@ export default function CRMPage() {
           </div>
 
           {/* Pipeline Summary Bar */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Pipeline Distribution</h3>
+          <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-bold text-violet-950 dark:text-violet-50 mb-4">Pipeline Distribution</h3>
             <div className="flex h-8 rounded-lg overflow-hidden">
               {stageOrder.map((stage) => {
                 const stageDeals = dealsByStage[stage] || [];
@@ -411,7 +411,7 @@ export default function CRMPage() {
                 return (
                   <div key={stage} className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded ${colors[stage]}`} />
-                    <span className="text-xs text-gray-600 dark:text-gray-400">{stageLabels[stage]}</span>
+                    <span className="text-xs text-violet-600 dark:text-violet-300">{stageLabels[stage]}</span>
                   </div>
                 );
               })}
@@ -420,23 +420,23 @@ export default function CRMPage() {
         </>
       ) : (
         /* Contacts List */
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-          <div className="border-b border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Contacts</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm overflow-hidden">
+          <div className="border-b border-violet-200 dark:border-violet-700 p-6">
+            <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50">Contacts</h2>
+            <p className="text-sm text-violet-600 dark:text-violet-300 mt-1">
               {data.contacts.length} contacts in database
             </p>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+              <thead className="bg-violet-50/30 dark:bg-violet-700 border-b border-violet-200 dark:border-violet-600">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900 dark:text-gray-100">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900 dark:text-gray-100">Email</th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900 dark:text-gray-100">Company</th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900 dark:text-gray-100">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900 dark:text-gray-100">Added</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-violet-950 dark:text-violet-50">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-violet-950 dark:text-violet-50">Email</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-violet-950 dark:text-violet-50">Company</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-violet-950 dark:text-violet-50">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-violet-950 dark:text-violet-50">Added</th>
                 </tr>
               </thead>
               <tbody>
@@ -444,15 +444,15 @@ export default function CRMPage() {
                   data.contacts.slice(0, 20).map((contact) => (
                     <tr
                       key={contact.id}
-                      className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="border-b border-violet-200 dark:border-violet-700 hover:bg-violet-50/30 dark:hover:bg-violet-700/50 transition-colors"
                     >
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      <td className="px-6 py-4 text-sm font-medium text-violet-950 dark:text-violet-50">
                         {contact.name}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                      <td className="px-6 py-4 text-sm text-violet-600 dark:text-violet-300">
                         {contact.email}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                      <td className="px-6 py-4 text-sm text-violet-600 dark:text-violet-300">
                         {contact.company}
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -462,14 +462,14 @@ export default function CRMPage() {
                           {contact.status.charAt(0).toUpperCase() + contact.status.slice(1)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                      <td className="px-6 py-4 text-sm text-violet-600 dark:text-violet-300">
                         {new Date(contact.createdAt).toLocaleDateString()}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    <td colSpan={5} className="px-6 py-12 text-center text-violet-500 dark:text-violet-300">
                       No contacts found
                     </td>
                   </tr>

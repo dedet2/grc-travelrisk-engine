@@ -57,7 +57,7 @@ function StatusIndicator({ status }: { status: string }) {
         ? 'bg-blue-500 animate-pulse'
         : status === 'failed'
           ? 'bg-red-500'
-          : 'bg-gray-500';
+          : 'bg-violet-500';
 
   return <div className={`w-2 h-2 rounded-full ${statusColor}`} />;
 }
@@ -65,10 +65,10 @@ function StatusIndicator({ status }: { status: string }) {
 function LoadingSkeleton() {
   return (
     <div className="space-y-8">
-      <div className="h-12 bg-gray-700 rounded animate-pulse w-1/3" />
+      <div className="h-12 bg-violet-700 rounded animate-pulse w-1/3" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse border border-gray-700" />
+          <div key={i} className="bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse border border-violet-700" />
         ))}
       </div>
     </div>
@@ -77,7 +77,7 @@ function LoadingSkeleton() {
 
 function ErrorBoundary({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
-    <div className="bg-gray-800 border border-red-600 rounded-lg p-6">
+    <div className="bg-violet-800 border border-red-600 rounded-lg p-6">
       <h2 className="text-lg font-bold text-red-400 mb-2">Failed to load command center</h2>
       <p className="text-red-300 mb-4">{error}</p>
       <button
@@ -301,7 +301,7 @@ function getStatusColor(
 ): string {
   switch (status) {
     case 'lead':
-      return 'bg-gray-700 text-gray-200';
+      return 'bg-violet-700 text-violet-100';
     case 'qualified':
       return 'bg-blue-900 text-blue-200';
     case 'engaged':
@@ -311,7 +311,7 @@ function getStatusColor(
     case 'closed':
       return 'bg-emerald-900 text-emerald-200';
     default:
-      return 'bg-gray-700 text-gray-200';
+      return 'bg-violet-700 text-violet-100';
   }
 }
 
@@ -319,7 +319,7 @@ function getIcpScoreColor(score: number): string {
   if (score >= 90) return 'text-emerald-400';
   if (score >= 80) return 'text-blue-400';
   if (score >= 70) return 'text-amber-400';
-  return 'text-gray-400';
+  return 'text-violet-300';
 }
 
 export default function DashboardPage() {
@@ -377,13 +377,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 bg-gray-900 text-white">
+    <div className="space-y-8 bg-violet-950 text-white">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-8 border border-gray-700">
+      <div className="bg-gradient-to-r from-blue-900 to-violet-900 rounded-lg p-8 border border-violet-700">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold mb-2">Welcome back, Dr. Dédé</h1>
-            <p className="text-gray-300">
+            <p className="text-violet-200">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -391,7 +391,7 @@ export default function DashboardPage() {
                 day: 'numeric',
               })}
             </p>
-            <p className="text-sm text-gray-400 mt-2">Your AI empire awaits. How are you feeling today?</p>
+            <p className="text-sm text-violet-300 mt-2">Your AI empire awaits. How are you feeling today?</p>
           </div>
           <div className="text-6xl">🎯</div>
         </div>
@@ -400,8 +400,8 @@ export default function DashboardPage() {
       {/* Top Row KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Revenue Pipeline */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Revenue Pipeline</p>
+        <div className="bg-violet-800 rounded-lg p-6 border border-violet-700 hover:border-violet-600 transition-colors">
+          <p className="text-violet-300 text-sm font-medium mb-2">Revenue Pipeline</p>
           <div className="flex items-end justify-between mb-3">
             <div>
               <p className="text-3xl font-bold text-green-400">
@@ -409,25 +409,25 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <p className="text-gray-500 text-xs">{stats.activeDealCount} active deals</p>
+          <p className="text-violet-400 text-xs">{stats.activeDealCount} active deals</p>
         </div>
 
         {/* Active Prospects */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Active Prospects</p>
+        <div className="bg-violet-800 rounded-lg p-6 border border-violet-700 hover:border-violet-600 transition-colors">
+          <p className="text-violet-300 text-sm font-medium mb-2">Active Prospects</p>
           <div className="flex items-end justify-between mb-3">
             <div>
               <p className="text-3xl font-bold text-purple-400">{stats.prospectCount}</p>
             </div>
           </div>
-          <p className="text-gray-500 text-xs">
+          <p className="text-violet-400 text-xs">
             {stats.prospectConversionRate.toFixed(1)}% conversion rate
           </p>
         </div>
 
         {/* Agent Fleet Status */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Agent Fleet Status</p>
+        <div className="bg-violet-800 rounded-lg p-6 border border-violet-700 hover:border-violet-600 transition-colors">
+          <p className="text-violet-300 text-sm font-medium mb-2">Agent Fleet Status</p>
           <div className="flex items-end justify-between mb-3">
             <div>
               <p className="text-3xl font-bold text-blue-400">
@@ -435,43 +435,43 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <p className="text-gray-500 text-xs">
+          <p className="text-violet-400 text-xs">
             of {stats.agentFleetMax} agents active · {stats.agentSuccessRate.toFixed(1)}% success
           </p>
         </div>
 
         {/* Upcoming Schedule */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Upcoming Schedule</p>
+        <div className="bg-violet-800 rounded-lg p-6 border border-violet-700 hover:border-violet-600 transition-colors">
+          <p className="text-violet-300 text-sm font-medium mb-2">Upcoming Schedule</p>
           <div className="space-y-2">
             <p className="text-sm text-white font-medium">Executive briefing - AppViewX</p>
-            <p className="text-xs text-gray-500">Tomorrow at 2:00 PM EST</p>
+            <p className="text-xs text-violet-400">Tomorrow at 2:00 PM EST</p>
             <p className="text-xs text-amber-400 mt-2">Reminder: Annual checkup due</p>
           </div>
         </div>
       </div>
 
       {/* Prospect Pipeline Section */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-violet-800 rounded-lg p-6 border border-violet-700">
         <h2 className="text-lg font-bold mb-4">CISO Prospect Pipeline</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">Name</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">Company</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">Status</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">ICP Fit</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">Last Contact</th>
-                <th className="text-left py-3 px-4 text-gray-400 font-medium">Next Action</th>
+              <tr className="border-b border-violet-700">
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">Name</th>
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">Company</th>
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">ICP Fit</th>
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">Last Contact</th>
+                <th className="text-left py-3 px-4 text-violet-300 font-medium">Next Action</th>
               </tr>
             </thead>
             <tbody>
               {stats.prospects && stats.prospects.length > 0 ? (
                 stats.prospects.map((prospect) => (
-                  <tr key={prospect.id} className="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+                  <tr key={prospect.id} className="border-b border-violet-700 hover:bg-violet-700 transition-colors">
                     <td className="py-3 px-4 font-medium">{prospect.name}</td>
-                    <td className="py-3 px-4 text-gray-400">{prospect.company}</td>
+                    <td className="py-3 px-4 text-violet-300">{prospect.company}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
@@ -484,13 +484,13 @@ export default function DashboardPage() {
                     <td className={`py-3 px-4 font-medium ${getIcpScoreColor(prospect.icpFitScore)}`}>
                       {prospect.icpFitScore}%
                     </td>
-                    <td className="py-3 px-4 text-gray-400 text-xs">{prospect.lastContact}</td>
-                    <td className="py-3 px-4 text-gray-300 text-xs">{prospect.nextAction}</td>
+                    <td className="py-3 px-4 text-violet-300 text-xs">{prospect.lastContact}</td>
+                    <td className="py-3 px-4 text-violet-200 text-xs">{prospect.nextAction}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500">
+                  <td colSpan={6} className="py-8 text-center text-violet-400">
                     No prospects loaded
                   </td>
                 </tr>
@@ -501,19 +501,19 @@ export default function DashboardPage() {
       </div>
 
       {/* Outreach Campaigns Section */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-violet-800 rounded-lg p-6 border border-violet-700">
         <h2 className="text-lg font-bold mb-4">Outreach Campaigns</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stats.campaigns && stats.campaigns.length > 0 ? (
             stats.campaigns.map((campaign) => (
               <div
                 key={campaign.id}
-                className="border border-gray-700 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                className="border border-violet-700 rounded-lg p-4 hover:bg-violet-700 transition-colors"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="font-semibold">{campaign.name}</h3>
-                    <p className="text-xs text-gray-500">{campaign.type}</p>
+                    <p className="text-xs text-violet-400">{campaign.type}</p>
                   </div>
                   <span
                     className={`px-2 py-1 rounded text-xs font-bold ${
@@ -521,7 +521,7 @@ export default function DashboardPage() {
                         ? 'bg-emerald-900 text-emerald-200'
                         : campaign.status === 'paused'
                           ? 'bg-amber-900 text-amber-200'
-                          : 'bg-gray-700 text-gray-200'
+                          : 'bg-violet-700 text-violet-100'
                     }`}
                   >
                     {campaign.status}
@@ -530,45 +530,45 @@ export default function DashboardPage() {
 
                 <div className="space-y-3">
                   <div>
-                    <p className="text-gray-500 text-xs mb-1">Target Contacts</p>
+                    <p className="text-violet-400 text-xs mb-1">Target Contacts</p>
                     <p className="font-semibold">{campaign.targetContacts}</p>
                   </div>
 
                   <div>
-                    <p className="text-gray-500 text-xs mb-1">Response Rate</p>
+                    <p className="text-violet-400 text-xs mb-1">Response Rate</p>
                     <div className="flex items-baseline gap-2">
                       <p className="font-semibold text-blue-400">{campaign.responseRate.toFixed(1)}%</p>
-                      <p className="text-xs text-gray-500">({campaign.responsesReceived} responses)</p>
+                      <p className="text-xs text-violet-400">({campaign.responsesReceived} responses)</p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-gray-500 text-xs mb-1">Meetings Booked</p>
+                    <p className="text-violet-400 text-xs mb-1">Meetings Booked</p>
                     <p className="font-semibold text-emerald-400">{campaign.meetingsBooked}</p>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="col-span-3 text-gray-500 text-center py-8">No campaigns loaded</p>
+            <p className="col-span-3 text-violet-400 text-center py-8">No campaigns loaded</p>
           )}
         </div>
       </div>
 
       {/* AI Agent Activity Section */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-violet-800 rounded-lg p-6 border border-violet-700">
         <h2 className="text-lg font-bold mb-4">AI Agent Activity</h2>
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {Array.isArray(stats.recentActivity) && stats.recentActivity.length > 0 ? (
             stats.recentActivity.map((activity, idx) => (
-              <div key={idx} className="border border-gray-700 rounded-lg p-4 hover:bg-gray-700 transition-colors">
+              <div key={idx} className="border border-violet-700 rounded-lg p-4 hover:bg-violet-700 transition-colors">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3 flex-1">
                     <StatusIndicator status={activity.status} />
                     <div className="flex-1">
                       <p className="font-semibold text-white">{activity.agent}</p>
-                      <p className="text-sm text-gray-400">{activity.action}</p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-sm text-violet-300">{activity.action}</p>
+                      <p className="text-xs text-violet-400 mt-1">
                         {new Date(activity.timestamp).toLocaleTimeString()} · {activity.latencyMs}ms
                       </p>
                     </div>
@@ -588,7 +588,7 @@ export default function DashboardPage() {
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-8">No recent activity</p>
+            <p className="text-violet-400 text-center py-8">No recent activity</p>
           )}
         </div>
       </div>
@@ -598,50 +598,50 @@ export default function DashboardPage() {
         <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link href="/dashboard/lead-pipeline">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">📊</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">View Prospect Pipeline</p>
-              <p className="text-gray-500 text-xs">Manage CISO prospects and deals</p>
+              <p className="text-violet-400 text-xs">Manage CISO prospects and deals</p>
             </button>
           </Link>
 
           <Link href="/dashboard/assessments">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">📋</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">New Client Assessment</p>
-              <p className="text-gray-500 text-xs">Create a client GRC assessment</p>
+              <p className="text-violet-400 text-xs">Create a client GRC assessment</p>
             </button>
           </Link>
 
           <Link href="/dashboard/outreach">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">📧</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">Outreach Dashboard</p>
-              <p className="text-gray-500 text-xs">Monitor campaign metrics</p>
+              <p className="text-violet-400 text-xs">Monitor campaign metrics</p>
             </button>
           </Link>
 
           <Link href="/dashboard/travel-risk">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">✈️</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">Travel Risk Analysis</p>
-              <p className="text-gray-500 text-xs">Your travel advisories & client deliverables</p>
+              <p className="text-violet-400 text-xs">Your travel advisories & client deliverables</p>
             </button>
           </Link>
 
           <Link href="/dashboard/speaking">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">🎤</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">Speaking Calendar</p>
-              <p className="text-gray-500 text-xs">Conferences, panels, and appearances</p>
+              <p className="text-violet-400 text-xs">Conferences, panels, and appearances</p>
             </button>
           </Link>
 
           <Link href="/dashboard/reports">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+            <button className="w-full bg-violet-800 hover:bg-violet-700 border border-violet-700 hover:border-violet-600 rounded-lg p-4 text-left transition-all group">
               <div className="text-2xl mb-2">📄</div>
               <p className="font-semibold group-hover:text-blue-400 transition-colors">Generate Executive Report</p>
-              <p className="text-gray-500 text-xs">Create custom reports and presentations</p>
+              <p className="text-violet-400 text-xs">Create custom reports and presentations</p>
             </button>
           </Link>
         </div>
@@ -649,7 +649,7 @@ export default function DashboardPage() {
 
       {/* Footer with Last Updated */}
       {lastUpdated && (
-        <div className="text-center text-xs text-gray-500 py-4">
+        <div className="text-center text-xs text-violet-400 py-4">
           Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
       )}

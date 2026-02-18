@@ -93,19 +93,19 @@ const stageLabels: Record<PipelineStage, string> = {
 };
 
 const stageColors: Record<PipelineStage, string> = {
-  cold: 'bg-slate-700/30 border-slate-600/30',
+  cold: 'bg-violet-700/30 border-violet-600/30',
   warm: 'bg-blue-700/20 border-blue-600/30',
   hot: 'bg-orange-700/20 border-orange-600/30',
   qualified: 'bg-purple-700/20 border-purple-600/30',
-  nurture: 'bg-indigo-700/20 border-indigo-600/30',
+  nurture: 'bg-violet-700/20 border-violet-600/30',
 };
 
 const stageBadgeColors: Record<PipelineStage, string> = {
-  cold: 'bg-slate-700/40 text-slate-300 border-slate-600/50',
+  cold: 'bg-violet-700/40 text-violet-300 border-violet-600/50',
   warm: 'bg-blue-700/40 text-blue-300 border-blue-600/50',
   hot: 'bg-orange-700/40 text-orange-300 border-orange-600/50',
   qualified: 'bg-emerald-700/40 text-emerald-300 border-emerald-600/50',
-  nurture: 'bg-indigo-700/40 text-indigo-300 border-indigo-600/50',
+  nurture: 'bg-violet-700/40 text-violet-300 border-violet-600/50',
 };
 
 const companySizeLabels: Record<string, string> = {
@@ -397,14 +397,14 @@ export default function LeadPipelinePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-slate-100">
+      <div className="min-h-screen bg-gradient-to-br from-violet-900 via-violet-800 to-violet-900 p-6 text-violet-100">
         <div className="mb-8">
-          <div className="h-10 bg-slate-700/50 rounded w-1/3 animate-pulse mb-2" />
-          <div className="h-5 bg-slate-700/50 rounded w-1/4 animate-pulse" />
+          <div className="h-10 bg-violet-700/50 rounded w-1/3 animate-pulse mb-2" />
+          <div className="h-5 bg-violet-700/50 rounded w-1/4 animate-pulse" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 h-32 animate-pulse" />
+            <div key={i} className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -416,7 +416,7 @@ export default function LeadPipelinePage() {
 
   if (error && leads.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-slate-100">
+      <div className="min-h-screen bg-gradient-to-br from-violet-900 via-violet-800 to-violet-900 p-6 text-violet-100">
         <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6">
           <h2 className="text-lg font-bold text-red-400 mb-2">Failed to load leads (using mock data)</h2>
           <p className="text-red-300">{error || 'Unknown error occurred'}</p>
@@ -428,63 +428,63 @@ export default function LeadPipelinePage() {
   const stages: PipelineStage[] = ['cold', 'warm', 'hot', 'qualified', 'nurture'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-violet-800 to-violet-900 p-6 text-violet-100">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
           Lead Pipeline
         </h1>
-        <p className="text-slate-400">Track and manage {displayMetrics.totalLeads} leads across {stages.length} pipeline stages</p>
+        <p className="text-violet-400">Track and manage {displayMetrics.totalLeads} leads across {stages.length} pipeline stages</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {/* Total Leads */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-cyan-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Total Leads</h3>
+            <h3 className="text-sm font-medium text-violet-400">Total Leads</h3>
             <span className="text-cyan-400">
               <IconUsers />
             </span>
           </div>
           <div className="text-3xl font-bold text-white">{displayMetrics.totalLeads}</div>
-          <p className="text-xs text-slate-400 mt-3">In pipeline</p>
+          <p className="text-xs text-violet-400 mt-3">In pipeline</p>
         </div>
 
         {/* Pipeline Value */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-amber-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-amber-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Avg Deal Size</h3>
+            <h3 className="text-sm font-medium text-violet-400">Avg Deal Size</h3>
             <span className="text-amber-400">
               <IconZap />
             </span>
           </div>
           <div className="text-3xl font-bold text-white">${(avgDealSize / 1000).toFixed(0)}K</div>
-          <p className="text-xs text-slate-400 mt-3">Average revenue potential</p>
+          <p className="text-xs text-violet-400 mt-3">Average revenue potential</p>
         </div>
 
         {/* Qualified Leads */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Qualified Leads</h3>
+            <h3 className="text-sm font-medium text-violet-400">Qualified Leads</h3>
             <span className="text-purple-400">
               <IconTrendingUp />
             </span>
           </div>
           <div className="text-3xl font-bold text-white">{displayMetrics.qualifiedLeads}</div>
-          <p className="text-xs text-slate-400 mt-3">Ready to close</p>
+          <p className="text-xs text-violet-400 mt-3">Ready to close</p>
         </div>
 
         {/* Avg Score */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-emerald-500/30 transition-colors">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg p-6 backdrop-blur-sm hover:border-emerald-500/30 transition-colors">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-slate-400">Avg ICP Score</h3>
+            <h3 className="text-sm font-medium text-violet-400">Avg ICP Score</h3>
             <span className="text-emerald-400">
               <IconTarget />
             </span>
           </div>
           <div className="text-3xl font-bold text-white">{Math.round(displayMetrics.averageScore)}</div>
-          <p className="text-xs text-slate-400 mt-3">Out of 100</p>
+          <p className="text-xs text-violet-400 mt-3">Out of 100</p>
         </div>
       </div>
 
@@ -495,7 +495,7 @@ export default function LeadPipelinePage() {
           className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
             viewMode === 'kanban'
               ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20'
-              : 'bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-slate-600'
+              : 'bg-violet-800/50 border border-violet-700/50 text-violet-300 hover:border-violet-600'
           }`}
         >
           Kanban View
@@ -505,7 +505,7 @@ export default function LeadPipelinePage() {
           className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
             viewMode === 'table'
               ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20'
-              : 'bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-slate-600'
+              : 'bg-violet-800/50 border border-violet-700/50 text-violet-300 hover:border-violet-600'
           }`}
         >
           Table View
@@ -523,7 +523,7 @@ export default function LeadPipelinePage() {
               <div key={stage} className="flex flex-col">
                 <div className="mb-3">
                   <h3 className="font-semibold text-white text-sm">{stageLabels[stage]}</h3>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-violet-400 mt-1">
                     {stageLeads.length} lead{stageLeads.length !== 1 ? 's' : ''} • ${(stageValue / 1000).toFixed(0)}K
                   </p>
                 </div>
@@ -536,21 +536,21 @@ export default function LeadPipelinePage() {
                       <p className="font-medium text-white text-sm mb-1 group-hover:text-cyan-400 line-clamp-1">
                         {lead.companyName}
                       </p>
-                      <p className="text-xs text-slate-400 mb-2">{lead.contactName}</p>
+                      <p className="text-xs text-violet-400 mb-2">{lead.contactName}</p>
 
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-cyan-400 font-semibold text-xs">${(lead.revenue || 100000) / 1000}K</span>
-                        <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-700/50 text-slate-200`}>
+                        <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium bg-violet-700/50 text-violet-200`}>
                           {companySizeLabels[lead.companySize]}
                         </span>
                       </div>
 
                       <div className="space-y-1">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs text-slate-400">Score:</span>
+                          <span className="text-xs text-violet-400">Score:</span>
                           <span className="text-xs font-semibold text-cyan-300">{Math.round(lead.score)}</span>
                         </div>
-                        <div className="bg-slate-700/30 rounded-full h-1.5 border border-slate-600/30">
+                        <div className="bg-violet-700/30 rounded-full h-1.5 border border-violet-600/30">
                           <div
                             className="bg-gradient-to-r from-violet-500 to-cyan-400 h-1.5 rounded-full"
                             style={{ width: `${Math.min(lead.score, 100)}%` }}
@@ -560,7 +560,7 @@ export default function LeadPipelinePage() {
                     </div>
                   ))}
                   {stageLeads.length === 0 && (
-                    <p className="text-xs text-slate-500 text-center py-8">No leads</p>
+                    <p className="text-xs text-violet-500 text-center py-8">No leads</p>
                   )}
                 </div>
               </div>
@@ -571,14 +571,14 @@ export default function LeadPipelinePage() {
 
       {/* Table View */}
       {viewMode === 'table' && (
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg backdrop-blur-sm overflow-hidden">
+        <div className="bg-violet-800/50 border border-violet-700/50 rounded-lg backdrop-blur-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-700/50 bg-slate-700/20">
+                <tr className="border-b border-violet-700/50 bg-violet-700/20">
                   <th
                     onClick={() => handleSort('companyName')}
-                    className="text-left py-4 px-6 text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-300 transition-colors"
+                    className="text-left py-4 px-6 text-xs font-semibold text-violet-400 cursor-pointer hover:text-violet-300 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       Company {sortConfig?.key === 'companyName' && <IconArrowUp />}
@@ -586,7 +586,7 @@ export default function LeadPipelinePage() {
                   </th>
                   <th
                     onClick={() => handleSort('contactName')}
-                    className="text-left py-4 px-6 text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-300 transition-colors"
+                    className="text-left py-4 px-6 text-xs font-semibold text-violet-400 cursor-pointer hover:text-violet-300 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       Contact {sortConfig?.key === 'contactName' && <IconArrowUp />}
@@ -594,7 +594,7 @@ export default function LeadPipelinePage() {
                   </th>
                   <th
                     onClick={() => handleSort('industry')}
-                    className="text-left py-4 px-6 text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-300 transition-colors"
+                    className="text-left py-4 px-6 text-xs font-semibold text-violet-400 cursor-pointer hover:text-violet-300 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       Industry {sortConfig?.key === 'industry' && <IconArrowUp />}
@@ -602,7 +602,7 @@ export default function LeadPipelinePage() {
                   </th>
                   <th
                     onClick={() => handleSort('revenue')}
-                    className="text-left py-4 px-6 text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-300 transition-colors"
+                    className="text-left py-4 px-6 text-xs font-semibold text-violet-400 cursor-pointer hover:text-violet-300 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       Value {sortConfig?.key === 'revenue' && <IconArrowUp />}
@@ -610,32 +610,32 @@ export default function LeadPipelinePage() {
                   </th>
                   <th
                     onClick={() => handleSort('score')}
-                    className="text-left py-4 px-6 text-xs font-semibold text-slate-400 cursor-pointer hover:text-slate-300 transition-colors"
+                    className="text-left py-4 px-6 text-xs font-semibold text-violet-400 cursor-pointer hover:text-violet-300 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       Score {sortConfig?.key === 'score' && <IconArrowUp />}
                     </div>
                   </th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Stage</th>
-                  <th className="text-left py-4 px-6 text-xs font-semibold text-slate-400">Company Size</th>
+                  <th className="text-left py-4 px-6 text-xs font-semibold text-violet-400">Stage</th>
+                  <th className="text-left py-4 px-6 text-xs font-semibold text-violet-400">Company Size</th>
                 </tr>
               </thead>
               <tbody>
                 {getSortedLeads().map((lead, idx) => (
                   <tr
                     key={lead.leadId}
-                    className={`border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors ${
-                      idx % 2 === 0 ? 'bg-slate-800/20' : ''
+                    className={`border-b border-violet-700/30 hover:bg-violet-700/20 transition-colors ${
+                      idx % 2 === 0 ? 'bg-violet-800/20' : ''
                     }`}
                   >
                     <td className="py-4 px-6 font-medium text-white">{lead.companyName}</td>
-                    <td className="py-4 px-6 text-slate-300 text-sm">{lead.contactName}</td>
-                    <td className="py-4 px-6 text-slate-300 text-sm">{lead.industry}</td>
+                    <td className="py-4 px-6 text-violet-300 text-sm">{lead.contactName}</td>
+                    <td className="py-4 px-6 text-violet-300 text-sm">{lead.industry}</td>
                     <td className="py-4 px-6 text-cyan-400 font-semibold">${((lead.revenue || 100000) / 1000).toFixed(0)}K</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         <span className="text-cyan-300 font-semibold text-sm">{Math.round(lead.score)}</span>
-                        <div className="bg-slate-700/30 rounded-full h-1 w-12 border border-slate-600/30">
+                        <div className="bg-violet-700/30 rounded-full h-1 w-12 border border-violet-600/30">
                           <div
                             className="bg-gradient-to-r from-violet-500 to-cyan-400 h-1 rounded-full"
                             style={{ width: `${Math.min(lead.score, 100)}%` }}
@@ -648,7 +648,7 @@ export default function LeadPipelinePage() {
                         {stageLabels[lead.stage]}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-slate-300 text-sm">{companySizeLabels[lead.companySize]}</td>
+                    <td className="py-4 px-6 text-violet-300 text-sm">{companySizeLabels[lead.companySize]}</td>
                   </tr>
                 ))}
               </tbody>

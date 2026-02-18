@@ -34,7 +34,7 @@ function getRiskColor(riskLevel: string): { bg: string; text: string; indicator:
     case 'Critical':
       return { bg: 'bg-red-100', text: 'text-red-700', indicator: 'bg-red-600' };
     default:
-      return { bg: 'bg-gray-100', text: 'text-gray-700', indicator: 'bg-gray-600' };
+      return { bg: 'bg-violet-100', text: 'text-violet-700', indicator: 'bg-violet-600' };
   }
 }
 
@@ -45,9 +45,9 @@ function getStatusColor(status: string): string {
     case 'In Progress':
       return 'bg-blue-100 text-blue-700';
     case 'Scheduled':
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-violet-100 text-violet-700';
     default:
-      return 'bg-gray-100 text-gray-700';
+      return 'bg-violet-100 text-violet-700';
   }
 }
 
@@ -236,10 +236,10 @@ export default function AssessmentsPage() {
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3" />
+        <div className="h-12 bg-violet-200 dark:bg-violet-700 rounded animate-pulse w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div key={i} className="bg-white dark:bg-violet-800 p-6 rounded-lg shadow h-32 animate-pulse" />
           ))}
         </div>
       </div>
@@ -260,12 +260,12 @@ export default function AssessmentsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Risk Assessments</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-4xl font-bold text-violet-950 dark:text-violet-50">Risk Assessments</h1>
+          <p className="text-violet-600 dark:text-violet-300 mt-2">
             Create and manage risk assessments against various GRC frameworks. Track implementation status of controls.
           </p>
           {lastUpdated && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-violet-500 dark:text-violet-300 mt-2">
               Last updated: {lastUpdated.toLocaleTimeString()}
             </p>
           )}
@@ -273,7 +273,7 @@ export default function AssessmentsPage() {
         <button
           onClick={fetchAssessmentData}
           disabled={loading}
-          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+          className="px-4 py-2 bg-violet-200 dark:bg-violet-700 text-violet-950 dark:text-violet-50 rounded-lg hover:bg-violet-300 dark:hover:bg-violet-600 font-medium transition-colors disabled:opacity-50"
         >
           Refresh
         </button>
@@ -282,51 +282,51 @@ export default function AssessmentsPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Assessments */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Assessments</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-blue-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Total Assessments</p>
           <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{data.kpis.totalAssessments}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">All frameworks</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">All frameworks</p>
         </div>
 
         {/* Completed */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Completed</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-emerald-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Completed</p>
           <p className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">{data.kpis.completed}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">
             {((data.kpis.completed / data.kpis.totalAssessments) * 100).toFixed(0)}% completion
           </p>
         </div>
 
         {/* In Progress */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-amber-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">In Progress</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-amber-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">In Progress</p>
           <p className="text-4xl font-bold text-amber-600 dark:text-amber-400">{data.kpis.inProgress}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Active assessments</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Active assessments</p>
         </div>
 
         {/* Critical Findings */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-red-600">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Critical Findings</p>
+        <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm p-6 border-l-4 border-red-600">
+          <p className="text-sm font-medium text-violet-600 dark:text-violet-300 mb-1">Critical Findings</p>
           <p className="text-4xl font-bold text-red-600 dark:text-red-400">{data.kpis.criticalFindings}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Require immediate action</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 mt-2">Require immediate action</p>
         </div>
       </div>
 
       {/* Assessments Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-violet-800 rounded-lg shadow-sm overflow-hidden">
         {/* Toolbar */}
-        <div className="border-b border-gray-200 dark:border-gray-700 p-6">
+        <div className="border-b border-violet-200 dark:border-violet-700 p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Assessments</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <h2 className="text-xl font-bold text-violet-950 dark:text-violet-50">Assessments</h2>
+              <p className="text-sm text-violet-600 dark:text-violet-300 mt-1">
                 {filteredAssessments?.length || 0} assessment{filteredAssessments?.length !== 1 ? 's' : ''}
               </p>
             </div>
 
             {/* Search */}
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-violet-400">
                 <SearchIcon />
               </div>
               <input
@@ -334,7 +334,7 @@ export default function AssessmentsPage() {
                 placeholder="Search assessments..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 py-2 w-64 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 text-sm"
+                className="pl-10 pr-3 py-2 w-64 bg-violet-50/30 dark:bg-violet-700 border border-violet-300 dark:border-violet-600 rounded-lg text-violet-950 dark:text-violet-50 placeholder-violet-500 dark:placeholder-violet-400 text-sm"
               />
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function AssessmentsPage() {
               className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'all'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
               }`}
             >
               All
@@ -356,7 +356,7 @@ export default function AssessmentsPage() {
               className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'completed'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
               }`}
             >
               Completed
@@ -366,7 +366,7 @@ export default function AssessmentsPage() {
               className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'inProgress'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
               }`}
             >
               In Progress
@@ -376,7 +376,7 @@ export default function AssessmentsPage() {
               className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
                 activeTab === 'scheduled'
                   ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : 'bg-violet-100 dark:bg-violet-700 text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-600'
               }`}
             >
               Scheduled
@@ -388,46 +388,46 @@ export default function AssessmentsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+              <tr className="border-b border-violet-200 dark:border-violet-700 bg-violet-50/30 dark:bg-violet-950/50">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Assessment Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Framework
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Risk Level
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Score
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Due Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-violet-700 dark:text-violet-200 uppercase tracking-wider">
                   Assessor
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-violet-200 dark:divide-violet-700">
               {filteredAssessments && filteredAssessments.length > 0 ? (
                 filteredAssessments.map((assessment) => {
                   const riskColor = getRiskColor(assessment.riskLevel);
                   const scoreColor = getScoreColor(assessment.score);
 
                   return (
-                    <tr key={assessment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <tr key={assessment.id} className="hover:bg-violet-50/30 dark:hover:bg-violet-700/50 transition-colors">
                       {/* Assessment Name */}
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                      <td className="px-6 py-4 text-sm font-medium text-violet-950 dark:text-violet-50">
                         {assessment.name}
                       </td>
 
                       {/* Framework */}
-                      <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                        <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-xs font-medium">
+                      <td className="px-6 py-4 text-sm text-violet-700 dark:text-violet-200">
+                        <span className="inline-block px-3 py-1 bg-violet-100 dark:bg-violet-700 text-violet-800 dark:text-violet-100 rounded text-xs font-medium">
                           {assessment.framework}
                         </span>
                       </td>
@@ -465,23 +465,23 @@ export default function AssessmentsPage() {
                       <td className="px-6 py-4 text-sm">
                         {assessment.score > 0 ? (
                           <div className="flex items-center gap-3">
-                            <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div className="w-24 bg-violet-200 dark:bg-violet-700 rounded-full h-2 overflow-hidden">
                               <div
                                 className={`h-2 rounded-full transition-all ${scoreColor}`}
                                 style={{ width: `${assessment.score}%` }}
                               />
                             </div>
-                            <span className="font-bold text-gray-900 dark:text-gray-100 w-10 text-right">
+                            <span className="font-bold text-violet-950 dark:text-violet-50 w-10 text-right">
                               {assessment.score}%
                             </span>
                           </div>
                         ) : (
-                          <span className="text-gray-400 dark:text-gray-500">—</span>
+                          <span className="text-violet-400 dark:text-violet-500">—</span>
                         )}
                       </td>
 
                       {/* Due Date */}
-                      <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      <td className="px-6 py-4 text-sm text-violet-700 dark:text-violet-200">
                         {new Date(assessment.dueDate).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
@@ -490,7 +490,7 @@ export default function AssessmentsPage() {
                       </td>
 
                       {/* Assessor */}
-                      <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      <td className="px-6 py-4 text-sm text-violet-700 dark:text-violet-200">
                         {assessment.assessor}
                       </td>
                     </tr>
@@ -498,7 +498,7 @@ export default function AssessmentsPage() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={7} className="px-6 py-12 text-center text-violet-500 dark:text-violet-300">
                     No assessments match your search or filter criteria.
                   </td>
                 </tr>
