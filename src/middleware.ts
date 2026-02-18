@@ -1,12 +1,38 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 const isHomePage = createRouteMatcher(['/']);
+const isApiRoute = createRouteMatcher(['/api/(.*)']);
 
-export default clerkMiddleware(async (auth, req) => {
+const rateLimitStore: Map<string, { count: number; reset: number }> = new Map();
+
+function getRateLimitKey(req: NextRequest): string {
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : 'unknown';
+  return ip;
+}
+
+function checkRateLimit(key: string, limit: number = 100, windowMs: number = 60000): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(key);
+
+  if (!record || now > record.reset) {
+    rateLimitStore.set(key, { count: 1, reset: now + windowMs });
+    return true;
+  }
+
+  record.count++;
+  return record.count <= limit;
+}
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  const requestStart = Date.now();
+  const rateLimitKey = getRateLimitKey(req);
+  const isApi = isApiRoute(req);
+
   try {
-    // For protected routes, redirect to sign-in if not authenticated
     if (isProtectedRoute(req)) {
       const { userId } = await auth();
       if (!userId) {
@@ -16,26 +42,55 @@ export default clerkMiddleware(async (auth, req) => {
       }
     }
 
-    // For the home page, redirect authenticated users to dashboard
     if (isHomePage(req)) {
       const { userId } = await auth();
       if (userId) {
         return NextResponse.redirect(new URL('/dashboard', req.url));
       }
     }
+
+    const response = NextResponse.next();
+    const responseTime = Date.now() - requestStart;
+
+    if (isApi) {
+      const { userId } = await auth();
+      const tenantId = userId ? `user_${userId}` : 'anonymous';
+
+      response.headers.set('X-Response-Time', `${responseTime}ms`);
+      response.headers.set('X-Tenant-Id', tenantId);
+
+      const record = rateLimitStore.get(rateLimitKey);
+      const remaining = record ? Math.max(0, 100 - record.count) : 100;
+
+      response.headers.set('X-RateLimit-Limit', '100');
+      response.headers.set('X-RateLimit-Remaining', remaining.toString());
+
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+      response.headers.set(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization, X-Requested-With'
+      );
+    }
+
+    return response;
   } catch (error) {
-    // If Clerk auth fails, allow the request to continue
-    // This prevents 495 errors when Clerk is misconfigured
-    console.error('Middleware auth error:', error);
-    return NextResponse.next();
+    console.error('Middleware error:', error);
+    const response = NextResponse.next();
+
+    if (isApi) {
+      const responseTime = Date.now() - requestStart;
+      response.headers.set('X-Response-Time', `${responseTime}ms`);
+      response.headers.set('Access-Control-Allow-Origin', '*');
+    }
+
+    return response;
   }
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
     '/(api|trpc)(.*)',
   ],
 };
