@@ -4,14 +4,42 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import type { ApiResponse } from '@/types';
 
+interface ProspectRecord {
+  id: string;
+  name: string;
+  company: string;
+  role: string;
+  status: 'lead' | 'qualified' | 'engaged' | 'proposal' | 'closed';
+  icpFitScore: number;
+  lastContact: string;
+  nextAction: string;
+}
+
+interface OutreachCampaign {
+  id: string;
+  name: string;
+  type: string;
+  targetContacts: number;
+  status: 'planning' | 'live' | 'paused' | 'completed';
+  responsesReceived: number;
+  meetingsBooked: number;
+  responseRate: number;
+}
+
 interface DashboardStats {
-  riskScore: { overall: number; level: string; trend: 'up' | 'down' | 'stable' };
-  compliance: { rate: number; total: number; implemented: number; frameworks?: Record<string, number> };
-  assessments: { active: number; completed: number; total: number };
-  travelRisks: { destinations: number; highRisk: number; alerts: number };
-  agentRuns: { last24h: number; successRate: number; totalRuns: number; activeAgents?: number; maxAgents?: number };
-  criticalFindings: { count: number; resolved: number; pending: number };
-  categoryScores: Array<{ category: string; score: number; controlCount: number }>;
+  // KPI Summary
+  pipelineValue: number;
+  activeDealCount: number;
+  prospectCount: number;
+  prospectConversionRate: number;
+  agentFleetActive: number;
+  agentFleetMax: number;
+  agentSuccessRate: number;
+  // Prospects
+  prospects?: ProspectRecord[];
+  // Campaigns
+  campaigns?: OutreachCampaign[];
+  // Agent Activity
   recentActivity: Array<{
     agent: string;
     action: string;
@@ -19,27 +47,6 @@ interface DashboardStats {
     status: string;
     latencyMs: number;
   }>;
-  topRiskDestinations: Array<{ country: string; code: string; score: number; level: string }>;
-  pipelineValue?: number;
-  dealCount?: number;
-}
-
-function getRiskColor(score: number): string {
-  if (score >= 75) return 'text-red-600 bg-red-50';
-  if (score >= 50) return 'text-amber-600 bg-amber-50';
-  return 'text-emerald-600 bg-emerald-50';
-}
-
-function getRiskBgColor(score: number): string {
-  if (score >= 75) return 'bg-red-100';
-  if (score >= 50) return 'bg-amber-100';
-  return 'bg-emerald-100';
-}
-
-function getRiskLevel(score: number): string {
-  if (score >= 75) return 'Critical';
-  if (score >= 50) return 'High';
-  return 'Medium';
 }
 
 function StatusIndicator({ status }: { status: string }) {
@@ -71,7 +78,7 @@ function LoadingSkeleton() {
 function ErrorBoundary({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
     <div className="bg-gray-800 border border-red-600 rounded-lg p-6">
-      <h2 className="text-lg font-bold text-red-400 mb-2">Failed to load dashboard</h2>
+      <h2 className="text-lg font-bold text-red-400 mb-2">Failed to load command center</h2>
       <p className="text-red-300 mb-4">{error}</p>
       <button
         onClick={onRetry}
@@ -88,111 +95,231 @@ function isValidDashboardStats(data: unknown): data is DashboardStats {
 
   const stats = data as Record<string, unknown>;
   return (
-    stats.riskScore &&
-    typeof stats.riskScore === 'object' &&
-    stats.compliance &&
-    typeof stats.compliance === 'object' &&
-    stats.assessments &&
-    typeof stats.assessments === 'object' &&
-    stats.travelRisks &&
-    typeof stats.travelRisks === 'object' &&
-    Array.isArray(stats.categoryScores) &&
+    typeof stats.pipelineValue === 'number' &&
+    typeof stats.activeDealCount === 'number' &&
+    typeof stats.prospectCount === 'number' &&
     Array.isArray(stats.recentActivity)
   );
 }
 
 function getMockDashboardStats(): DashboardStats {
   return {
-    riskScore: { overall: 78, level: 'High', trend: 'up' },
-    compliance: {
-      rate: 82,
-      total: 125,
-      implemented: 102,
-      frameworks: {
-        'NIST CSF 2.0': 78,
-        'ISO 27001': 82,
-        'SOC 2': 71,
-        'GDPR': 89,
+    pipelineValue: 2850000,
+    activeDealCount: 34,
+    prospectCount: 9,
+    prospectConversionRate: 18.5,
+    agentFleetActive: 28,
+    agentFleetMax: 34,
+    agentSuccessRate: 94.2,
+    prospects: [
+      {
+        id: '1',
+        name: 'Scott Kennedy',
+        company: 'AppViewX',
+        role: 'CISO',
+        status: 'engaged',
+        icpFitScore: 95,
+        lastContact: '2 days ago',
+        nextAction: 'Executive briefing scheduled',
       },
-    },
-    assessments: { active: 8, completed: 42, total: 50 },
-    travelRisks: { destinations: 24, highRisk: 6, alerts: 12 },
-    agentRuns: { last24h: 156, successRate: 94.2, totalRuns: 1240, activeAgents: 28, maxAgents: 34 },
-    criticalFindings: { count: 12, resolved: 8, pending: 4 },
-    categoryScores: [
-      { category: 'Access Control', score: 85, controlCount: 12 },
-      { category: 'Data Protection', score: 78, controlCount: 15 },
-      { category: 'Incident Response', score: 82, controlCount: 8 },
-      { category: 'Asset Management', score: 75, controlCount: 10 },
+      {
+        id: '2',
+        name: 'John Wilson',
+        company: 'HaystackID',
+        role: 'VP Security',
+        status: 'qualified',
+        icpFitScore: 92,
+        lastContact: '1 week ago',
+        nextAction: 'Demo scheduled for Feb 28',
+      },
+      {
+        id: '3',
+        name: 'Radhika Bajpai',
+        company: 'Russell Investments',
+        role: 'CISO',
+        status: 'proposal',
+        icpFitScore: 88,
+        lastContact: '3 days ago',
+        nextAction: 'Proposal review meeting',
+      },
+      {
+        id: '4',
+        name: 'Michael Chen',
+        company: 'TechCorp Global',
+        role: 'Risk Officer',
+        status: 'engaged',
+        icpFitScore: 91,
+        lastContact: '4 days ago',
+        nextAction: 'Needs stakeholder alignment',
+      },
+      {
+        id: '5',
+        name: 'Jennifer Martinez',
+        company: 'FinServe Capital',
+        role: 'CISO',
+        status: 'qualified',
+        icpFitScore: 89,
+        lastContact: '1 week ago',
+        nextAction: 'Budget approval pending',
+      },
+      {
+        id: '6',
+        name: 'David Park',
+        company: 'CloudSecure Inc',
+        role: 'Security Director',
+        status: 'lead',
+        icpFitScore: 85,
+        lastContact: '2 weeks ago',
+        nextAction: 'Discovery call needed',
+      },
+      {
+        id: '7',
+        name: 'Sarah Thompson',
+        company: 'Enterprise Solutions Ltd',
+        role: 'GRC Manager',
+        status: 'engaged',
+        icpFitScore: 87,
+        lastContact: '5 days ago',
+        nextAction: 'Contract negotiation',
+      },
+      {
+        id: '8',
+        name: 'Robert Yang',
+        company: 'InnovateTech Partners',
+        role: 'CISO',
+        status: 'proposal',
+        icpFitScore: 90,
+        lastContact: '1 day ago',
+        nextAction: 'Waiting for sign-off',
+      },
+      {
+        id: '9',
+        name: 'Lisa Anderson',
+        company: 'DataGuard Systems',
+        role: 'VP Compliance',
+        status: 'qualified',
+        icpFitScore: 86,
+        lastContact: '3 days ago',
+        nextAction: 'Follow-up call scheduled',
+      },
+    ],
+    campaigns: [
+      {
+        id: '1',
+        name: 'WeConnect Campaign',
+        type: 'Email + LinkedIn',
+        targetContacts: 1557,
+        status: 'live',
+        responsesReceived: 142,
+        meetingsBooked: 12,
+        responseRate: 9.1,
+      },
+      {
+        id: '2',
+        name: 'Apollo/LinkedIn Outreach',
+        type: 'Multi-channel',
+        targetContacts: 800,
+        status: 'live',
+        responsesReceived: 68,
+        meetingsBooked: 8,
+        responseRate: 8.5,
+      },
+      {
+        id: '3',
+        name: 'Fortune 500 Direct Outreach',
+        type: 'Personalized',
+        targetContacts: 250,
+        status: 'live',
+        responsesReceived: 35,
+        meetingsBooked: 5,
+        responseRate: 14.0,
+      },
     ],
     recentActivity: [
       {
-        agent: 'Compliance Auditor',
-        action: 'ISO 27001 assessment completed',
-        timestamp: new Date(Date.now() - 5 * 60000).toISOString(),
+        agent: 'Lead Prospector',
+        action: 'Identified 47 new CISO prospects matching ICP',
+        timestamp: new Date(Date.now() - 2 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 1250,
+        latencyMs: 3420,
       },
       {
-        agent: 'Risk Analyzer',
-        action: 'Travel destination risk evaluation',
-        timestamp: new Date(Date.now() - 15 * 60000).toISOString(),
+        agent: 'Outreach Agent',
+        action: 'Sent 156 personalized outreach emails',
+        timestamp: new Date(Date.now() - 8 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 892,
+        latencyMs: 5100,
       },
       {
-        agent: 'Policy Validator',
-        action: 'GDPR compliance check',
-        timestamp: new Date(Date.now() - 28 * 60000).toISOString(),
+        agent: 'Content Creator',
+        action: 'Generated 8 executive summaries for proposals',
+        timestamp: new Date(Date.now() - 18 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 645,
+        latencyMs: 4200,
       },
       {
         agent: 'Deal Pipeline Agent',
-        action: 'Pipeline value updated',
-        timestamp: new Date(Date.now() - 45 * 60000).toISOString(),
+        action: 'Updated pipeline value and deal stages',
+        timestamp: new Date(Date.now() - 35 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 2100,
+        latencyMs: 1850,
       },
       {
-        agent: 'Security Monitor',
-        action: 'SOC 2 framework sync',
-        timestamp: new Date(Date.now() - 62 * 60000).toISOString(),
+        agent: 'Grant Tracker',
+        action: 'Identified 3 potential grant opportunities',
+        timestamp: new Date(Date.now() - 52 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 1540,
+        latencyMs: 2640,
       },
       {
-        agent: 'Travel Risk Agent',
-        action: 'Alert update: New travel advisories',
-        timestamp: new Date(Date.now() - 90 * 60000).toISOString(),
+        agent: 'Email Validator',
+        action: 'Validated 2,340 prospect email addresses',
+        timestamp: new Date(Date.now() - 75 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 753,
+        latencyMs: 6200,
       },
       {
-        agent: 'Compliance Auditor',
-        action: 'NIST CSF 2.0 revision processed',
-        timestamp: new Date(Date.now() - 120 * 60000).toISOString(),
+        agent: 'Lead Prospector',
+        action: 'Updated prospect engagement scores',
+        timestamp: new Date(Date.now() - 110 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 1680,
+        latencyMs: 2950,
       },
       {
-        agent: 'Risk Analyzer',
-        action: 'Quarterly risk assessment',
-        timestamp: new Date(Date.now() - 180 * 60000).toISOString(),
+        agent: 'Outreach Agent',
+        action: 'Scheduled 4 follow-up sequences',
+        timestamp: new Date(Date.now() - 160 * 60000).toISOString(),
         status: 'success',
-        latencyMs: 3245,
+        latencyMs: 1620,
       },
     ],
-    topRiskDestinations: [
-      { country: 'Syria', code: 'SY', score: 95, level: 'Critical' },
-      { country: 'Yemen', code: 'YE', score: 92, level: 'Critical' },
-      { country: 'Afghanistan', code: 'AF', score: 88, level: 'High' },
-      { country: 'Ukraine', code: 'UA', score: 85, level: 'High' },
-      { country: 'Venezuela', code: 'VE', score: 82, level: 'High' },
-    ],
-    pipelineValue: 2850000,
-    dealCount: 34,
   };
+}
+
+function getStatusColor(
+  status: 'lead' | 'qualified' | 'engaged' | 'proposal' | 'closed'
+): string {
+  switch (status) {
+    case 'lead':
+      return 'bg-gray-700 text-gray-200';
+    case 'qualified':
+      return 'bg-blue-900 text-blue-200';
+    case 'engaged':
+      return 'bg-purple-900 text-purple-200';
+    case 'proposal':
+      return 'bg-amber-900 text-amber-200';
+    case 'closed':
+      return 'bg-emerald-900 text-emerald-200';
+    default:
+      return 'bg-gray-700 text-gray-200';
+  }
+}
+
+function getIcpScoreColor(score: number): string {
+  if (score >= 90) return 'text-emerald-400';
+  if (score >= 80) return 'text-blue-400';
+  if (score >= 70) return 'text-amber-400';
+  return 'text-gray-400';
 }
 
 export default function DashboardPage() {
@@ -249,22 +376,9 @@ export default function DashboardPage() {
     return <ErrorBoundary error={error || 'Unknown error occurred'} onRetry={fetchStats} />;
   }
 
-  const trendData = [74, 76, 75, 78, 77, 80, 78];
-  const maxTrendValue = Math.max(...trendData);
-  const minTrendValue = Math.min(...trendData);
-  const trendRange = maxTrendValue - minTrendValue || 1;
-
   return (
     <div className="space-y-8 bg-gray-900 text-white">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Executive Dashboard</h1>
-        {lastUpdated && (
-          <p className="text-sm text-gray-400">
-            Last updated: {lastUpdated.toLocaleTimeString()}
-          </p>
-        )}
-      </div>
-
+      {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-8 border border-gray-700">
         <div className="flex items-center justify-between">
           <div>
@@ -277,149 +391,173 @@ export default function DashboardPage() {
                 day: 'numeric',
               })}
             </p>
+            <p className="text-sm text-gray-400 mt-2">Your AI empire awaits. How are you feeling today?</p>
           </div>
           <div className="text-6xl">🎯</div>
         </div>
       </div>
 
+      {/* Top Row KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Revenue Pipeline */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Overall Risk Score</p>
-          <div className="flex items-end justify-between">
+          <p className="text-gray-400 text-sm font-medium mb-2">Revenue Pipeline</p>
+          <div className="flex items-end justify-between mb-3">
             <div>
-              <p className="text-4xl font-bold text-red-400">{stats.riskScore.overall}</p>
-              <p className="text-gray-500 text-xs mt-1">/100</p>
-            </div>
-            <div className={`px-2 py-1 rounded text-xs font-bold ${stats.riskScore.trend === 'up' ? 'bg-red-900 text-red-200' : stats.riskScore.trend === 'down' ? 'bg-emerald-900 text-emerald-200' : 'bg-gray-700 text-gray-200'}`}>
-              {stats.riskScore.trend === 'up' ? '↑ Up' : stats.riskScore.trend === 'down' ? '↓ Down' : '→ Stable'}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Compliance Rate</p>
-          <p className="text-4xl font-bold text-emerald-400 mb-3">{stats.compliance.rate}%</p>
-          <div className="space-y-2">
-            <div className="w-full bg-gray-700 rounded-full h-2">
-              <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${stats.compliance.rate}%` }} />
-            </div>
-            <p className="text-gray-500 text-xs">
-              {stats.compliance.implemented}/{stats.compliance.total} controls
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Active Agents</p>
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-4xl font-bold text-blue-400">
-                {stats.agentRuns.activeAgents || 28}
+              <p className="text-3xl font-bold text-green-400">
+                ${(stats.pipelineValue / 1000000).toFixed(2)}M
               </p>
-              <p className="text-gray-500 text-xs mt-1">of {stats.agentRuns.maxAgents || 34} running</p>
             </div>
-            <div className="text-2xl">⚙️</div>
           </div>
+          <p className="text-gray-500 text-xs">{stats.activeDealCount} active deals</p>
         </div>
 
+        {/* Active Prospects */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-          <p className="text-gray-400 text-sm font-medium mb-2">Pipeline Value</p>
-          <p className="text-4xl font-bold text-purple-400 mb-3">
-            ${((stats.pipelineValue || 2850000) / 1000000).toFixed(2)}M
-          </p>
+          <p className="text-gray-400 text-sm font-medium mb-2">Active Prospects</p>
+          <div className="flex items-end justify-between mb-3">
+            <div>
+              <p className="text-3xl font-bold text-purple-400">{stats.prospectCount}</p>
+            </div>
+          </div>
           <p className="text-gray-500 text-xs">
-            {stats.dealCount || 34} active deals
+            {stats.prospectConversionRate.toFixed(1)}% conversion rate
           </p>
+        </div>
+
+        {/* Agent Fleet Status */}
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+          <p className="text-gray-400 text-sm font-medium mb-2">Agent Fleet Status</p>
+          <div className="flex items-end justify-between mb-3">
+            <div>
+              <p className="text-3xl font-bold text-blue-400">
+                {stats.agentFleetActive}
+              </p>
+            </div>
+          </div>
+          <p className="text-gray-500 text-xs">
+            of {stats.agentFleetMax} agents active · {stats.agentSuccessRate.toFixed(1)}% success
+          </p>
+        </div>
+
+        {/* Upcoming Schedule */}
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+          <p className="text-gray-400 text-sm font-medium mb-2">Upcoming Schedule</p>
+          <div className="space-y-2">
+            <p className="text-sm text-white font-medium">Executive briefing - AppViewX</p>
+            <p className="text-xs text-gray-500">Tomorrow at 2:00 PM EST</p>
+            <p className="text-xs text-amber-400 mt-2">Reminder: Annual checkup due</p>
+          </div>
         </div>
       </div>
 
+      {/* Prospect Pipeline Section */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-lg font-bold mb-6">7-Day Risk Score Trend</h2>
-        <div className="space-y-4">
-          <div className="flex items-end justify-between h-48 gap-2">
-            {trendData.map((value, idx) => {
-              const normalizedHeight = ((value - minTrendValue) / trendRange) * 100 || 50;
-              return (
-                <div key={idx} className="flex flex-col items-center flex-1">
-                  <div className="relative w-full h-40 flex items-end justify-center">
-                    <div
-                      className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t opacity-80 hover:opacity-100 transition-opacity cursor-pointer group relative"
-                      style={{ height: `${normalizedHeight}%` }}
-                    >
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gray-700 px-2 py-1 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {value}
-                      </div>
+        <h2 className="text-lg font-bold mb-4">CISO Prospect Pipeline</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-700">
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">Name</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">Company</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">ICP Fit</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">Last Contact</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">Next Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stats.prospects && stats.prospects.length > 0 ? (
+                stats.prospects.map((prospect) => (
+                  <tr key={prospect.id} className="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+                    <td className="py-3 px-4 font-medium">{prospect.name}</td>
+                    <td className="py-3 px-4 text-gray-400">{prospect.company}</td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                          prospect.status
+                        )}`}
+                      >
+                        {prospect.status}
+                      </span>
+                    </td>
+                    <td className={`py-3 px-4 font-medium ${getIcpScoreColor(prospect.icpFitScore)}`}>
+                      {prospect.icpFitScore}%
+                    </td>
+                    <td className="py-3 px-4 text-gray-400 text-xs">{prospect.lastContact}</td>
+                    <td className="py-3 px-4 text-gray-300 text-xs">{prospect.nextAction}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-gray-500">
+                    No prospects loaded
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Outreach Campaigns Section */}
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h2 className="text-lg font-bold mb-4">Outreach Campaigns</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {stats.campaigns && stats.campaigns.length > 0 ? (
+            stats.campaigns.map((campaign) => (
+              <div
+                key={campaign.id}
+                className="border border-gray-700 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold">{campaign.name}</h3>
+                    <p className="text-xs text-gray-500">{campaign.type}</p>
+                  </div>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold ${
+                      campaign.status === 'live'
+                        ? 'bg-emerald-900 text-emerald-200'
+                        : campaign.status === 'paused'
+                          ? 'bg-amber-900 text-amber-200'
+                          : 'bg-gray-700 text-gray-200'
+                    }`}
+                  >
+                    {campaign.status}
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-gray-500 text-xs mb-1">Target Contacts</p>
+                    <p className="font-semibold">{campaign.targetContacts}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-gray-500 text-xs mb-1">Response Rate</p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="font-semibold text-blue-400">{campaign.responseRate.toFixed(1)}%</p>
+                      <p className="text-xs text-gray-500">({campaign.responsesReceived} responses)</p>
                     </div>
                   </div>
-                  <p className="text-gray-500 text-xs mt-2">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][idx]}
-                  </p>
+
+                  <div>
+                    <p className="text-gray-500 text-xs mb-1">Meetings Booked</p>
+                    <p className="font-semibold text-emerald-400">{campaign.meetingsBooked}</p>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center justify-between text-xs text-gray-400 border-t border-gray-700 pt-4">
-            <span>7-day average: {Math.round(trendData.reduce((a, b) => a + b) / trendData.length)}</span>
-            <span>Current: {trendData[trendData.length - 1]}</span>
-          </div>
+              </div>
+            ))
+          ) : (
+            <p className="col-span-3 text-gray-500 text-center py-8">No campaigns loaded</p>
+          )}
         </div>
       </div>
 
-      <div>
-        <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Link href="/dashboard/agents">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">⚙️</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">Run All Agents</p>
-              <p className="text-gray-500 text-xs">Execute all monitoring agents</p>
-            </button>
-          </Link>
-
-          <Link href="/dashboard/assessments">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">📋</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">New Assessment</p>
-              <p className="text-gray-500 text-xs">Create a new GRC assessment</p>
-            </button>
-          </Link>
-
-          <Link href="/dashboard/lead-pipeline">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">📊</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">View Pipeline</p>
-              <p className="text-gray-500 text-xs">Review deal pipeline and opportunities</p>
-            </button>
-          </Link>
-
-          <Link href="/dashboard/travel-risk">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">🌍</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">Travel Advisory</p>
-              <p className="text-gray-500 text-xs">Check travel risk assessments</p>
-            </button>
-          </Link>
-
-          <Link href="/dashboard/compliance">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">✓</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">Compliance Hub</p>
-              <p className="text-gray-500 text-xs">Manage compliance frameworks</p>
-            </button>
-          </Link>
-
-          <Link href="/dashboard/reports">
-            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
-              <div className="text-2xl mb-2">📄</div>
-              <p className="font-semibold group-hover:text-blue-400 transition-colors">Generate Report</p>
-              <p className="text-gray-500 text-xs">Create executive report</p>
-            </button>
-          </Link>
-        </div>
-      </div>
-
+      {/* AI Agent Activity Section */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
+        <h2 className="text-lg font-bold mb-4">AI Agent Activity</h2>
         <div className="space-y-3 max-h-96 overflow-y-auto">
           {Array.isArray(stats.recentActivity) && stats.recentActivity.length > 0 ? (
             stats.recentActivity.map((activity, idx) => (
@@ -455,148 +593,66 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-lg font-bold mb-6">Framework Compliance Summary</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Object.entries(
-            stats.compliance?.frameworks || {
-              'NIST CSF 2.0': 78,
-              'ISO 27001': 82,
-              'SOC 2': 71,
-              'GDPR': 89,
-            }
-          ).map(([framework, score]) => (
-            <div key={framework} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="font-medium text-white">{framework}</p>
-                <span className="text-sm font-bold text-blue-400">{score}%</span>
-              </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    score >= 75
-                      ? 'bg-emerald-500'
-                      : score >= 50
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                  }`}
-                  style={{ width: `${score}%` }}
-                />
-              </div>
-            </div>
-          ))}
+      {/* Quick Actions Section */}
+      <div>
+        <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link href="/dashboard/lead-pipeline">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">📊</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">View Prospect Pipeline</p>
+              <p className="text-gray-500 text-xs">Manage CISO prospects and deals</p>
+            </button>
+          </Link>
+
+          <Link href="/dashboard/assessments">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">📋</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">New Client Assessment</p>
+              <p className="text-gray-500 text-xs">Create a client GRC assessment</p>
+            </button>
+          </Link>
+
+          <Link href="/dashboard/outreach">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">📧</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">Outreach Dashboard</p>
+              <p className="text-gray-500 text-xs">Monitor campaign metrics</p>
+            </button>
+          </Link>
+
+          <Link href="/dashboard/travel-risk">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">✈️</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">Travel Risk Analysis</p>
+              <p className="text-gray-500 text-xs">Your travel advisories & client deliverables</p>
+            </button>
+          </Link>
+
+          <Link href="/dashboard/speaking">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">🎤</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">Speaking Calendar</p>
+              <p className="text-gray-500 text-xs">Conferences, panels, and appearances</p>
+            </button>
+          </Link>
+
+          <Link href="/dashboard/reports">
+            <button className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-lg p-4 text-left transition-all group">
+              <div className="text-2xl mb-2">📄</div>
+              <p className="font-semibold group-hover:text-blue-400 transition-colors">Generate Executive Report</p>
+              <p className="text-gray-500 text-xs">Create custom reports and presentations</p>
+            </button>
+          </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-indigo-600 border border-gray-700">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400 mb-1">Overall GRC Risk Score</p>
-              <p className="text-4xl font-bold text-red-400">{stats.riskScore.overall}</p>
-              <p className="text-xs text-gray-500 mt-2">{getRiskLevel(stats.riskScore.overall)}</p>
-            </div>
-            <div className="text-sm">
-              <span
-                className={`inline-block px-2 py-1 rounded font-bold ${
-                  stats.riskScore.trend === 'up'
-                    ? 'bg-red-900 text-red-200'
-                    : stats.riskScore.trend === 'down'
-                      ? 'bg-emerald-900 text-emerald-200'
-                      : 'bg-gray-700 text-gray-200'
-                }`}
-              >
-                {stats.riskScore.trend === 'up' ? '↑' : stats.riskScore.trend === 'down' ? '↓' : '→'}{' '}
-                {stats.riskScore.trend}
-              </span>
-            </div>
-          </div>
+      {/* Footer with Last Updated */}
+      {lastUpdated && (
+        <div className="text-center text-xs text-gray-500 py-4">
+          Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-indigo-600 border border-gray-700">
-          <p className="text-sm font-medium text-gray-400 mb-1">Active Assessments</p>
-          <p className="text-4xl font-bold text-indigo-400">{stats.assessments.active}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            {stats.assessments.completed} completed of {stats.assessments.total} total
-          </p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-blue-600 border border-gray-700">
-          <p className="text-sm font-medium text-gray-400 mb-1">Travel Destinations</p>
-          <p className="text-4xl font-bold text-blue-400">{stats.travelRisks.destinations}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            {stats.travelRisks.highRisk} high-risk destinations
-          </p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-purple-600 border border-gray-700">
-          <p className="text-sm font-medium text-gray-400 mb-1">Agent Runs (24h)</p>
-          <p className="text-4xl font-bold text-purple-400">{stats.agentRuns.last24h}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            {Math.round(stats.agentRuns.successRate)}% success rate
-          </p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-red-600 border border-gray-700">
-          <p className="text-sm font-medium text-gray-400 mb-1">Critical Findings</p>
-          <p className="text-4xl font-bold text-red-400">{stats.criticalFindings.count}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            {stats.criticalFindings.pending} pending, {stats.criticalFindings.resolved} resolved
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-xl font-bold text-white mb-6">ISO 27001 Compliance by Category</h2>
-        <div className="space-y-4">
-          {Array.isArray(stats.categoryScores) &&
-            stats.categoryScores.map((cat) => (
-              <div key={cat.category} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-white">{cat.category}</p>
-                    <p className="text-xs text-gray-500">{cat.controlCount} controls</p>
-                  </div>
-                  <span className="text-sm font-bold text-blue-400">{cat.score}%</span>
-                </div>
-                <div className="bg-gray-700 rounded-full h-3">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      cat.score >= 75
-                        ? 'bg-emerald-500'
-                        : cat.score >= 50
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
-                    }`}
-                    style={{ width: `${cat.score}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-xl font-bold text-white mb-4">Top 5 Highest-Risk Destinations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {Array.isArray(stats.topRiskDestinations) &&
-            stats.topRiskDestinations.map((dest, idx) => (
-              <Link key={idx} href="/dashboard/travel-risk">
-                <div className="cursor-pointer p-4 rounded-lg border border-gray-700 hover:border-indigo-500 hover:shadow-lg transition-all bg-gray-700 hover:bg-gray-600">
-                  <div className="text-3xl mb-2">🌍</div>
-                  <p className="font-bold text-white">{dest.country}</p>
-                  <p className="text-xs text-gray-400 mb-2">{dest.code}</p>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-bold text-red-400">{dest.score}</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-red-900 text-red-200 font-medium">
-                      {dest.level}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
