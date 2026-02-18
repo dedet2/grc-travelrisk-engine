@@ -180,6 +180,7 @@ export default function CRMPage() {
       }
     };
 
+  useEffect(() => {
     fetchCRMData();
     const interval = setInterval(fetchCRMData, 60000);
     return () => clearInterval(interval);

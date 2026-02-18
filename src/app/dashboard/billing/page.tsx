@@ -151,6 +151,7 @@ export default function BillingPage() {
       }
     };
 
+  useEffect(() => {
     fetchBillingData();
     const interval = setInterval(fetchBillingData, 60000);
     return () => clearInterval(interval);
