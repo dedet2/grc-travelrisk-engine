@@ -10,7 +10,7 @@
 
 :root {
   /* Backgrounds & Text */
-  --background: 0 0% 99%;
+  --background: 230 20% 97%;
   --foreground: 0 0% 5%;
 
   /* Cards & Popovers */
@@ -69,12 +69,12 @@
   --radius: 0.75rem;
 }
 
-/* Dark Mode */
+/* Dark Mode — lighter, brand-aligned palette */
 .dark {
-  --background: 0 0% 5%;
-  --foreground: 0 0% 99%;
-  --card: 0 0% 8%;
-  --card-foreground: 0 0% 99%;
+  --background: 230 15% 14%;
+  --foreground: 0 0% 96%;
+  --card: 235 15% 18%;
+  --card-foreground: 0 0% 96%;
   --popover: 0 0% 5%;
   --popover-foreground: 0 0% 99%;
   --primary: 0 0% 99%;
