@@ -88,9 +88,16 @@ export default function RevenuePage() {
       if (response.ok) {
         const data = await response.json();
         const apiData = data.data || data;
-        if (apiData) {
+        if (
+          apiData &&
+          typeof apiData.mrr === 'number' &&
+          Array.isArray(apiData.breakdown) &&
+          Array.isArray(apiData.recentTransactions)
+        ) {
           setBillingData(apiData);
           setLastUpdated(new Date());
+        } else {
+          setBillingData(mockBillingData);
         }
       } else {
         setBillingData(mockBillingData);

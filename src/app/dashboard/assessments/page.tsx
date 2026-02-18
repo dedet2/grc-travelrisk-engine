@@ -188,7 +188,12 @@ export default function AssessmentsPage() {
       if (response.ok) {
         const result = await response.json();
         const apiData = result.data || result;
-        if (apiData) {
+        if (
+          apiData &&
+          apiData.kpis &&
+          typeof apiData.kpis.totalAssessments === 'number' &&
+          Array.isArray(apiData.assessments)
+        ) {
           setData(apiData);
           setLastUpdated(new Date());
         } else {
@@ -321,13 +326,15 @@ export default function AssessmentsPage() {
 
             {/* Search */}
             <div className="relative">
-              <SearchIcon />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <SearchIcon />
+              </div>
               <input
                 type="text"
                 placeholder="Search assessments..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="absolute inset-y-0 pl-10 pr-3 w-64 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 text-sm"
+                className="pl-10 pr-3 py-2 w-64 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 text-sm"
               />
             </div>
           </div>
