@@ -106,18 +106,19 @@ export default function BillingPage() {
   const [data, setData] = useState<BillingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    async function fetchBillingData() {
-      try {
-        const [metricsRes, invoicesRes] = await Promise.all([
-          fetch('/api/billing/metrics'),
-          fetch('/api/billing'),
-        ]);
+  const fetchBillingData = async () => {
+    try {
+      setError(null);
+      const [metricsRes, invoicesRes] = await Promise.all([
+        fetch('/api/billing/subscriptions'),
+        fetch('/api/billing/pricing'),
+      ]);
 
-        if (!metricsRes.ok || !invoicesRes.ok) {
-          throw new Error('Failed to fetch billing data');
-        }
+      if (!metricsRes.ok || !invoicesRes.ok) {
+        throw new Error('Failed to fetch billing data');
+      }
 
         const metricsData = await metricsRes.json();
         const invoicesData = await invoicesRes.json();
@@ -137,9 +138,9 @@ export default function BillingPage() {
           },
           invoices: safeInvoices,
         });
+        setLastUpdated(new Date());
       } catch (err) {
         console.error('Error fetching billing data:', err);
-        // Use mock data as fallback on error
         setData({
           metrics: MOCK_BILLING_METRICS,
           invoices: MOCK_INVOICES,
@@ -148,9 +149,11 @@ export default function BillingPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchBillingData();
+    const interval = setInterval(fetchBillingData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -179,9 +182,23 @@ export default function BillingPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-gray-900">Billing & Invoices</h1>
-        <p className="text-gray-600 mt-2">Manage invoices, payments, and revenue metrics</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900">Billing & Invoices</h1>
+          <p className="text-gray-600 mt-2">Manage invoices, payments, and revenue metrics</p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={fetchBillingData}
+          disabled={loading}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors disabled:opacity-50"
+        >
+          Refresh
+        </button>
       </div>
 
       {/* Metric Cards - 4 Column Grid */}

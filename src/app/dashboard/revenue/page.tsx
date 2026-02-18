@@ -80,25 +80,33 @@ const mockBillingData: BillingData = {
 export default function RevenuePage() {
   const [billingData, setBillingData] = useState<BillingData>(mockBillingData);
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const fetchBillingData = async () => {
+    try {
+      const response = await fetch('/api/billing/subscriptions');
+      if (response.ok) {
+        const data = await response.json();
+        const apiData = data.data || data;
+        if (apiData) {
+          setBillingData(apiData);
+          setLastUpdated(new Date());
+        }
+      } else {
+        setBillingData(mockBillingData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch billing data:', error);
+      setBillingData(mockBillingData);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBillingData = async () => {
-      try {
-        const response = await fetch('/api/billing');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data) {
-            setBillingData(data.data);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch billing data, using mock:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchBillingData();
+    const interval = setInterval(fetchBillingData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const revenueData = [
@@ -116,9 +124,23 @@ export default function RevenuePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-8">
       {/* Header */}
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Subscription Revenue</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">Monitor your SaaS revenue and subscription metrics</p>
+      <div className="mb-12 flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Subscription Revenue</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Monitor your SaaS revenue and subscription metrics</p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={fetchBillingData}
+          disabled={isLoading}
+          className="px-4 py-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50"
+        >
+          Refresh
+        </button>
       </div>
 
       {/* KPI Cards */}

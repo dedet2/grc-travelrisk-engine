@@ -101,26 +101,37 @@ export default function CompliancePage() {
   const [data, setData] = useState<ComplianceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    async function fetchComplianceData() {
-      try {
-        const response = await fetch('/api/compliance');
-        if (response.ok) {
-          const result = await response.json();
-          setData(result.data || result);
+  const fetchComplianceData = async () => {
+    try {
+      setError(null);
+      const response = await fetch('/api/compliance-gaps');
+      if (response.ok) {
+        const result = await response.json();
+        const apiData = result.data || result;
+        if (apiData) {
+          setData(apiData);
+          setLastUpdated(new Date());
         } else {
           setData(mockData);
         }
-      } catch (err) {
-        console.error('Error fetching compliance data, using mock data:', err);
+      } else {
         setData(mockData);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Error fetching compliance data:', err);
+      setError('Failed to load compliance data');
+      setData(mockData);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchComplianceData();
+    const interval = setInterval(fetchComplianceData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -160,11 +171,25 @@ export default function CompliancePage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Compliance Hub</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Monitor and manage compliance across multiple regulatory frameworks
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Compliance Hub</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Monitor and manage compliance across multiple regulatory frameworks
+          </p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={fetchComplianceData}
+          disabled={loading}
+          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+        >
+          Refresh
+        </button>
       </div>
 
       {/* Quick Actions */}

@@ -104,6 +104,7 @@ export default function TravelRiskPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [formData, setFormData] = useState({
     destination: '',
     departureDate: '',
@@ -111,25 +112,35 @@ export default function TravelRiskPage() {
     purpose: 'business',
   });
 
-  useEffect(() => {
-    async function fetchTravelRiskData() {
-      try {
-        const response = await fetch('/api/travel-risk');
-        if (response.ok) {
-          const result = await response.json();
-          setData(result.data || result);
+  const fetchTravelRiskData = async () => {
+    try {
+      setError(null);
+      const response = await fetch('/api/risk-scoring');
+      if (response.ok) {
+        const result = await response.json();
+        const apiData = result.data || result;
+        if (apiData) {
+          setData(apiData);
+          setLastUpdated(new Date());
         } else {
           setData(mockData);
         }
-      } catch (err) {
-        console.error('Error fetching travel risk data, using mock data:', err);
+      } else {
         setData(mockData);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Error fetching travel risk data:', err);
+      setError('Failed to load travel risk data');
+      setData(mockData);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchTravelRiskData();
+    const interval = setInterval(fetchTravelRiskData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -185,13 +196,27 @@ export default function TravelRiskPage() {
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             Real-time global travel advisories and risk assessment for 195 destinations
           </p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
-        >
-          + Create Trip Assessment
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={fetchTravelRiskData}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+          >
+            Refresh
+          </button>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors"
+          >
+            + Create Trip Assessment
+          </button>
+        </div>
       </div>
 
       {/* Risk Level Legend */}

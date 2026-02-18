@@ -225,6 +225,7 @@ export default function IntegrationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [testingIds, setTestingIds] = useState<Set<string>>(new Set());
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const categories = Array.from(new Set(integrations.map((i) => i.category))).sort();
   const filteredIntegrations = selectedCategory
@@ -232,29 +233,41 @@ export default function IntegrationsPage() {
     : integrations;
   const stats = getIntegrationStats(integrations);
 
-  useEffect(() => {
-    async function fetchIntegrations() {
-      try {
-        setLoading(true);
-        // Simulate API call - in production, this would be:
-        // const response = await fetch('/api/integrations');
-        // const result = await response.json();
-        // setIntegrations(result.data || DEFAULT_INTEGRATIONS);
-
-        // For now, use default data
-        await new Promise((resolve) => setTimeout(resolve, 800));
+  const fetchIntegrations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch('/api/integrations/status');
+      if (response.ok) {
+        const result = await response.json();
+        const apiData = result.data || result;
+        if (Array.isArray(apiData)) {
+          setIntegrations(apiData);
+          setLastUpdated(new Date());
+        } else if (apiData && Array.isArray(apiData.integrations)) {
+          setIntegrations(apiData.integrations);
+          setLastUpdated(new Date());
+        } else {
+          setIntegrations(DEFAULT_INTEGRATIONS);
+        }
+      } else {
         setIntegrations(DEFAULT_INTEGRATIONS);
-      } catch (err) {
-        console.error('Error fetching integrations:', err);
-        setError(
-          err instanceof Error ? err.message : 'Failed to load integrations'
-        );
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Error fetching integrations:', err);
+      setError(
+        err instanceof Error ? err.message : 'Failed to load integrations'
+      );
+      setIntegrations(DEFAULT_INTEGRATIONS);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchIntegrations();
+    const interval = setInterval(fetchIntegrations, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   async function handleTestConnection(integrationId: string) {
@@ -348,14 +361,28 @@ export default function IntegrationsPage() {
           <p className="text-gray-600 mt-2">
             Manage and monitor all connected services and data sources
           </p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
         </div>
-        <button
-          onClick={handleTestAllConnections}
-          disabled={testingIds.size > 0}
-          className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {testingIds.size > 0 ? 'Testing...' : 'Test All Connections'}
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={fetchIntegrations}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 font-medium transition-colors disabled:opacity-50"
+          >
+            Refresh
+          </button>
+          <button
+            onClick={handleTestAllConnections}
+            disabled={testingIds.size > 0}
+            className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {testingIds.size > 0 ? 'Testing...' : 'Test All Connections'}
+          </button>
+        </div>
       </div>
 
       {/* Summary Stats */}

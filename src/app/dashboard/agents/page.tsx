@@ -128,33 +128,37 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    async function fetchAgentsData() {
-      try {
-        const response = await fetch('/api/agents');
-        if (response.ok) {
-          const result = await response.json();
-          const apiData = result.data || result;
-          // Validate the response has the expected shape
-          if (apiData && apiData.stats && Array.isArray(apiData.agents)) {
-            setData(apiData);
-          } else {
-            // API returned different format, use mock data
-            setData(mockData);
-          }
+  const fetchAgentsData = async () => {
+    try {
+      setError(null);
+      const response = await fetch('/api/agents/communicate');
+      if (response.ok) {
+        const result = await response.json();
+        const apiData = result.data || result;
+        if (apiData && apiData.stats && Array.isArray(apiData.agents)) {
+          setData(apiData);
+          setLastUpdated(new Date());
         } else {
           setData(mockData);
         }
-      } catch (err) {
-        console.error('Error fetching agents data, using mock data:', err);
+      } else {
         setData(mockData);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error('Error fetching agents data:', err);
+      setError('Failed to load agents data');
+      setData(mockData);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchAgentsData();
+    const interval = setInterval(fetchAgentsData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleRunAllAgents = async () => {
@@ -228,14 +232,28 @@ export default function AgentsPage() {
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             Monitor and manage all 34 GRC and Life Agents across your organization
           </p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
         </div>
-        <button
-          onClick={handleRunAllAgents}
-          disabled={running}
-          className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {running ? 'Running...' : '▶ Run All Agents'}
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={fetchAgentsData}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50"
+          >
+            Refresh
+          </button>
+          <button
+            onClick={handleRunAllAgents}
+            disabled={running}
+            className="px-6 py-3 bg-indigo-600 dark:bg-indigo-700 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {running ? 'Running...' : '▶ Run All Agents'}
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}

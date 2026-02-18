@@ -102,9 +102,9 @@ export default function CRMPage() {
   const [data, setData] = useState<CRMData | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState<'pipeline' | 'contacts'>('pipeline');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    async function fetchCRMData() {
+  const fetchCRMData = async () => {
       try {
         // Fetch contacts and deals in parallel
         const [contactsRes, dealsRes] = await Promise.allSettled([
@@ -168,8 +168,8 @@ export default function CRMPage() {
             contacts,
             deals,
           });
+          setLastUpdated(new Date());
         } else {
-          // Fall back to mock data
           setData(mockData);
         }
       } catch (err) {
@@ -178,9 +178,11 @@ export default function CRMPage() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchCRMData();
+    const interval = setInterval(fetchCRMData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -237,8 +239,20 @@ export default function CRMPage() {
         <div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">CRM & Pipeline</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">Manage contacts, deals, and sales pipeline</p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={fetchCRMData}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors disabled:opacity-50 text-sm"
+          >
+            Refresh
+          </button>
           <button
             onClick={() => setActiveView('pipeline')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${

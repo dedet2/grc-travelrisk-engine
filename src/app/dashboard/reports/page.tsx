@@ -69,11 +69,12 @@ export default function ReportsPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
         // Fetch stats from dashboard endpoint
         const statsRes = await fetch('/api/dashboard/stats');
@@ -134,10 +135,10 @@ export default function ReportsPage() {
 
         setReportData(reportData);
         setStats(pageStats);
+        setLastUpdated(new Date());
       } catch (err) {
         console.error('Error fetching report data:', err);
         setError(err instanceof Error ? err.message : 'Failed to load reports');
-        // Fallback to mock data on error
         setReportData(MOCK_REPORT_DATA);
         setStats(MOCK_STATS);
       } finally {
@@ -146,6 +147,8 @@ export default function ReportsPage() {
     };
 
     fetchData();
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleExport = () => {
@@ -215,21 +218,35 @@ export default function ReportsPage() {
           <p className="text-gray-600 mt-2">
             Comprehensive GRC assessment and risk analysis dashboard
           </p>
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 mt-2">
+              Last updated: {lastUpdated.toLocaleTimeString()}
+            </p>
+          )}
         </div>
-        <button
-          onClick={handleExport}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Export as JSON
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={fetchData}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 font-medium transition-colors disabled:opacity-50"
+          >
+            Refresh
+          </button>
+          <button
+            onClick={handleExport}
+            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            Export as JSON
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}
