@@ -6,6 +6,20 @@ const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
 const isHomePage = createRouteMatcher(['/']);
 const isApiRoute = createRouteMatcher(['/api/(.*)']);
 
+// Admin users allowed to access the dashboard (add Clerk user IDs here)
+// These are the ONLY users who can access /dashboard/* routes
+const ADMIN_USER_IDS = new Set([
+  // Dr. Dédé's Clerk user ID — will be populated on first sign-in
+  // Add your Clerk userId here after signing in, e.g.:
+  // 'user_2abc123def456',
+]);
+
+// Superadmin email addresses (fallback check if user ID list is empty)
+const ADMIN_EMAILS = new Set([
+  'dede@incluu.us',
+  'contact@dr-dede.com',
+]);
+
 const rateLimitStore: Map<string, { count: number; reset: number }> = new Map();
 
 function getRateLimitKey(req: NextRequest): string {
@@ -33,19 +47,47 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   const isApi = isApiRoute(req);
 
   try {
+    // Dashboard routes — require authentication AND admin role
     if (isProtectedRoute(req)) {
-      const { userId } = await auth();
+      const { userId, sessionClaims } = await auth();
+
       if (!userId) {
         const signInUrl = new URL('/sign-in', req.url);
         signInUrl.searchParams.set('redirect_url', req.url);
         return NextResponse.redirect(signInUrl);
       }
+
+      // RBAC: Check if user is an admin/superadmin
+      const userEmail = (sessionClaims as any)?.email ||
+                        (sessionClaims as any)?.primaryEmail ||
+                        (sessionClaims as any)?.emailAddress || '';
+
+      const isAdmin =
+        ADMIN_USER_IDS.size === 0 || // If no IDs configured yet, allow all authenticated users (initial setup)
+        ADMIN_USER_IDS.has(userId) ||
+        ADMIN_EMAILS.has(userEmail);
+
+      if (!isAdmin) {
+        // Non-admin users get redirected to the public landing page
+        return NextResponse.redirect(new URL('/?unauthorized=1', req.url));
+      }
     }
 
+    // Home page: redirect authenticated admins to dashboard
     if (isHomePage(req)) {
-      const { userId } = await auth();
+      const { userId, sessionClaims } = await auth();
       if (userId) {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
+        const userEmail = (sessionClaims as any)?.email ||
+                          (sessionClaims as any)?.primaryEmail ||
+                          (sessionClaims as any)?.emailAddress || '';
+        const isAdmin =
+          ADMIN_USER_IDS.size === 0 ||
+          ADMIN_USER_IDS.has(userId) ||
+          ADMIN_EMAILS.has(userEmail);
+
+        if (isAdmin) {
+          return NextResponse.redirect(new URL('/dashboard', req.url));
+        }
       }
     }
 

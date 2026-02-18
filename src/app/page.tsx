@@ -10,13 +10,22 @@ export default function Home() {
       {/* Navigation */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/50 border-b border-indigo-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="font-bold text-2xl bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-            AI GRC Engine
-          </Link>
-          
+          <div className="flex items-center gap-4">
+            <Link href="https://dr-dede.com" className="text-sm text-slate-400 hover:text-white transition flex items-center gap-1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              dr-dede.com
+            </Link>
+            <Link href="/" className="font-bold text-2xl bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              AI GRC Engine
+            </Link>
+          </div>
+
           <div className="hidden md:flex items-center gap-8">
-            <Link href="https://dr-dede.com/services" className="text-sm hover:text-indigo-300 transition">
-              GRC Services
+            <a href="#pricing" className="text-sm hover:text-indigo-300 transition">
+              Pricing
+            </a>
+            <Link href="https://dr-dede.com/incluu" className="text-sm hover:text-indigo-300 transition">
+              incluu
             </Link>
             <Link href="https://dr-dede.com/dr-dede" className="text-sm hover:text-indigo-300 transition">
               About Dr. Dédé
@@ -182,20 +191,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Assessment Pricing Section */}
-      <section className="px-6 py-20 bg-slate-800/30 border-y border-indigo-500/20">
+      {/* Full GRC Hybrid Model Pricing */}
+      <section id="pricing" className="px-6 py-20 bg-slate-800/30 border-y border-indigo-500/20">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold mb-4 text-center">
-            Compliance Assessment Packages
+            Engagement & Pricing Tiers
           </h2>
           <p className="text-center text-slate-400 mb-16 max-w-2xl mx-auto">
-            Start with a focused assessment or engage Dr. Dédé for a full strategic implementation.
+            From self-serve compliance playbooks to bespoke enterprise engagements — choose the level that fits your organization.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Tier 1 */}
+          {/* Tier Row 1: Compliance Playbooks (Entry) */}
+          <h3 className="text-2xl font-bold mb-8 text-indigo-300">Compliance Playbooks</h3>
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {/* Playbook Lite */}
             <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
-              <h3 className="text-xl font-bold mb-2">Compliance Playbook — Lite</h3>
+              <h4 className="text-xl font-bold mb-2">Lite</h4>
               <p className="text-slate-400 text-sm mb-6">Essential jumpstart for addressing compliance conversations confidently.</p>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-cyan-400">$297</span>
@@ -213,12 +224,12 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Tier 2 — Featured */}
+            {/* Playbook Standard */}
             <div className="bg-gradient-to-br from-indigo-600/30 to-cyan-600/20 border border-cyan-400/50 rounded-lg p-8 relative transform md:scale-105">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white px-4 py-1 rounded-full text-xs font-bold">
                 Most Popular
               </div>
-              <h3 className="text-xl font-bold mb-2">Compliance Playbook — Standard</h3>
+              <h4 className="text-xl font-bold mb-2">Standard</h4>
               <p className="text-slate-300 text-sm mb-6">Full implementation toolkit with editable templates and video walkthrough.</p>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-cyan-400">$997</span>
@@ -237,9 +248,9 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Tier 3 */}
+            {/* Playbook Premium */}
             <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
-              <h3 className="text-xl font-bold mb-2">Compliance Playbook — Premium</h3>
+              <h4 className="text-xl font-bold mb-2">Premium</h4>
               <p className="text-slate-400 text-sm mb-6">Full strategic implementation with live consulting from Dr. Dédé.</p>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-cyan-400">$2,497</span>
@@ -255,6 +266,204 @@ export default function Home() {
               </ul>
               <Link href="/schedule-consultation" className="w-full block text-center px-6 py-3 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-sm">
                 Get Premium Access
+              </Link>
+            </div>
+          </div>
+
+          {/* Tier Row 2: DFY AI Agent Licensing */}
+          <h3 className="text-2xl font-bold mb-8 text-indigo-300">Done-For-You AI Agent Licensing</h3>
+          <div className="grid md:grid-cols-4 gap-6 mb-16">
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-6 hover:border-indigo-400/60 transition">
+              <h4 className="text-lg font-bold mb-2">Starter Agent Kit</h4>
+              <p className="text-slate-400 text-xs mb-4">Essential AI agents for compliance monitoring and basic automation.</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-cyan-400">$5K</span>
+                <span className="text-slate-400 text-sm"> — $10K</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                {['2-3 Core Compliance Agents', 'Basic Monitoring Dashboard', 'Email Alerts & Notifications', 'Monthly Agent Reports', 'Standard Support'].map(f => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-slate-300">
+                    <CheckCircle className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-4 py-2 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-xs">
+                Get Started
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-600/30 to-cyan-600/20 border border-cyan-400/50 rounded-lg p-6 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white px-3 py-0.5 rounded-full text-[10px] font-bold">
+                Best Value
+              </div>
+              <h4 className="text-lg font-bold mb-2">Pro AI Stack</h4>
+              <p className="text-slate-300 text-xs mb-4">Advanced multi-agent system with workflow automation and integrations.</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-cyan-400">$15K</span>
+                <span className="text-slate-400 text-sm"> — $25K</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                {['5-8 Specialized Agents', 'Multi-Agent Orchestration', 'CRM & Tool Integrations', 'Custom Workflow Automation', 'Priority Support & Training'].map(f => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-slate-200">
+                    <CheckCircle className="w-3 h-3 text-cyan-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 rounded-lg font-semibold transition text-xs">
+                Upgrade to Pro
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-6 hover:border-indigo-400/60 transition">
+              <h4 className="text-lg font-bold mb-2">Compliance Vault</h4>
+              <p className="text-slate-400 text-xs mb-4">Full-suite enterprise compliance automation with white-glove setup.</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-cyan-400">$35K</span>
+                <span className="text-slate-400 text-sm"> — $50K+</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                {['Full 28+ Agent Fleet', 'Enterprise Orchestration', 'Custom API Integrations', 'White-Glove Onboarding', 'Dedicated Account Manager'].map(f => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-slate-300">
+                    <CheckCircle className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-4 py-2 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-xs">
+                Request Proposal
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-6 hover:border-indigo-400/60 transition">
+              <h4 className="text-lg font-bold mb-2">Annual Licensing</h4>
+              <p className="text-slate-400 text-xs mb-4">Ongoing agent licensing with continuous updates and support.</p>
+              <div className="mb-4">
+                <span className="text-3xl font-bold text-cyan-400">$10K</span>
+                <span className="text-slate-400 text-sm">/year</span>
+              </div>
+              <ul className="space-y-2 mb-6">
+                {['All Agent Updates Included', 'New Agent Releases', 'Quarterly Strategy Reviews', 'SLA-backed Uptime', 'Renewal Discounts'].map(f => (
+                  <li key={f} className="flex items-start gap-2 text-xs text-slate-300">
+                    <CheckCircle className="w-3 h-3 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-4 py-2 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-xs">
+                License Agents
+              </Link>
+            </div>
+          </div>
+
+          {/* Tier Row 3: Enterprise Consulting */}
+          <h3 className="text-2xl font-bold mb-8 text-indigo-300">Enterprise Consulting & Advisory</h3>
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
+              <h4 className="text-xl font-bold mb-2">AI GRC Assessment</h4>
+              <p className="text-slate-400 text-sm mb-4">Deep-dive governance, risk, and compliance assessment across your AI portfolio.</p>
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-cyan-400">$100K</span>
+                <span className="text-slate-400 text-sm"> — $500K</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['Full AI Systems Audit', 'Regulatory Gap Analysis', 'Risk Scoring & Prioritization', 'Board-Ready Executive Report', 'Implementation Roadmap', 'GDPR/HIPAA/SOC2/EU AI Act'].map(f => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-slate-300">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-6 py-3 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-sm">
+                Request Assessment
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-600/30 to-cyan-600/20 border border-cyan-400/50 rounded-lg p-8 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-cyan-500 text-white px-4 py-1 rounded-full text-xs font-bold">
+                High Impact
+              </div>
+              <h4 className="text-xl font-bold mb-2">VIP Strategy Day</h4>
+              <p className="text-slate-300 text-sm mb-4">Intensive 2-3 day off-site with your leadership team for AI governance roadmap design.</p>
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-cyan-400">$25K</span>
+                <span className="text-slate-400 text-sm"> — $50K</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['2-3 Day Intensive Workshop', 'C-Suite & Board Participation', 'Multi-Year Governance Roadmap', 'Custom Policy Drafting', 'Stakeholder Alignment Sessions', 'Post-Workshop Action Plan'].map(f => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-slate-200">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
+                Book VIP Day
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
+              <h4 className="text-xl font-bold mb-2">Executive Advisory Retainer</h4>
+              <p className="text-slate-400 text-sm mb-4">Ongoing strategic counsel for your C-suite and board on AI governance.</p>
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-cyan-400">Custom</span>
+                <span className="text-slate-400 text-sm"> quarterly</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['Monthly Advisory Calls', 'Regulatory Intelligence Briefings', 'Board Meeting Preparation', 'Policy Review & Updates', 'Crisis Response Support', 'Priority Access to Dr. Dédé'].map(f => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-slate-300">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-6 py-3 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-sm">
+                Discuss Retainer
+              </Link>
+            </div>
+          </div>
+
+          {/* Tier Row 4: Speaking & Retreats */}
+          <h3 className="text-2xl font-bold mb-8 text-indigo-300">Speaking & Retreats</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
+              <h4 className="text-xl font-bold mb-2">Keynote & Conference Speaking</h4>
+              <p className="text-slate-400 text-sm mb-4">TEDx-caliber keynotes on AI governance, disability advocacy, and systems disruption.</p>
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-cyan-400">$50K+</span>
+                <span className="text-slate-400 text-sm"> per engagement</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['Custom Keynote Development', 'Pre-Event Audience Analysis', 'Interactive Workshop Option', 'Post-Event Follow-Up Resources', 'Media & Press Coordination'].map(f => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-slate-300">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="https://dr-dede.com/speaking" className="w-full block text-center px-6 py-3 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-sm">
+                Book Dr. Dédé
+              </Link>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-800/50 to-indigo-900/20 border border-indigo-500/30 rounded-lg p-8 hover:border-indigo-400/60 transition">
+              <h4 className="text-xl font-bold mb-2">Executive AI Governance Retreats</h4>
+              <p className="text-slate-400 text-sm mb-4">Exclusive multi-day retreats combining strategic planning, wellness, and transformational leadership.</p>
+              <div className="mb-6">
+                <span className="text-3xl font-bold text-cyan-400">Custom</span>
+                <span className="text-slate-400 text-sm"> pricing</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {['Curated Destination Experience', 'Strategic Planning Workshops', 'Wellness & Recovery Integration', 'Peer Executive Networking', 'Post-Retreat Implementation Support'].map(f => (
+                  <li key={f} className="flex items-start gap-3 text-sm text-slate-300">
+                    <CheckCircle className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/schedule-consultation" className="w-full block text-center px-6 py-3 border border-indigo-400 hover:bg-indigo-500/10 rounded-lg font-semibold transition text-sm">
+                Inquire About Retreats
               </Link>
             </div>
           </div>
