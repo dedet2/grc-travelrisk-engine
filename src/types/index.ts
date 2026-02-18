@@ -185,3 +185,16 @@ export interface ApiResponse<T> {
   error?: string;
   timestamp: Date;
 }
+
+// Re-export workflow types
+export type {
+  Workflow,
+  WorkflowStep,
+  WorkflowExecution,
+  ExecutionStatus,
+  StepStatus,
+  WorkflowTrigger,
+  WorkflowStatus,
+  WorkflowExecutionRequest,
+  WorkflowExecutionResponse,
+} from './workflows';
