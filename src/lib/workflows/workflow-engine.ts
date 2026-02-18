@@ -11,9 +11,6 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
-import { auditLogger } from '@/lib/audit-logger';
-import { notificationService } from '@/lib/notifications/notification-service';
 import type {
   Workflow,
   WorkflowStep,
@@ -21,6 +18,17 @@ import type {
   ExecutionStatus,
   StepStatus,
 } from '@/types/workflows';
+
+let inMemoryStore: any = null;
+let auditLogger: any = null;
+
+try {
+  inMemoryStore = require('@/lib/store/in-memory-store').inMemoryStore;
+} catch (e) {}
+
+try {
+  auditLogger = require('@/lib/audit-logger').auditLogger;
+} catch (e) {}
 
 /**
  * WorkflowEngine singleton managing all GRC workflows
@@ -569,16 +577,18 @@ class WorkflowEngine {
     workflow.lastRun = new Date();
     workflow.executionHistory.push(execution);
 
-    auditLogger.log({
-      userId: 'system',
-      action: 'workflow.execute',
-      category: 'system',
-      severity: 'info',
-      entityType: 'workflow',
-      entityId: workflowId,
-      entityName: workflow.name,
-      description: `Executing workflow: ${workflow.name}`,
-    });
+    if (auditLogger?.log) {
+      auditLogger.log({
+        userId: 'system',
+        action: 'workflow.execute',
+        category: 'system',
+        severity: 'info',
+        entityType: 'workflow',
+        entityId: workflowId,
+        entityName: workflow.name,
+        description: `Executing workflow: ${workflow.name}`,
+      });
+    }
 
     this.executeWorkflowSteps(execution, workflow).catch((error) => {
       console.error(`Error executing workflow ${workflowId}:`, error);
@@ -613,7 +623,9 @@ class WorkflowEngine {
     execution.status = 'completed';
     execution.endTime = new Date();
 
-    inMemoryStore.setWorkflowExecution(execution);
+    if (inMemoryStore?.setWorkflowExecution) {
+      inMemoryStore.setWorkflowExecution(execution);
+    }
   }
 
   /**
@@ -813,16 +825,18 @@ class WorkflowEngine {
       this.scheduleIntervals.delete(workflowId);
     }
 
-    auditLogger.log({
-      userId: 'system',
-      action: 'workflow.pause',
-      category: 'system',
-      severity: 'info',
-      entityType: 'workflow',
-      entityId: workflowId,
-      entityName: workflow.name,
-      description: `Paused workflow: ${workflow.name}`,
-    });
+    if (auditLogger?.log) {
+      auditLogger.log({
+        userId: 'system',
+        action: 'workflow.pause',
+        category: 'system',
+        severity: 'info',
+        entityType: 'workflow',
+        entityId: workflowId,
+        entityName: workflow.name,
+        description: `Paused workflow: ${workflow.name}`,
+      });
+    }
 
     return true;
   }
@@ -841,16 +855,18 @@ class WorkflowEngine {
       this.scheduleWorkflow(workflowId);
     }
 
-    auditLogger.log({
-      userId: 'system',
-      action: 'workflow.resume',
-      category: 'system',
-      severity: 'info',
-      entityType: 'workflow',
-      entityId: workflowId,
-      entityName: workflow.name,
-      description: `Resumed workflow: ${workflow.name}`,
-    });
+    if (auditLogger?.log) {
+      auditLogger.log({
+        userId: 'system',
+        action: 'workflow.resume',
+        category: 'system',
+        severity: 'info',
+        entityType: 'workflow',
+        entityId: workflowId,
+        entityName: workflow.name,
+        description: `Resumed workflow: ${workflow.name}`,
+      });
+    }
 
     return true;
   }

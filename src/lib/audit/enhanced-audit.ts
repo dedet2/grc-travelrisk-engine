@@ -10,7 +10,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 /**
  * Evidence types for audit trail
@@ -182,7 +182,7 @@ class EnhancedAuditTrail {
       mimeType: options?.mimeType,
       collectedAt: new Date(),
       collectedBy: userId,
-      collectedByEmail: options?.collectedByEmail,
+      collectedByEmail: userId,
       relatedControl: options?.relatedControl,
       relatedFramework: options?.relatedFramework,
       tags: options?.tags || [],
