@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import type { ApiResponse } from '@/types';
 
 interface DashboardStats {
   riskScore: { overall: number; level: string; trend: 'up' | 'down' | 'stable' };
@@ -54,9 +55,6 @@ function StatusIndicator({ status }: { status: string }) {
   return <div className={`w-2 h-2 rounded-full ${statusColor}`} />;
 }
 
-/**
- * Loading skeleton component for better UX
- */
 function LoadingSkeleton() {
   return (
     <div className="space-y-8">
@@ -70,9 +68,6 @@ function LoadingSkeleton() {
   );
 }
 
-/**
- * Error display component with retry functionality
- */
 function ErrorBoundary({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
     <div className="bg-gray-800 border border-red-600 rounded-lg p-6">
@@ -88,9 +83,6 @@ function ErrorBoundary({ error, onRetry }: { error: string; onRetry: () => void 
   );
 }
 
-/**
- * Validate that stats object has all required properties
- */
 function isValidDashboardStats(data: unknown): data is DashboardStats {
   if (!data || typeof data !== 'object') return false;
 
@@ -109,9 +101,6 @@ function isValidDashboardStats(data: unknown): data is DashboardStats {
   );
 }
 
-/**
- * Get mock data for dashboard
- */
 function getMockDashboardStats(): DashboardStats {
   return {
     riskScore: { overall: 78, level: 'High', trend: 'up' },
@@ -210,13 +199,14 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/dashboard/stats', {
+      const response = await fetch('/api/dashboard/kpis', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -224,23 +214,24 @@ export default function DashboardPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to fetch stats`);
+        throw new Error(`HTTP ${response.status}: Failed to fetch KPIs`);
       }
 
-      const data = await response.json();
+      const data: ApiResponse<DashboardStats> = await response.json();
 
       if (!data || !isValidDashboardStats(data.data)) {
         throw new Error('Invalid response format from server');
       }
 
       setStats(data.data);
+      setLastUpdated(new Date());
     } catch (err) {
-      console.error('Error fetching dashboard stats:', err);
+      console.error('Error fetching dashboard KPIs:', err);
       const errorMessage =
         err instanceof Error ? err.message : 'An unexpected error occurred';
       setError(errorMessage);
-      // Fall back to mock data on error
       setStats(getMockDashboardStats());
+      setLastUpdated(new Date());
     } finally {
       setLoading(false);
     }
@@ -265,7 +256,15 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 bg-gray-900 text-white">
-      {/* Welcome Banner */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Executive Dashboard</h1>
+        {lastUpdated && (
+          <p className="text-sm text-gray-400">
+            Last updated: {lastUpdated.toLocaleTimeString()}
+          </p>
+        )}
+      </div>
+
       <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-8 border border-gray-700">
         <div className="flex items-center justify-between">
           <div>
@@ -283,9 +282,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* KPI Cards - 4 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Overall Risk Score */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
           <p className="text-gray-400 text-sm font-medium mb-2">Overall Risk Score</p>
           <div className="flex items-end justify-between">
@@ -299,7 +296,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Compliance Rate */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
           <p className="text-gray-400 text-sm font-medium mb-2">Compliance Rate</p>
           <p className="text-4xl font-bold text-emerald-400 mb-3">{stats.compliance.rate}%</p>
@@ -313,7 +309,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Active Agents */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
           <p className="text-gray-400 text-sm font-medium mb-2">Active Agents</p>
           <div className="flex items-end justify-between">
@@ -327,7 +322,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Pipeline Value */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
           <p className="text-gray-400 text-sm font-medium mb-2">Pipeline Value</p>
           <p className="text-4xl font-bold text-purple-400 mb-3">
@@ -339,7 +333,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Risk Score Trend Chart */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h2 className="text-lg font-bold mb-6">7-Day Risk Score Trend</h2>
         <div className="space-y-4">
@@ -372,7 +365,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Actions Grid - 2x3 */}
       <div>
         <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -426,7 +418,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent Activity Feed */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
         <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -464,53 +455,40 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Framework Compliance Summary */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h2 className="text-lg font-bold mb-6">Framework Compliance Summary</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array.isArray(
-            stats.compliance?.frameworks
-              ? Object.entries(stats.compliance.frameworks)
-              : [
-                  ['NIST CSF 2.0', 78],
-                  ['ISO 27001', 82],
-                  ['SOC 2', 71],
-                  ['GDPR', 89],
-                ]
-          ) &&
-            Object.entries(
-              stats.compliance?.frameworks || {
-                'NIST CSF 2.0': 78,
-                'ISO 27001': 82,
-                'SOC 2': 71,
-                'GDPR': 89,
-              }
-            ).map(([framework, score]) => (
-              <div key={framework} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-white">{framework}</p>
-                  <span className="text-sm font-bold text-blue-400">{score}%</span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full transition-all ${
-                      score >= 75
-                        ? 'bg-emerald-500'
-                        : score >= 50
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
-                    }`}
-                    style={{ width: `${score}%` }}
-                  />
-                </div>
+          {Object.entries(
+            stats.compliance?.frameworks || {
+              'NIST CSF 2.0': 78,
+              'ISO 27001': 82,
+              'SOC 2': 71,
+              'GDPR': 89,
+            }
+          ).map(([framework, score]) => (
+            <div key={framework} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="font-medium text-white">{framework}</p>
+                <span className="text-sm font-bold text-blue-400">{score}%</span>
               </div>
-            ))}
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${
+                    score >= 75
+                      ? 'bg-emerald-500'
+                      : score >= 50
+                        ? 'bg-yellow-500'
+                        : 'bg-red-500'
+                  }`}
+                  style={{ width: `${score}%` }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Metric Cards - 6 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Overall GRC Risk Score */}
         <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-indigo-600 border border-gray-700">
           <div className="flex items-start justify-between">
             <div>
@@ -535,7 +513,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Active Assessments */}
         <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-indigo-600 border border-gray-700">
           <p className="text-sm font-medium text-gray-400 mb-1">Active Assessments</p>
           <p className="text-4xl font-bold text-indigo-400">{stats.assessments.active}</p>
@@ -544,7 +521,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Travel Destinations Monitored */}
         <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-blue-600 border border-gray-700">
           <p className="text-sm font-medium text-gray-400 mb-1">Travel Destinations</p>
           <p className="text-4xl font-bold text-blue-400">{stats.travelRisks.destinations}</p>
@@ -553,7 +529,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Agent Runs */}
         <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-purple-600 border border-gray-700">
           <p className="text-sm font-medium text-gray-400 mb-1">Agent Runs (24h)</p>
           <p className="text-4xl font-bold text-purple-400">{stats.agentRuns.last24h}</p>
@@ -562,7 +537,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Critical Findings */}
         <div className="bg-gray-800 rounded-lg p-6 border-l-4 border-red-600 border border-gray-700">
           <p className="text-sm font-medium text-gray-400 mb-1">Critical Findings</p>
           <p className="text-4xl font-bold text-red-400">{stats.criticalFindings.count}</p>
@@ -572,7 +546,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* GRC Compliance by Category */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h2 className="text-xl font-bold text-white mb-6">ISO 27001 Compliance by Category</h2>
         <div className="space-y-4">
@@ -603,7 +576,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Top Risk Destinations */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h2 className="text-xl font-bold text-white mb-4">Top 5 Highest-Risk Destinations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
