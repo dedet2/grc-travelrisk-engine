@@ -15,18 +15,30 @@ export interface MakeWebhook {
   enabled: boolean;
 }
 
-export class MakeConnector {
-  private apiUrl = 'https://api.integromat.com/v1';
-  private accessToken: string;
+export interface MakeExecution {
+  id: string;
+  scenarioId: string;
+  status: 'pending' | 'running' | 'success' | 'error';
+  startedAt: string;
+  completedAt?: string;
+  resultCount: number;
+}
 
-  constructor(accessToken: string) {
-    this.accessToken = accessToken;
+export class MakeConnector {
+  private apiUrl = 'https://us1.make.com/api/v2';
+  private apiToken: string;
+  private teamId: string;
+
+  constructor(apiToken?: string, teamId?: string) {
+    this.apiToken = apiToken || process.env.MAKE_API_TOKEN || '';
+    this.teamId = teamId || process.env.MAKE_TEAM_ID || '';
   }
 
   private getHeaders() {
     return {
-      Authorization: `Bearer ${this.accessToken}`,
+      Authorization: `Bearer ${this.apiToken}`,
       'Content-Type': 'application/json',
+      'X-Team-Id': this.teamId,
     };
   }
 
@@ -114,13 +126,15 @@ export class MakeConnector {
   async triggerScenario(
     scenarioId: string,
     data: Record<string, unknown>
-  ): Promise<{ executionId: string; status: string }> {
+  ): Promise<{
+    success: boolean;
+    executionId?: string;
+    status?: string;
+    error?: string;
+  }> {
     try {
-      const scenarios = this.getPreconfiguredScenarios();
-      const scenario = scenarios.find((s) => s.id === scenarioId);
-
-      if (!scenario) {
-        throw new Error(`Scenario ${scenarioId} not found`);
+      if (!this.apiToken) {
+        return { success: false, error: 'MAKE_API_TOKEN not configured' };
       }
 
       const response = await fetch(
@@ -133,17 +147,25 @@ export class MakeConnector {
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to trigger scenario: ${response.statusText}`);
+        const errorText = await response.text();
+        return {
+          success: false,
+          error: `Make API error: ${response.status} - ${errorText}`,
+        };
       }
 
-      const result = await response.json() as { id: string };
+      const result = (await response.json()) as { id: string };
       return {
+        success: true,
         executionId: result.id,
         status: 'queued',
       };
     } catch (error) {
       console.error(`Error triggering scenario ${scenarioId}:`, error);
-      throw error;
+      return {
+        success: false,
+        error: `Trigger failed: ${error instanceof Error ? error.message : String(error)}`,
+      };
     }
   }
 
@@ -172,8 +194,12 @@ export class MakeConnector {
   async createWebhook(
     scenarioId: string,
     url: string
-  ): Promise<MakeWebhook> {
+  ): Promise<{ success: boolean; webhook?: MakeWebhook; error?: string }> {
     try {
+      if (!this.apiToken) {
+        return { success: false, error: 'MAKE_API_TOKEN not configured' };
+      }
+
       const response = await fetch(
         `${this.apiUrl}/scenarios/${scenarioId}/webhooks`,
         {
@@ -184,19 +210,87 @@ export class MakeConnector {
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to create webhook: ${response.statusText}`);
+        const errorText = await response.text();
+        return {
+          success: false,
+          error: `Failed to create webhook: ${response.status} - ${errorText}`,
+        };
       }
 
-      const data = await response.json() as { id: string };
+      const data = (await response.json()) as { id: string };
       return {
-        id: data.id,
-        scenarioId,
-        url,
-        enabled: true,
+        success: true,
+        webhook: {
+          id: data.id,
+          scenarioId,
+          url,
+          enabled: true,
+        },
       };
     } catch (error) {
       console.error('Error creating webhook:', error);
-      throw error;
+      return {
+        success: false,
+        error: `Webhook creation failed: ${error instanceof Error ? error.message : String(error)}`,
+      };
     }
+  }
+
+  async getExecutionHistory(
+    scenarioId: string,
+    limit: number = 20
+  ): Promise<{
+    success: boolean;
+    executions?: MakeExecution[];
+    error?: string;
+  }> {
+    try {
+      if (!this.apiToken) {
+        return { success: false, error: 'MAKE_API_TOKEN not configured' };
+      }
+
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        sort: 'startedAt:desc',
+      });
+
+      const response = await fetch(
+        `${this.apiUrl}/scenarios/${scenarioId}/executions?${params}`,
+        {
+          method: 'GET',
+          headers: this.getHeaders(),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        return {
+          success: false,
+          error: `Failed to fetch history: ${response.status} - ${errorText}`,
+        };
+      }
+
+      const data = (await response.json()) as { executions: MakeExecution[] };
+      return { success: true, executions: data.executions };
+    } catch (error) {
+      console.error('Error fetching execution history:', error);
+      return {
+        success: false,
+        error: `History fetch failed: ${error instanceof Error ? error.message : String(error)}`,
+      };
+    }
+  }
+
+  async healthCheck(): Promise<{
+    status: 'healthy' | 'unhealthy';
+    message: string;
+  }> {
+    if (!this.apiToken) {
+      return { status: 'unhealthy', message: 'MAKE_API_TOKEN not configured' };
+    }
+    if (!this.teamId) {
+      return { status: 'unhealthy', message: 'MAKE_TEAM_ID not configured' };
+    }
+    return { status: 'healthy', message: 'Make connector ready' };
   }
 }

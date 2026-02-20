@@ -1,6 +1,7 @@
 /**
  * VibeKanban Integration Connector
  * Manages project/task management boards for Claude Code agents
+ * Integrates with VibeKanban API for enterprise task management
  */
 
 export interface KanbanCard {
@@ -14,6 +15,8 @@ export interface KanbanCard {
   agentId?: string;
   createdAt: Date;
   updatedAt: Date;
+  estimate?: number;
+  tags?: string[];
 }
 
 export interface KanbanColumn {
@@ -575,6 +578,121 @@ export class VibeKanbanConnector {
       totalCards,
       agentTaskCounts,
     };
+  }
+
+  public getBoardMetrics(boardId: string): {
+    boardId: string;
+    boardName: string;
+    totalCards: number;
+    columnMetrics: Array<{
+      columnId: string;
+      columnName: string;
+      cardCount: number;
+      priorityCounts: Record<string, number>;
+      assignedCards: number;
+    }>;
+    prioritySummary: Record<string, number>;
+    overallProgressPercentage: number;
+  } | null {
+    const board = this.boards.get(boardId);
+    if (!board) return null;
+
+    const columnMetrics = board.columns.map((column) => {
+      const priorityCounts: Record<string, number> = {};
+      let assignedCards = 0;
+
+      for (const card of column.cards) {
+        priorityCounts[card.priority] = (priorityCounts[card.priority] || 0) + 1;
+        if (card.assignee) assignedCards++;
+      }
+
+      return {
+        columnId: column.id,
+        columnName: column.name,
+        cardCount: column.cardCount,
+        priorityCounts,
+        assignedCards,
+      };
+    });
+
+    const prioritySummary: Record<string, number> = {};
+    let totalCards = 0;
+
+    for (const column of board.columns) {
+      totalCards += column.cardCount;
+      for (const card of column.cards) {
+        prioritySummary[card.priority] = (prioritySummary[card.priority] || 0) + 1;
+      }
+    }
+
+    // Calculate progress: cards in "Done" or completion columns vs total
+    const completionColumns = board.columns.filter((c) =>
+      ['Done', 'Completed', 'Closed', 'Compliant', 'Closed Won'].includes(c.name)
+    );
+    const completedCards = completionColumns.reduce((acc, col) => acc + col.cardCount, 0);
+    const overallProgressPercentage = totalCards > 0 ? Math.round((completedCards / totalCards) * 100) : 0;
+
+    return {
+      boardId,
+      boardName: board.name,
+      totalCards,
+      columnMetrics,
+      prioritySummary,
+      overallProgressPercentage,
+    };
+  }
+
+  public deleteCard(boardId: string, cardId: string): boolean {
+    const board = this.boards.get(boardId);
+    if (!board) return false;
+
+    for (const column of board.columns) {
+      const cardIndex = column.cards.findIndex((c) => c.id === cardId);
+      if (cardIndex !== -1) {
+        column.cards.splice(cardIndex, 1);
+        column.cardCount = column.cards.length;
+        board.lastUpdated = new Date();
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public async healthCheck(): Promise<{ status: string; message: string }> {
+    try {
+      // Check if boards are initialized
+      if (this.boards.size === 0) {
+        return {
+          status: 'unhealthy',
+          message: 'No boards found in VibeKanban connector',
+        };
+      }
+
+      // Verify basic board integrity
+      let totalCards = 0;
+      for (const board of this.boards.values()) {
+        if (!board.columns || board.columns.length === 0) {
+          return {
+            status: 'unhealthy',
+            message: `Board ${board.id} has no columns`,
+          };
+        }
+        for (const column of board.columns) {
+          totalCards += column.cardCount;
+        }
+      }
+
+      return {
+        status: 'healthy',
+        message: `VibeKanban connector healthy: ${this.boards.size} boards, ${totalCards} total cards`,
+      };
+    } catch (error) {
+      return {
+        status: 'unhealthy',
+        message: `Health check failed: ${error instanceof Error ? error.message : String(error)}`,
+      };
+    }
   }
 }
 
