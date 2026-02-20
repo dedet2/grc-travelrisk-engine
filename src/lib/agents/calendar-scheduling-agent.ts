@@ -5,7 +5,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface Attendee {
   id: string;
@@ -211,8 +211,8 @@ export class CalendarSchedulingAgent extends BaseAgent<SchedulingRawData, Schedu
    */
   async updateDashboard(processedData: SchedulingProcessedData): Promise<void> {
     // Store calendar events and scheduling data
-    inMemoryStore.storeCalendarEvents(this.mockEvents);
-    inMemoryStore.storeSchedulingMetrics(processedData);
+    supabaseStore.storeCalendarEvents(this.mockEvents);
+    supabaseStore.storeSchedulingMetrics(processedData);
 
     // Simulate dashboard update delay
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -279,7 +279,7 @@ export class CalendarSchedulingAgent extends BaseAgent<SchedulingRawData, Schedu
     };
 
     this.mockEvents.push(event);
-    inMemoryStore.storeCalendarEvents(this.mockEvents);
+    supabaseStore.storeCalendarEvents(this.mockEvents);
 
     return event;
   }
@@ -297,7 +297,7 @@ export class CalendarSchedulingAgent extends BaseAgent<SchedulingRawData, Schedu
     }
 
     Object.assign(event, updates, { updatedAt: new Date() });
-    inMemoryStore.storeCalendarEvents(this.mockEvents);
+    supabaseStore.storeCalendarEvents(this.mockEvents);
 
     return event;
   }

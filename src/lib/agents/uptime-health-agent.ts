@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface HealthCheckResult {
   endpoint: string;
@@ -244,14 +244,14 @@ export class UptimeHealthAgent extends BaseAgent<HealthCheckRawData, HealthRepor
   }
 
   /**
-   * Store health report in the data store
+   * Store health report in the data store (uses Supabase with in-memory fallback)
    */
   async updateDashboard(processedData: HealthReport): Promise<void> {
-    inMemoryStore.storeHealthReport(processedData);
+    supabaseStore.storeHealthReport(processedData);
 
     // Store alerts
     for (const alert of processedData.alerts) {
-      inMemoryStore.addHealthAlert(alert);
+      supabaseStore.addHealthAlert(alert);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 50));

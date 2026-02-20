@@ -5,7 +5,7 @@
  */
 
 import { BaseAgent, type AgentConfig, type AgentRunResult } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ClientData {
   clientId: string;
@@ -262,8 +262,8 @@ export class InvoiceBillingAgent extends BaseAgent<InvoiceBillingRawData, Billin
    */
   async updateDashboard(processedData: BillingMetrics): Promise<void> {
     // Store invoices in the store
-    inMemoryStore.storeInvoices(this.mockInvoices);
-    inMemoryStore.storeBillingMetrics(processedData);
+    supabaseStore.storeInvoices(this.mockInvoices);
+    supabaseStore.storeBillingMetrics(processedData);
 
     // Simulate dashboard update delay
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -305,7 +305,7 @@ export class InvoiceBillingAgent extends BaseAgent<InvoiceBillingRawData, Billin
     };
 
     this.mockInvoices.push(invoice);
-    inMemoryStore.storeInvoices(this.mockInvoices);
+    supabaseStore.storeInvoices(this.mockInvoices);
 
     return invoice;
   }
@@ -324,7 +324,7 @@ export class InvoiceBillingAgent extends BaseAgent<InvoiceBillingRawData, Billin
 
     invoice.status = status;
     invoice.updatedAt = new Date();
-    inMemoryStore.storeInvoices(this.mockInvoices);
+    supabaseStore.storeInvoices(this.mockInvoices);
 
     return invoice;
   }

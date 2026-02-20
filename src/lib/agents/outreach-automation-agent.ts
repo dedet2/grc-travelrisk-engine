@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface OutreachEmail {
   emailId: string;
@@ -288,8 +288,8 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: OutreachMetrics): Promise<void> {
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
-    inMemoryStore.storeOutreachMetrics(processedData);
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -347,7 +347,7 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
     };
 
     this.sequences.set(sequenceId, sequence);
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
 
     return sequence;
   }
@@ -385,7 +385,7 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
     sequence.updatedAt = now;
 
     this.sequences.set(sequenceId, sequence);
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
 
     return sequence;
   }
@@ -410,7 +410,7 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
 
     sequence.updatedAt = new Date();
     this.sequences.set(sequenceId, sequence);
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
 
     return email;
   }
@@ -435,7 +435,7 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
 
     sequence.updatedAt = new Date();
     this.sequences.set(sequenceId, sequence);
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
 
     return email;
   }
@@ -465,7 +465,7 @@ export class OutreachAutomationAgent extends BaseAgent<OutreachRawData, Outreach
 
     sequence.updatedAt = new Date();
     this.sequences.set(sequenceId, sequence);
-    inMemoryStore.storeOutreachSequences(Array.from(this.sequences.values()));
+    supabaseStore.storeOutreachSequences(Array.from(this.sequences.values()));
 
     return email;
   }

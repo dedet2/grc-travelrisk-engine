@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig, type AgentRunResult } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface LeadData {
   leadId: string;
@@ -277,8 +277,8 @@ export class LeadScoringAgent extends BaseAgent<LeadScoringRawData, LeadPipeline
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: LeadPipelineMetrics): Promise<void> {
-    inMemoryStore.storeLeads(Array.from(this.leads.values()));
-    inMemoryStore.storeLeadPipelineMetrics(processedData);
+    supabaseStore.storeLeads(Array.from(this.leads.values()));
+    supabaseStore.storeLeadPipelineMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -301,7 +301,7 @@ export class LeadScoringAgent extends BaseAgent<LeadScoringRawData, LeadPipeline
 
     const scoredLead = this.scoreLeadInternal(lead);
     this.leads.set(leadId, scoredLead);
-    inMemoryStore.storeLeads(Array.from(this.leads.values()));
+    supabaseStore.storeLeads(Array.from(this.leads.values()));
 
     return scoredLead;
   }
@@ -321,7 +321,7 @@ export class LeadScoringAgent extends BaseAgent<LeadScoringRawData, LeadPipeline
     lead.stage = stage;
     lead.updatedAt = new Date();
     this.leads.set(leadId, lead);
-    inMemoryStore.storeLeads(Array.from(this.leads.values()));
+    supabaseStore.storeLeads(Array.from(this.leads.values()));
 
     return lead;
   }

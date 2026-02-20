@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface BackupJob {
   jobId: string;
@@ -244,7 +244,7 @@ export class BackupRecoveryAgent extends BaseAgent<BackupRecoveryRawData, Backup
    * Store backup recovery report in the data store
    */
   async updateDashboard(processedData: BackupRecoveryReport): Promise<void> {
-    inMemoryStore.storeBackupRecoveryReport(processedData);
+    supabaseStore.storeBackupRecoveryReport(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -255,14 +255,14 @@ export class BackupRecoveryAgent extends BaseAgent<BackupRecoveryRawData, Backup
    * Get backup recovery report
    */
   getBackupReport(): BackupRecoveryReport | undefined {
-    return inMemoryStore.getBackupRecoveryReport();
+    return supabaseStore.getBackupRecoveryReport();
   }
 
   /**
    * Get failed backups
    */
   getFailedBackups(): BackupJob[] {
-    const report = inMemoryStore.getBackupRecoveryReport();
+    const report = supabaseStore.getBackupRecoveryReport();
     return report ? report.backupJobsStatus.filter((j) => j.status === 'failed') : [];
   }
 
@@ -270,7 +270,7 @@ export class BackupRecoveryAgent extends BaseAgent<BackupRecoveryRawData, Backup
    * Get backup jobs by data source
    */
   getBackupsByDataSource(dataSource: string): BackupJob[] {
-    const report = inMemoryStore.getBackupRecoveryReport();
+    const report = supabaseStore.getBackupRecoveryReport();
     return report ? report.backupJobsStatus.filter((j) => j.dataSource === dataSource) : [];
   }
 }

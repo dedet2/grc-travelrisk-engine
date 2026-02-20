@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface KeywordRanking {
   keyword: string;
@@ -240,8 +240,8 @@ export class SEOIntelligenceAgent extends BaseAgent<SEORawData, SEOMetrics> {
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: SEOMetrics): Promise<void> {
-    inMemoryStore.storeKeywordRankings(Array.from(this.keywords.values()));
-    inMemoryStore.storeSEOMetrics(processedData);
+    supabaseStore.storeKeywordRankings(Array.from(this.keywords.values()));
+    supabaseStore.storeSEOMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -263,7 +263,7 @@ export class SEOIntelligenceAgent extends BaseAgent<SEORawData, SEOMetrics> {
     };
 
     this.keywords.set(keyword, updated);
-    inMemoryStore.storeKeywordRankings(Array.from(this.keywords.values()));
+    supabaseStore.storeKeywordRankings(Array.from(this.keywords.values()));
 
     return updated;
   }
@@ -290,7 +290,7 @@ export class SEOIntelligenceAgent extends BaseAgent<SEORawData, SEOMetrics> {
     };
 
     this.keywords.set(keyword, newKeyword);
-    inMemoryStore.storeKeywordRankings(Array.from(this.keywords.values()));
+    supabaseStore.storeKeywordRankings(Array.from(this.keywords.values()));
 
     return newKeyword;
   }
@@ -329,7 +329,7 @@ export class SEOIntelligenceAgent extends BaseAgent<SEORawData, SEOMetrics> {
     };
 
     this.competitors.set(competitorId, updated);
-    inMemoryStore.storeCompetitorAnalyses(Array.from(this.competitors.values()));
+    supabaseStore.storeCompetitorAnalyses(Array.from(this.competitors.values()));
 
     return updated;
   }

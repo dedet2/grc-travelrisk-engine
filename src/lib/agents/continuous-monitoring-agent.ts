@@ -10,7 +10,7 @@
  */
 
 import { BaseAgent, type AgentConfig, type AgentRunResult } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 /**
  * Alert severity levels
@@ -130,13 +130,13 @@ export class ContinuousMonitoringAgent extends BaseAgent<
    */
   private initializeBaselines(): void {
     // Initialize GRC score baselines
-    const results = inMemoryStore.getAllResults();
+    const results = supabaseStore.getAllResults();
     for (const result of results) {
       this.previousGrcScores.set(result.assessmentId, result.result.overallScore);
     }
 
     // Initialize framework versions
-    const frameworks = inMemoryStore.getFrameworks();
+    const frameworks = supabaseStore.getFrameworks();
     for (const framework of frameworks) {
       this.previousFrameworkVersions.set(framework.id, framework.version);
     }
@@ -150,7 +150,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
     // Simulate data collection delay
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    const results = inMemoryStore.getAllResults();
+    const results = supabaseStore.getAllResults();
     const assessmentIds = results.map((r) => r.assessmentId);
 
     return {
@@ -175,7 +175,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
 
     // Check for GRC score deviations
     for (const assessmentId of rawData.assessmentIds) {
-      const currentResult = inMemoryStore.getScoringResult(assessmentId);
+      const currentResult = supabaseStore.getScoringResult(assessmentId);
       if (!currentResult) continue;
 
       const currentScore = currentResult.result.overallScore;
@@ -199,7 +199,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
                 ? 'high'
                 : 'medium';
 
-          inMemoryStore.addMonitoringAlert({
+          supabaseStore.addMonitoringAlert({
             alertId: `alert-${runId}-${assessmentId}`,
             timestamp,
             severity,
@@ -232,7 +232,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
     }
 
     // Check for framework updates
-    const frameworks = inMemoryStore.getFrameworks();
+    const frameworks = supabaseStore.getFrameworks();
     for (const framework of frameworks) {
       const previousVersion = rawData.previousFrameworkVersions.get(framework.id);
 
@@ -241,7 +241,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
         frameworkUpdatesDetected.push(update);
 
         // Generate framework update alert
-        inMemoryStore.addMonitoringAlert({
+        supabaseStore.addMonitoringAlert({
           alertId: `alert-${runId}-framework-${framework.id}`,
           timestamp,
           severity: 'high',
@@ -279,7 +279,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
     }
 
     // Get all alerts to count by severity
-    const allAlerts = inMemoryStore.getAllMonitoringAlerts();
+    const allAlerts = supabaseStore.getAllMonitoringAlerts();
     const criticalCount = allAlerts.filter((a) => a.severity === 'critical').length;
     const highCount = allAlerts.filter((a) => a.severity === 'high').length;
     const mediumCount = allAlerts.filter((a) => a.severity === 'medium').length;
@@ -311,7 +311,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
     this.lastMonitoringRun = processedData;
 
     // Store in agent runs for audit trail
-    inMemoryStore.addAgentRun({
+    supabaseStore.addAgentRun({
       agentName: this.config.name,
       status: 'completed',
       startedAt: new Date(processedData.timestamp.getTime() - 5000),
@@ -361,7 +361,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
             ? 'critical'
             : 'high';
 
-        inMemoryStore.addMonitoringAlert({
+        supabaseStore.addMonitoringAlert({
           alertId: `alert-advisory-${advisory.country}-${Date.now()}`,
           timestamp: new Date(),
           severity,
@@ -430,14 +430,14 @@ export class ContinuousMonitoringAgent extends BaseAgent<
    * Get all monitoring alerts
    */
   getAllAlerts(): MonitoringAlert[] {
-    return inMemoryStore.getAllMonitoringAlerts();
+    return supabaseStore.getAllMonitoringAlerts();
   }
 
   /**
    * Get alerts for a specific severity
    */
   getAlertsBySeverity(severity: AlertSeverity): MonitoringAlert[] {
-    return inMemoryStore
+    return supabaseStore
       .getAllMonitoringAlerts()
       .filter((a) => a.severity === severity);
   }
@@ -446,7 +446,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
    * Get unacknowledged alerts
    */
   getUnacknowledgedAlerts(): MonitoringAlert[] {
-    return inMemoryStore
+    return supabaseStore
       .getAllMonitoringAlerts()
       .filter((a) => !a.acknowledged);
   }
@@ -455,7 +455,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
    * Acknowledge an alert
    */
   acknowledgeAlert(alertId: string, acknowledgedBy?: string): boolean {
-    return inMemoryStore.acknowledgeMonitoringAlert(
+    return supabaseStore.acknowledgeMonitoringAlert(
       alertId,
       acknowledgedBy
     );
@@ -465,7 +465,7 @@ export class ContinuousMonitoringAgent extends BaseAgent<
    * Clear acknowledged alerts
    */
   clearAcknowledgedAlerts(): number {
-    return inMemoryStore.clearAcknowledgedMonitoringAlerts();
+    return supabaseStore.clearAcknowledgedMonitoringAlerts();
   }
 
   /**

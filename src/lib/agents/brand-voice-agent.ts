@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface BrandGuidelineMetric {
   metricName: string;
@@ -279,8 +279,8 @@ export class BrandVoiceAgent extends BaseAgent<BrandVoiceRawData, BrandVoiceMetr
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: BrandVoiceMetrics): Promise<void> {
-    inMemoryStore.storeContentAnalyses(Array.from(this.analyses.values()));
-    inMemoryStore.storeBrandVoiceMetrics(processedData);
+    supabaseStore.storeContentAnalyses(Array.from(this.analyses.values()));
+    supabaseStore.storeBrandVoiceMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -345,7 +345,7 @@ export class BrandVoiceAgent extends BaseAgent<BrandVoiceRawData, BrandVoiceMetr
     };
 
     this.analyses.set(contentId, analysis);
-    inMemoryStore.storeContentAnalyses(Array.from(this.analyses.values()));
+    supabaseStore.storeContentAnalyses(Array.from(this.analyses.values()));
 
     return analysis;
   }

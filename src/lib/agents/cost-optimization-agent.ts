@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ServiceCost {
   serviceId: string;
@@ -273,7 +273,7 @@ export class CostOptimizationAgent extends BaseAgent<CostOptimizationRawData, Co
    * Store cost analysis in the data store
    */
   async updateDashboard(processedData: CostOptimizationReport): Promise<void> {
-    inMemoryStore.storeCostOptimizationReport(processedData);
+    supabaseStore.storeCostOptimizationReport(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -284,14 +284,14 @@ export class CostOptimizationAgent extends BaseAgent<CostOptimizationRawData, Co
    * Get cost optimization report
    */
   getCostReport(): CostOptimizationReport | undefined {
-    return inMemoryStore.getCostOptimizationReport();
+    return supabaseStore.getCostOptimizationReport();
   }
 
   /**
    * Get savings opportunities by priority
    */
   getSavingsByPriority(priority: 'low' | 'medium' | 'high' | 'critical'): CostSavingsOpportunity[] {
-    const report = inMemoryStore.getCostOptimizationReport();
+    const report = supabaseStore.getCostOptimizationReport();
     return report ? report.savingsOpportunities.filter((o) => o.priority === priority) : [];
   }
 
@@ -299,7 +299,7 @@ export class CostOptimizationAgent extends BaseAgent<CostOptimizationRawData, Co
    * Get top savings opportunities
    */
   getTopSavingsOpportunities(limit: number = 10): CostSavingsOpportunity[] {
-    const report = inMemoryStore.getCostOptimizationReport();
+    const report = supabaseStore.getCostOptimizationReport();
     return report ? report.savingsOpportunities.slice(0, limit) : [];
   }
 }

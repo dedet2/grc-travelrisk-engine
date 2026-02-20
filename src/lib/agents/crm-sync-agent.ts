@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface CrmContact {
   contactId: string;
@@ -345,9 +345,9 @@ export class CrmSyncAgent extends BaseAgent<CrmSyncRawData, CrmPipelineMetrics> 
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: CrmPipelineMetrics): Promise<void> {
-    inMemoryStore.storeCrmContacts(Array.from(this.contacts.values()));
-    inMemoryStore.storeCrmDeals(Array.from(this.deals.values()));
-    inMemoryStore.storeCrmPipelineMetrics(processedData);
+    supabaseStore.storeCrmContacts(Array.from(this.contacts.values()));
+    supabaseStore.storeCrmDeals(Array.from(this.deals.values()));
+    supabaseStore.storeCrmPipelineMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -381,7 +381,7 @@ export class CrmSyncAgent extends BaseAgent<CrmSyncRawData, CrmPipelineMetrics> 
     };
 
     this.contacts.set(contactId, contact);
-    inMemoryStore.storeCrmContacts(Array.from(this.contacts.values()));
+    supabaseStore.storeCrmContacts(Array.from(this.contacts.values()));
 
     return contact;
   }
@@ -418,7 +418,7 @@ export class CrmSyncAgent extends BaseAgent<CrmSyncRawData, CrmPipelineMetrics> 
     };
 
     this.deals.set(dealId, deal);
-    inMemoryStore.storeCrmDeals(Array.from(this.deals.values()));
+    supabaseStore.storeCrmDeals(Array.from(this.deals.values()));
 
     return deal;
   }
@@ -455,7 +455,7 @@ export class CrmSyncAgent extends BaseAgent<CrmSyncRawData, CrmPipelineMetrics> 
 
     deal.updatedAt = new Date();
     this.deals.set(dealId, deal);
-    inMemoryStore.storeCrmDeals(Array.from(this.deals.values()));
+    supabaseStore.storeCrmDeals(Array.from(this.deals.values()));
 
     return deal;
   }

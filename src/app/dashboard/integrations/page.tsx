@@ -5,11 +5,13 @@ import { useState, useEffect } from 'react';
 interface Integration {
   id: string;
   name: string;
-  status: 'connected' | 'disconnected' | 'error';
+  status: 'connected' | 'disconnected' | 'error' | 'inactive' | 'pending';
   category: string;
   lastSync?: string;
   dataPoints: number;
   description: string;
+  icon?: string;
+  healthStatus?: 'healthy' | 'unhealthy';
 }
 
 interface IntegrationStats {
@@ -139,6 +141,10 @@ function getStatusColor(status: string) {
       return 'bg-violet-100 text-violet-700';
     case 'error':
       return 'bg-red-100 text-red-700';
+    case 'pending':
+      return 'bg-amber-100 text-amber-700';
+    case 'inactive':
+      return 'bg-gray-100 text-gray-700';
     default:
       return 'bg-violet-100 text-violet-700';
   }
@@ -173,7 +179,30 @@ function getStatusIcon(status: string) {
         />
       </svg>
     );
+  } else if (status === 'pending') {
+    return (
+      <svg
+        className="w-4 h-4 animate-spin"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+    );
   }
+  // default: inactive or disconnected
   return (
     <svg
       className="w-4 h-4"
@@ -215,9 +244,25 @@ function getIntegrationStats(integrations: Integration[]): IntegrationStats {
   return {
     total: integrations.length,
     connected: integrations.filter((i) => i.status === 'connected').length,
-    errors: integrations.filter((i) => i.status === 'error').length,
-    totalDataPoints: integrations.reduce((sum, i) => sum + i.dataPoints, 0),
+    errors: integrations.filter((i) => i.status === 'error' || i.status === 'inactive').length,
+    totalDataPoints: integrations.reduce((sum, i) => sum + (i.dataPoints || 0), 0),
   };
+}
+
+function getDescriptionForService(serviceId: string): string {
+  const descriptions: Record<string, string> = {
+    apollo: 'Lead intelligence and contact database integration',
+    sendgrid: 'Email delivery and marketing automation',
+    stripe: 'Payment processing and billing platform',
+    weconnect: 'Enterprise integration hub and API management',
+    vibekanban: 'Project management and workflow tracking',
+    make: 'Workflow automation and integration platform',
+    airtable: 'Flexible database and project management',
+    slack: 'Team messaging and notifications',
+    calendly: 'Calendar and scheduling management',
+    supabase: 'Open source Firebase alternative with PostgreSQL',
+  };
+  return descriptions[serviceId] || 'Integration service';
 }
 
 export default function IntegrationsPage() {
@@ -238,15 +283,28 @@ export default function IntegrationsPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/integrations/status');
+      // Fetch from the real integrations API that uses connector registry
+      const response = await fetch('/api/integrations');
       if (response.ok) {
         const result = await response.json();
-        const apiData = result.data || result;
-        if (Array.isArray(apiData)) {
-          setIntegrations(apiData);
-          setLastUpdated(new Date());
-        } else if (apiData && Array.isArray(apiData.integrations)) {
-          setIntegrations(apiData.integrations);
+        const apiData = result.data;
+        if (apiData && apiData.services) {
+          // Map API services to dashboard Integration format
+          const mappedIntegrations: Integration[] = apiData.services.map(
+            (service: any) => ({
+              id: service.id,
+              name: service.name,
+              status: service.status,
+              category: service.category,
+              lastSync: service.lastSync,
+              dataPoints: service.eventsProcessed || 0,
+              icon: service.icon,
+              healthStatus: service.healthStatus,
+              // Generate a description based on the service
+              description: getDescriptionForService(service.id),
+            })
+          );
+          setIntegrations(mappedIntegrations);
           setLastUpdated(new Date());
         } else {
           setIntegrations(DEFAULT_INTEGRATIONS);
@@ -598,12 +656,12 @@ export default function IntegrationsPage() {
             </div>
           </div>
 
-          {/* Disconnected */}
+          {/* Inactive/Pending */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
                 <svg
-                  className="w-5 h-5 text-violet-600"
+                  className="w-5 h-5 text-gray-600"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -613,15 +671,15 @@ export default function IntegrationsPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-sm font-medium text-violet-950">Disconnected</span>
+                <span className="text-sm font-medium text-violet-950">Inactive/Pending</span>
               </div>
-              <span className="text-sm font-bold text-violet-600">
+              <span className="text-sm font-bold text-gray-600">
                 {stats.total - stats.connected - stats.errors} / {stats.total}
               </span>
             </div>
             <div className="w-full bg-violet-200 rounded-full h-2">
               <div
-                className="bg-violet-600 h-2 rounded-full transition-all"
+                className="bg-gray-600 h-2 rounded-full transition-all"
                 style={{
                   width: `${((stats.total - stats.connected - stats.errors) / stats.total) * 100}%`,
                 }}

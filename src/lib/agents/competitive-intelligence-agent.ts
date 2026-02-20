@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface Competitor {
   competitorId: string;
@@ -379,7 +379,7 @@ export class CompetitiveIntelligenceAgent extends BaseAgent<
    * Store competitive intelligence report
    */
   async updateDashboard(processedData: CompetitiveIntelligenceReport): Promise<void> {
-    inMemoryStore.storeCompetitiveIntelligenceReport(processedData);
+    supabaseStore.storeCompetitiveIntelligenceReport(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -390,14 +390,14 @@ export class CompetitiveIntelligenceAgent extends BaseAgent<
    * Get competitive intelligence report
    */
   getCompetitiveReport(): CompetitiveIntelligenceReport | undefined {
-    return inMemoryStore.getCompetitiveIntelligenceReport();
+    return supabaseStore.getCompetitiveIntelligenceReport();
   }
 
   /**
    * Get identified threats
    */
   getThreats(): CompetitiveThreat[] {
-    const report = inMemoryStore.getCompetitiveIntelligenceReport();
+    const report = supabaseStore.getCompetitiveIntelligenceReport();
     return report ? report.identifiedThreats : [];
   }
 
@@ -405,7 +405,7 @@ export class CompetitiveIntelligenceAgent extends BaseAgent<
    * Get identified opportunities
    */
   getOpportunities(): CompetitiveOpportunity[] {
-    const report = inMemoryStore.getCompetitiveIntelligenceReport();
+    const report = supabaseStore.getCompetitiveIntelligenceReport();
     return report ? report.identifiedOpportunities : [];
   }
 }

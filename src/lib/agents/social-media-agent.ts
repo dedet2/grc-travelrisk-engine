@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface SocialPost {
   postId: string;
@@ -277,8 +277,8 @@ export class SocialMediaAgent extends BaseAgent<SocialMediaRawData, SocialMetric
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: SocialMetrics): Promise<void> {
-    inMemoryStore.storeSocialPosts(Array.from(this.posts.values()));
-    inMemoryStore.storeSocialMediaMetrics(processedData);
+    supabaseStore.storeSocialPosts(Array.from(this.posts.values()));
+    supabaseStore.storeSocialMediaMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -309,7 +309,7 @@ export class SocialMediaAgent extends BaseAgent<SocialMediaRawData, SocialMetric
     };
 
     this.posts.set(postId, newPost);
-    inMemoryStore.storeSocialPosts(Array.from(this.posts.values()));
+    supabaseStore.storeSocialPosts(Array.from(this.posts.values()));
 
     return newPost;
   }
@@ -334,7 +334,7 @@ export class SocialMediaAgent extends BaseAgent<SocialMediaRawData, SocialMetric
     };
 
     this.posts.set(postId, updated);
-    inMemoryStore.storeSocialPosts(Array.from(this.posts.values()));
+    supabaseStore.storeSocialPosts(Array.from(this.posts.values()));
 
     return updated;
   }

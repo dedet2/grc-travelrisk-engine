@@ -5,7 +5,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface DocumentTag {
   name: string;
@@ -308,8 +308,8 @@ Notify supervisory authority within 72 hours.`,
    */
   async updateDashboard(processedData: DocumentMetrics): Promise<void> {
     // Store documents and metrics
-    inMemoryStore.storeDocuments(Array.from(this.documents.values()));
-    inMemoryStore.storeDocumentMetrics(processedData);
+    supabaseStore.storeDocuments(Array.from(this.documents.values()));
+    supabaseStore.storeDocumentMetrics(processedData);
 
     // Simulate dashboard update delay
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -387,7 +387,7 @@ Notify supervisory authority within 72 hours.`,
     };
 
     this.documents.set(documentId, document);
-    inMemoryStore.storeDocuments(Array.from(this.documents.values()));
+    supabaseStore.storeDocuments(Array.from(this.documents.values()));
 
     return document;
   }
@@ -422,7 +422,7 @@ Notify supervisory authority within 72 hours.`,
     document.updatedAt = now;
 
     this.documents.set(documentId, document);
-    inMemoryStore.storeDocuments(Array.from(this.documents.values()));
+    supabaseStore.storeDocuments(Array.from(this.documents.values()));
 
     return document;
   }
@@ -440,7 +440,7 @@ Notify supervisory authority within 72 hours.`,
     document.updatedAt = new Date();
 
     this.documents.set(documentId, document);
-    inMemoryStore.storeDocuments(Array.from(this.documents.values()));
+    supabaseStore.storeDocuments(Array.from(this.documents.values()));
 
     return document;
   }
@@ -458,7 +458,7 @@ Notify supervisory authority within 72 hours.`,
     document.updatedAt = new Date();
 
     this.documents.set(documentId, document);
-    inMemoryStore.storeDocuments(Array.from(this.documents.values()));
+    supabaseStore.storeDocuments(Array.from(this.documents.values()));
 
     return document;
   }
@@ -526,7 +526,7 @@ Notify supervisory authority within 72 hours.`,
       document.tags.push(tag);
       document.updatedAt = new Date();
       this.documents.set(documentId, document);
-      inMemoryStore.storeDocuments(Array.from(this.documents.values()));
+      supabaseStore.storeDocuments(Array.from(this.documents.values()));
     }
 
     return document;

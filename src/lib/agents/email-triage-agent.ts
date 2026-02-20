@@ -5,7 +5,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface EmailMessage {
   messageId: string;
@@ -393,8 +393,8 @@ Compliance Team`,
    */
   async updateDashboard(processedData: TriageMetrics): Promise<void> {
     // Store triaged emails and metrics
-    inMemoryStore.storeTriagedEmails(this.triagedEmails);
-    inMemoryStore.storeTriageMetrics(processedData);
+    supabaseStore.storeTriagedEmails(this.triagedEmails);
+    supabaseStore.storeTriageMetrics(processedData);
 
     // Simulate dashboard update delay
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -449,7 +449,7 @@ Compliance Team`,
     }
     email.updatedAt = new Date();
 
-    inMemoryStore.storeTriagedEmails(this.triagedEmails);
+    supabaseStore.storeTriagedEmails(this.triagedEmails);
 
     return email;
   }

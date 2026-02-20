@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface SecurityCheck {
   checkId: string;
@@ -228,7 +228,7 @@ export class SecurityAuditAgent extends BaseAgent<SecurityAuditRawData, Security
    * Store security audit results in the data store
    */
   async updateDashboard(processedData: SecurityAuditReport): Promise<void> {
-    inMemoryStore.storeSecurityAuditReport(processedData);
+    supabaseStore.storeSecurityAuditReport(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -250,14 +250,14 @@ export class SecurityAuditAgent extends BaseAgent<SecurityAuditRawData, Security
    * Get security audit report
    */
   getSecurityReport(): SecurityAuditReport | undefined {
-    return inMemoryStore.getSecurityAuditReport();
+    return supabaseStore.getSecurityAuditReport();
   }
 
   /**
    * Get critical vulnerabilities
    */
   getCriticalVulnerabilities(): Vulnerability[] {
-    const report = inMemoryStore.getSecurityAuditReport();
+    const report = supabaseStore.getSecurityAuditReport();
     return report ? report.vulnerabilities.filter((v) => v.severity === 'critical') : [];
   }
 
@@ -265,7 +265,7 @@ export class SecurityAuditAgent extends BaseAgent<SecurityAuditRawData, Security
    * Get failing security checks
    */
   getFailingChecks(): SecurityCheck[] {
-    const report = inMemoryStore.getSecurityAuditReport();
+    const report = supabaseStore.getSecurityAuditReport();
     return report ? report.checks.filter((c) => !c.passed) : [];
   }
 }

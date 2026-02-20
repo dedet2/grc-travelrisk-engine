@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ChannelMetrics {
   channel: string;
@@ -279,8 +279,8 @@ export class AnalyticsDashboardAgent extends BaseAgent<AnalyticsDashboardRawData
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: DashboardMetrics): Promise<void> {
-    inMemoryStore.storeChannelMetrics(processedData.channelMetrics);
-    inMemoryStore.storeDashboardMetrics(processedData);
+    supabaseStore.storeChannelMetrics(processedData.channelMetrics);
+    supabaseStore.storeDashboardMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 

@@ -5,7 +5,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ProjectTask {
   taskId: string;
@@ -306,9 +306,9 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
    */
   async updateDashboard(processedData: ProcessedData): Promise<void> {
     // Store tasks and projects
-    inMemoryStore.storeProjects(Array.from(this.projects.values()));
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
-    inMemoryStore.storeStatusReports(processedData.statusReports);
+    supabaseStore.storeProjects(Array.from(this.projects.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeStatusReports(processedData.statusReports);
 
     // Simulate dashboard update delay
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -478,7 +478,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
       project.updatedAt = now;
     }
 
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
 
     return task;
   }
@@ -501,7 +501,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
     }
 
     this.tasks.set(taskId, task);
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
 
     return task;
   }
@@ -519,7 +519,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
     task.updatedAt = new Date();
 
     this.tasks.set(taskId, task);
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
 
     return task;
   }
@@ -537,7 +537,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
     task.updatedAt = new Date();
 
     this.tasks.set(taskId, task);
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
 
     return task;
   }
@@ -610,7 +610,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
     };
 
     this.projects.set(projectId, project);
-    inMemoryStore.storeProjects(Array.from(this.projects.values()));
+    supabaseStore.storeProjects(Array.from(this.projects.values()));
 
     return project;
   }
@@ -653,7 +653,7 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
     };
 
     this.sprints.set(sprintId, sprint);
-    inMemoryStore.storeSprints(Array.from(this.sprints.values()));
+    supabaseStore.storeSprints(Array.from(this.sprints.values()));
 
     return sprint;
   }
@@ -677,8 +677,8 @@ export class TaskProjectAgent extends BaseAgent<TaskRawData, ProcessedData> {
       sprint.tasks.push(task);
     }
 
-    inMemoryStore.storeTasks(Array.from(this.tasks.values()));
-    inMemoryStore.storeSprints(Array.from(this.sprints.values()));
+    supabaseStore.storeTasks(Array.from(this.tasks.values()));
+    supabaseStore.storeSprints(Array.from(this.sprints.values()));
 
     return task;
   }

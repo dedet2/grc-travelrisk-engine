@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ProposalTemplate {
   templateId: string;
@@ -487,8 +487,8 @@ export class ProposalGeneratorAgent extends BaseAgent<ProposalRawData, ProposalM
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: ProposalMetrics): Promise<void> {
-    inMemoryStore.storeProposals(Array.from(this.proposals.values()));
-    inMemoryStore.storeProposalMetrics(processedData);
+    supabaseStore.storeProposals(Array.from(this.proposals.values()));
+    supabaseStore.storeProposalMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -538,7 +538,7 @@ export class ProposalGeneratorAgent extends BaseAgent<ProposalRawData, ProposalM
     };
 
     this.proposals.set(proposalId, proposal);
-    inMemoryStore.storeProposals(Array.from(this.proposals.values()));
+    supabaseStore.storeProposals(Array.from(this.proposals.values()));
 
     return proposal;
   }
@@ -570,7 +570,7 @@ export class ProposalGeneratorAgent extends BaseAgent<ProposalRawData, ProposalM
 
     proposal.updatedAt = now;
     this.proposals.set(proposalId, proposal);
-    inMemoryStore.storeProposals(Array.from(this.proposals.values()));
+    supabaseStore.storeProposals(Array.from(this.proposals.values()));
 
     return proposal;
   }
@@ -597,7 +597,7 @@ export class ProposalGeneratorAgent extends BaseAgent<ProposalRawData, ProposalM
     proposal.updatedAt = new Date();
 
     this.proposals.set(proposalId, proposal);
-    inMemoryStore.storeProposals(Array.from(this.proposals.values()));
+    supabaseStore.storeProposals(Array.from(this.proposals.values()));
 
     return proposal;
   }

@@ -11,7 +11,7 @@
 import { BaseAgent, type AgentConfig, type AgentRunResult } from './base-agent';
 import { calculateRiskScore, calculateAssessmentMetrics } from '@/lib/scoring/engine';
 import type { ControlScore, ScoringInput, ScoringOutput, CategoryScore } from '@/lib/scoring/types';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface RiskScoringAgentInput {
   assessmentId: string;
@@ -202,7 +202,7 @@ export class RiskScoringAgent extends BaseAgent<RiskScoringAgentInput, RiskScori
   async updateDashboard(processedData: RiskScoringOutput): Promise<void> {
     // Store results in in-memory store
     if (this.lastScoringOutput) {
-      inMemoryStore.storeScoringResult(this.lastScoringOutput, this.lastScoringInput?.controls);
+      supabaseStore.storeScoringResult(this.lastScoringOutput, this.lastScoringInput?.controls);
     }
 
     // Simulate dashboard update delay

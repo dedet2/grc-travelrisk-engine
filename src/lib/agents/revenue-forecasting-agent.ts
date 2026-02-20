@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface SalesMetric {
   month: string;
@@ -337,7 +337,7 @@ export class RevenueForecastingAgent extends BaseAgent<RevenueForecastingRawData
    * Store revenue forecast report
    */
   async updateDashboard(processedData: RevenueForecastingReport): Promise<void> {
-    inMemoryStore.storeRevenueForecastingReport(processedData);
+    supabaseStore.storeRevenueForecastingReport(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -348,14 +348,14 @@ export class RevenueForecastingAgent extends BaseAgent<RevenueForecastingRawData
    * Get revenue forecast report
    */
   getRevenueReport(): RevenueForecastingReport | undefined {
-    return inMemoryStore.getRevenueForecastingReport();
+    return supabaseStore.getRevenueForecastingReport();
   }
 
   /**
    * Get revenue forecast scenarios
    */
   getScenarios(): RevenueScenarioModel | undefined {
-    const report = inMemoryStore.getRevenueForecastingReport();
+    const report = supabaseStore.getRevenueForecastingReport();
     return report ? report.forecastModels : undefined;
   }
 

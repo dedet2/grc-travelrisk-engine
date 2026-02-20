@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface ContentIdea {
   ideaId: string;
@@ -266,8 +266,8 @@ export class ContentCalendarAgent extends BaseAgent<ContentCalendarRawData, Cont
    * Store processed metrics in the data store
    */
   async updateDashboard(processedData: ContentCalendarMetrics): Promise<void> {
-    inMemoryStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
-    inMemoryStore.storeContentCalendarMetrics(processedData);
+    supabaseStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
+    supabaseStore.storeContentCalendarMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -302,7 +302,7 @@ export class ContentCalendarAgent extends BaseAgent<ContentCalendarRawData, Cont
     };
 
     this.scheduledContent.set(contentId, newContent);
-    inMemoryStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
+    supabaseStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
 
     return newContent;
   }
@@ -326,7 +326,7 @@ export class ContentCalendarAgent extends BaseAgent<ContentCalendarRawData, Cont
     };
 
     this.scheduledContent.set(contentId, updated);
-    inMemoryStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
+    supabaseStore.storeContentCalendar(Array.from(this.scheduledContent.values()));
 
     return updated;
   }

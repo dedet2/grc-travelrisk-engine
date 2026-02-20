@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { GrcIngestionAgent } from './grc-ingestion-agent';
-import { store, inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 import { ISO_27001_2022_CONTROLS } from '@/lib/grc/frameworks';
 
 describe('GrcIngestionAgent', () => {
@@ -13,13 +13,13 @@ describe('GrcIngestionAgent', () => {
 
   beforeEach(() => {
     // Clear store before each test
-    inMemoryStore.clearAll();
+    supabaseStore.clearAll();
     agent = new GrcIngestionAgent();
   });
 
   afterEach(() => {
     // Clean up after each test
-    inMemoryStore.clearAll();
+    supabaseStore.clearAll();
   });
 
   describe('Agent Instantiation', () => {

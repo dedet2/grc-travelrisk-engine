@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface StrategicInitiative {
   initiativeId: string;
@@ -607,7 +607,7 @@ with 38 team members and $1.25M annual investment.`;
    * Store strategic plan report
    */
   async updateDashboard(processedData: StrategicPlan): Promise<void> {
-    inMemoryStore.storeStrategicPlan(processedData);
+    supabaseStore.storeStrategicPlan(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -618,14 +618,14 @@ with 38 team members and $1.25M annual investment.`;
    * Get strategic plan
    */
   getStrategicPlan(): StrategicPlan | undefined {
-    return inMemoryStore.getStrategicPlan();
+    return supabaseStore.getStrategicPlan();
   }
 
   /**
    * Get quarterly objectives
    */
   getQuarterlyObjectives(): QuarterlyObjective[] {
-    const plan = inMemoryStore.getStrategicPlan();
+    const plan = supabaseStore.getStrategicPlan();
     return plan ? plan.quarterlyObjectives : [];
   }
 
@@ -633,7 +633,7 @@ with 38 team members and $1.25M annual investment.`;
    * Get strategic initiatives
    */
   getInitiatives(): StrategicInitiative[] {
-    const plan = inMemoryStore.getStrategicPlan();
+    const plan = supabaseStore.getStrategicPlan();
     return plan ? plan.strategicInitiatives : [];
   }
 }

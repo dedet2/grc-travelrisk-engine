@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 
 export interface QueryMetrics {
   queryId: string;
@@ -247,7 +247,7 @@ export class DatabaseOptimizationAgent extends BaseAgent<DatabaseOptimizationRaw
    * Store optimization metrics in the data store
    */
   async updateDashboard(processedData: DatabaseMetrics): Promise<void> {
-    inMemoryStore.storeDbOptimizationMetrics(processedData);
+    supabaseStore.storeDbOptimizationMetrics(processedData);
 
     await new Promise((resolve) => setTimeout(resolve, 50));
 
@@ -258,14 +258,14 @@ export class DatabaseOptimizationAgent extends BaseAgent<DatabaseOptimizationRaw
    * Get database optimization metrics
    */
   getDatabaseMetrics(): DatabaseMetrics | undefined {
-    return inMemoryStore.getDbOptimizationMetrics();
+    return supabaseStore.getDbOptimizationMetrics();
   }
 
   /**
    * Get all recommendations
    */
   getRecommendations(): OptimizationRecommendation[] {
-    const metrics = inMemoryStore.getDbOptimizationMetrics();
+    const metrics = supabaseStore.getDbOptimizationMetrics();
     return metrics ? metrics.recommendations : [];
   }
 
@@ -273,7 +273,7 @@ export class DatabaseOptimizationAgent extends BaseAgent<DatabaseOptimizationRaw
    * Get recommendations by priority
    */
   getRecommendationsByPriority(priority: 'low' | 'medium' | 'high' | 'critical'): OptimizationRecommendation[] {
-    const metrics = inMemoryStore.getDbOptimizationMetrics();
+    const metrics = supabaseStore.getDbOptimizationMetrics();
     return metrics ? metrics.recommendations.filter((r) => r.priority === priority) : [];
   }
 }

@@ -44,7 +44,7 @@ import { createStrategicPlanningAgent } from './strategic-planning-agent';
 // Import Sprint 1 agents (A-01, A-02, A-03 are registered via their own modules)
 // They use the BaseAgent pattern but are registered as lightweight classes
 import { BaseAgent, type AgentConfig } from './base-agent';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store'; // Uses Supabase with in-memory fallback
 import { calculateRiskScore, calculateAssessmentMetrics } from '@/lib/scoring/engine';
 import type { ScoringInput } from '@/lib/scoring/types';
 
@@ -66,7 +66,7 @@ class GRCIngestionAgent extends BaseAgent<any, any> {
   }
 
   async collectData() {
-    const frameworks = inMemoryStore.getFrameworks();
+    const frameworks = supabaseStore.getFrameworks();
     return { existingFrameworks: frameworks.length, frameworks };
   }
 
@@ -79,7 +79,7 @@ class GRCIngestionAgent extends BaseAgent<any, any> {
   }
 
   async updateDashboard(processedData: any) {
-    inMemoryStore.addAgentRun({
+    supabaseStore.addAgentRun({
       agentName: this.config.name,
       status: 'completed',
       startedAt: new Date(Date.now() - 2000),
@@ -108,7 +108,7 @@ class RiskScoringAgent extends BaseAgent<any, any> {
   }
 
   async collectData() {
-    const lastResult = inMemoryStore.getLastScoringResult();
+    const lastResult = supabaseStore.getLastScoringResult();
     return { hasExistingScores: !!lastResult, lastResult };
   }
 
@@ -120,7 +120,7 @@ class RiskScoringAgent extends BaseAgent<any, any> {
   }
 
   async updateDashboard(processedData: any) {
-    inMemoryStore.addAgentRun({
+    supabaseStore.addAgentRun({
       agentName: this.config.name,
       status: 'completed',
       startedAt: new Date(Date.now() - 1500),
@@ -161,7 +161,7 @@ class TravelRiskAgent extends BaseAgent<any, any> {
   }
 
   async updateDashboard(processedData: any) {
-    inMemoryStore.addAgentRun({
+    supabaseStore.addAgentRun({
       agentName: this.config.name,
       status: 'completed',
       startedAt: new Date(Date.now() - 1200),
@@ -190,7 +190,7 @@ class DashboardAgent extends BaseAgent<any, any> {
   }
 
   async collectData() {
-    const stats = inMemoryStore.getStats();
+    const stats = supabaseStore.getStats();
     return stats;
   }
 
@@ -203,7 +203,7 @@ class DashboardAgent extends BaseAgent<any, any> {
   }
 
   async updateDashboard(processedData: any) {
-    inMemoryStore.addAgentRun({
+    supabaseStore.addAgentRun({
       agentName: this.config.name,
       status: 'completed',
       startedAt: new Date(Date.now() - 800),
