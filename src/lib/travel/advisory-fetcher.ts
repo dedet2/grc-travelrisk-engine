@@ -51,7 +51,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 95,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions. Most areas are safe for travel.',
   },
 
@@ -83,7 +83,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 94,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -115,7 +115,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 94,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -146,7 +146,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 96,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -177,7 +177,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 95,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -214,7 +214,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 98,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -256,7 +256,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 93,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -294,7 +294,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 99,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -331,7 +331,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 97,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise normal precautions.',
   },
 
@@ -391,7 +391,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 72,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Violent crime and gang activity present in major cities.',
   },
@@ -446,7 +446,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 74,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Drug cartel violence in border regions and certain cities.',
   },
@@ -507,7 +507,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 68,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Significant cartel violence in rural and remote areas.',
   },
@@ -580,7 +580,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 65,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Criminal activity and significant health risks present.',
   },
@@ -633,7 +633,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 82,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise increased caution. Restricted travel areas and surveillance present.',
   },
 
@@ -675,7 +675,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 75,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Reconsider travel. Military conflict, terrorism risk, and political tensions present.',
   },
@@ -717,7 +717,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 40,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Do not travel. Active armed conflict and critical security situation.',
   },
 
@@ -758,7 +758,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 25,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Do not travel. Active civil war, terrorism, and critical security risks.',
   },
 
@@ -799,7 +799,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 30,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Do not travel. Critical terrorism and security situation.',
   },
 
@@ -841,7 +841,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 45,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Reconsider travel. Terrorism, armed conflict, and security risks.',
   },
 
@@ -887,7 +887,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 20,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Do not travel. Critical terrorism, armed conflict, and security risks.',
   },
 
@@ -934,7 +934,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 78,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise increased caution. Violent crime present, especially in major cities.',
   },
 
@@ -989,7 +989,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 55,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Reconsider travel. Terrorism, violent crime, and health risks.',
   },
 
@@ -1048,7 +1048,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 70,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise increased caution. Terrorism risk and endemic diseases present.',
   },
 
@@ -1089,7 +1089,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 88,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Military operations, rocket attacks, and terrorism risk.',
   },
@@ -1131,7 +1131,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 80,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Exercise increased caution. Terrorism risk and seismic activity.',
   },
 
@@ -1191,7 +1191,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 81,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Petty theft, endemic diseases, and flooding risk.',
   },
@@ -1257,7 +1257,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 72,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Terrorism, endemic diseases, and natural disasters.',
   },
@@ -1305,7 +1305,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 72,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText:
       'Exercise increased caution. Terrorism risk in Sinai and crime in urban areas.',
   },
@@ -1366,7 +1366,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 58,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Reconsider travel. Terrorism, armed conflict, and health risks present.',
   },
 
@@ -1414,7 +1414,7 @@ const TRAVEL_ADVISORY_DATA: Record<string, TravelDestination> = {
       },
     ],
     infrastructureScore: 48,
-    lastUpdated: new Date('2025-02-01'),
+    lastUpdated: new Date('2026-02-20'),
     advisoryText: 'Reconsider travel. Extreme violent crime and limited healthcare.',
   },
 };

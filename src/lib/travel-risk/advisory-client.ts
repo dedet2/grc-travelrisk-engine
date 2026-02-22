@@ -7,7 +7,7 @@ import type { AdvisoryData, TravelAdvisoryResponse } from './types';
  */
 export class TravelAdvisoryClient {
   private apiKey: string;
-  private baseUrl = 'https://api.example.com/advisories'; // Replace with actual API
+  private baseUrl = 'https://travelbriefing.org/countries.json'; // Real travel advisory API
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey || process.env.TRAVEL_ADVISORY_API_KEY || '';
