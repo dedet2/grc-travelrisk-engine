@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { createServerSideClient } from '@/lib/supabase/server';
 import { validateFramework, normalizeControlId } from '@/lib/grc/parser';
 import { getFramework } from '@/lib/grc/frameworks';
-import { inMemoryStore } from '@/lib/store/in-memory-store';
+import { supabaseStore } from '@/lib/store/supabase-store';
 import { dataService } from '@/lib/supabase/data-service';
 import type { ApiResponse } from '@/types';
 import type { Framework } from '@/types';
@@ -25,17 +25,30 @@ export async function GET(request: Request): Promise<Response> {
     const frameworks = await dataService.getFrameworks();
     const frameworksWithCounts: FrameworkResponse[] = frameworks
       .filter((f) => f.status === status || status === 'all')
-      .map((f) => ({
-        id: f.id,
-        name: f.name,
-        version: f.version,
-        description: f.description,
-        controlCount: f.controlCount,
-        status: f.status,
-        categories: [],
-        createdAt: f.createdAt,
-        updatedAt: f.updatedAt,
-      }));
+      .map((f) => {
+        // Get controls for category/type breakdowns
+        const controls = supabaseStore.getControls(f.id);
+        const categoryCounts: Record<string, number> = {};
+        const typeCounts: Record<string, number> = {};
+        controls.forEach((c) => {
+          categoryCounts[c.category] = (categoryCounts[c.category] || 0) + 1;
+          typeCounts[c.controlType] = (typeCounts[c.controlType] || 0) + 1;
+        });
+
+        return {
+          id: f.id,
+          name: f.name,
+          version: f.version,
+          description: f.description,
+          controlCount: controls.length || f.controlCount,
+          status: f.status,
+          categories: f.categories || [],
+          categoryCounts,
+          typeCounts,
+          createdAt: f.createdAt,
+          updatedAt: f.updatedAt,
+        };
+      });
 
     return Response.json(
       {
@@ -173,7 +186,7 @@ export async function POST(request: Request): Promise<Response> {
     if (useInMemory) {
       // Store in in-memory store
       const frameworkId = `fw-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const framework = inMemoryStore.addFramework({
+      const framework = supabaseStore.addFramework({
         id: frameworkId,
         name,
         version,
@@ -198,7 +211,7 @@ export async function POST(request: Request): Promise<Response> {
           controlType: control.controlType as 'technical' | 'operational' | 'management',
           createdAt: new Date(),
         }));
-        inMemoryStore.addControls(frameworkId, controlsToStore);
+        supabaseStore.addControls(frameworkId, controlsToStore);
       }
 
       response = {
