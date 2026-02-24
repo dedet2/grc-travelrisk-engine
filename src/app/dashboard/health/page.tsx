@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 interface HealthProvider {
   id: string;
@@ -107,6 +107,23 @@ const mockTasksData: HealthTask[] = [
   },
 ];
 
+function getProviderType(specialty: string): 'Doctor' | 'Specialist' | 'In-Home Aid' | 'Therapist' | 'Lawyer' {
+  const lowerSpecialty = specialty.toLowerCase();
+  if (lowerSpecialty.includes('attorney') || lowerSpecialty.includes('lawyer')) {
+    return 'Lawyer';
+  }
+  if (lowerSpecialty.includes('therapist') || lowerSpecialty.includes('therapy')) {
+    return 'Therapist';
+  }
+  if (lowerSpecialty.includes('primary care') || lowerSpecialty.includes('general')) {
+    return 'Doctor';
+  }
+  if (lowerSpecialty.includes('hematolog') || lowerSpecialty.includes('specialist') || lowerSpecialty.includes('pain management')) {
+    return 'Specialist';
+  }
+  return 'In-Home Aid';
+}
+
 function getProviderTypeColor(type: string): string {
   switch (type) {
     case 'Doctor':
@@ -140,19 +157,69 @@ function getPriorityColor(priority: string): string {
 export default function HealthPage() {
   const [selectedType, setSelectedType] = useState<string>('All');
   const [tasks, setTasks] = useState<HealthTask[]>(mockTasksData);
+  const [providers, setProviders] = useState<HealthProvider[]>(mockProvidersData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const typeOptions = ['All', 'Doctor', 'Specialist', 'In-Home Aid', 'Therapist', 'Lawyer'];
 
+  // Fetch providers from API on mount
+  useEffect(() => {
+    const fetchProviders = async () => {
+      setIsLoading(true);
+      setHasError(false);
+      setIsEmpty(false);
+      try {
+        const response = await fetch('/api/health/providers');
+        if (!response.ok) {
+          throw new Error('Failed to fetch providers');
+        }
+        const result = await response.json();
+
+        if (result.data && Array.isArray(result.data)) {
+          // Transform API response to match our interface
+          const transformedProviders: HealthProvider[] = result.data.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            specialty: p.specialty,
+            nextAppointment: p.nextAppointment || null,
+            status: 'Active' as const,
+            type: getProviderType(p.specialty),
+          }));
+
+          if (transformedProviders.length === 0) {
+            setIsEmpty(true);
+            setProviders(mockProvidersData);
+          } else {
+            setProviders(transformedProviders);
+          }
+        } else {
+          setProviders(mockProvidersData);
+        }
+      } catch (error) {
+        console.error('Error fetching providers:', error);
+        setHasError(true);
+        // Fall back to mock data on error
+        setProviders(mockProvidersData);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProviders();
+  }, []);
+
   const filteredProviders = useMemo(() => {
     if (selectedType === 'All') {
-      return mockProvidersData;
+      return providers;
     }
-    return mockProvidersData.filter((p) => p.type === selectedType);
-  }, [selectedType]);
+    return providers.filter((p) => p.type === selectedType);
+  }, [selectedType, providers]);
 
   const metrics: HealthMetrics = {
-    activeProviders: mockProvidersData.filter((p) => p.status === 'Active').length,
-    upcomingAppointments: mockProvidersData.filter((p) => p.nextAppointment).length,
+    activeProviders: providers.filter((p) => p.status === 'Active').length,
+    upcomingAppointments: providers.filter((p) => p.nextAppointment).length,
     pendingTasks: tasks.filter((t) => !t.completed).length,
     monthlyCost: 2450,
   };
@@ -175,6 +242,9 @@ export default function HealthPage() {
         <p className="text-violet-600 mt-2">
           Manage your health providers and care coordination
         </p>
+        {isLoading && <p className="text-violet-500 text-sm mt-2">Loading providers...</p>}
+        {hasError && <p className="text-cyan-500 text-sm mt-2">Note: Using fallback data. Check network connection.</p>}
+        {isEmpty && <p className="text-fuchsia-500 text-sm mt-2">No providers found.</p>}
       </div>
 
       {/* Metric Cards - 4 Column Grid */}
@@ -355,29 +425,40 @@ export default function HealthPage() {
       {/* Care Team Summary */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-bold text-violet-950 mb-6">Care Team</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {mockProvidersData.map((provider) => (
-            <div
-              key={provider.id}
-              className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-bold text-violet-950">{provider.name}</h3>
-                  <p className="text-sm text-violet-600 mt-1">{provider.specialty}</p>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getProviderTypeColor(provider.type)}`}>
-                  {provider.type}
-                </span>
-              </div>
-              {provider.nextAppointment && (
-                <p className="text-sm text-violet-600 font-medium mt-3">
-                  Next: {new Date(provider.nextAppointment).toLocaleDateString()}
-                </p>
-              )}
+        {isLoading ? (
+          <div className="text-center py-8">
+            <div className="inline-block">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-500"></div>
             </div>
-          ))}
-        </div>
+            <p className="text-violet-500 mt-2">Loading care team...</p>
+          </div>
+        ) : isEmpty ? (
+          <p className="text-violet-500 text-center py-8">No care team members available.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {providers.map((provider) => (
+              <div
+                key={provider.id}
+                className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-bold text-violet-950">{provider.name}</h3>
+                    <p className="text-sm text-violet-600 mt-1">{provider.specialty}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getProviderTypeColor(provider.type)}`}>
+                    {provider.type}
+                  </span>
+                </div>
+                {provider.nextAppointment && (
+                  <p className="text-sm text-violet-600 font-medium mt-3">
+                    Next: {new Date(provider.nextAppointment).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

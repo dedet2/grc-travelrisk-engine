@@ -1,108 +1,129 @@
-import { NextResponse } from 'next/server';
+/**
+ * Foundations API Routes
+ * GET: List all foundations with optional filtering
+ */
+
 import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-interface Foundation {
-  id: string;
-  name: string;
-  boardSeats: number;
-  annualBudget: number;
-  relationshipStatus: 'prospect' | 'engaged' | 'partner';
-  focus: string;
-}
-
-const mockFoundations: Foundation[] = [
+// Mock foundations data
+const mockFoundationsData = [
   {
-    id: 'found-001',
-    name: 'MacArthur Foundation',
-    boardSeats: 15,
-    annualBudget: 500000000,
-    relationshipStatus: 'prospect',
-    focus: 'Technology and Social Change',
+    id: '1',
+    name: 'Ford Foundation',
+    type: 'Foundation' as const,
+    boardSeatsAvailable: 2,
+    annualBudget: 600000000,
+    relationshipStatus: 'Active' as const,
   },
   {
-    id: 'found-002',
-    name: 'Mozilla Foundation',
-    boardSeats: 8,
+    id: '2',
+    name: 'Gates Foundation',
+    type: 'Foundation' as const,
+    boardSeatsAvailable: 0,
+    annualBudget: 7000000000,
+    relationshipStatus: 'Prospect' as const,
+  },
+  {
+    id: '3',
+    name: 'Rockefeller Foundation',
+    type: 'Foundation' as const,
+    boardSeatsAvailable: 1,
+    annualBudget: 400000000,
+    relationshipStatus: 'Active' as const,
+  },
+  {
+    id: '4',
+    name: 'Aspen Institute',
+    type: 'Think Tank' as const,
+    boardSeatsAvailable: 3,
+    annualBudget: 80000000,
+    relationshipStatus: 'Applied' as const,
+  },
+  {
+    id: '5',
+    name: 'Brookings Institution',
+    type: 'Think Tank' as const,
+    boardSeatsAvailable: 1,
     annualBudget: 150000000,
-    relationshipStatus: 'engaged',
-    focus: 'Open Internet',
-  },
-  {
-    id: 'found-003',
-    name: 'AI Now Institute',
-    boardSeats: 10,
-    annualBudget: 50000000,
-    relationshipStatus: 'partner',
-    focus: 'AI Governance',
-  },
-  {
-    id: 'found-004',
-    name: 'Knight Foundation',
-    boardSeats: 12,
-    annualBudget: 300000000,
-    relationshipStatus: 'prospect',
-    focus: 'Democracy and Open Society',
-  },
-  {
-    id: 'found-005',
-    name: 'Omidyar Network',
-    boardSeats: 9,
-    annualBudget: 800000000,
-    relationshipStatus: 'engaged',
-    focus: 'Digital Rights and Governance',
+    relationshipStatus: 'Active' as const,
   },
 ];
 
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: true,
-      data: mockFoundations,
-      timestamp: new Date(),
-    } as ApiResponse<Foundation[]>,
-    { status: 200 }
-  );
+interface Foundation {
+  id: string;
+  name: string;
+  type: 'Foundation' | 'Nonprofit' | 'Think Tank';
+  boardSeatsAvailable: number;
+  annualBudget: number;
+  relationshipStatus: 'Active' | 'Prospect' | 'Applied';
 }
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+interface FoundationsMetrics {
+  totalFoundations: number;
+  boardOpportunities: number;
+  activeRelationships: number;
+}
 
-    if (!body.name || !body.boardSeats || !body.annualBudget || !body.focus) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required fields: name, boardSeats, annualBudget, focus',
-        } as ApiResponse<null>,
-        { status: 400 }
+/**
+ * GET /api/foundations
+ * List all foundations with optional filtering
+ */
+export async function GET(request: Request): Promise<Response> {
+  try {
+    const url = new URL(request.url);
+    const searchQuery = url.searchParams.get('search');
+    const relationshipStatus = url.searchParams.get('relationshipStatus');
+    const type = url.searchParams.get('type');
+
+    // Start with mock data
+    let foundations: Foundation[] = [...mockFoundationsData];
+
+    // Apply filters
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      foundations = foundations.filter(
+        (f) =>
+          f.name.toLowerCase().includes(query) ||
+          f.type.toLowerCase().includes(query)
       );
     }
 
-    const newFoundation: Foundation = {
-      id: `found-${Date.now()}`,
-      name: body.name,
-      boardSeats: body.boardSeats,
-      annualBudget: body.annualBudget,
-      relationshipStatus: body.relationshipStatus || 'prospect',
-      focus: body.focus,
+    if (relationshipStatus) {
+      foundations = foundations.filter((f) => f.relationshipStatus === relationshipStatus);
+    }
+
+    if (type) {
+      foundations = foundations.filter((f) => f.type === type);
+    }
+
+    // Calculate metrics
+    const metrics: FoundationsMetrics = {
+      totalFoundations: mockFoundationsData.length,
+      boardOpportunities: mockFoundationsData.reduce((sum, f) => sum + f.boardSeatsAvailable, 0),
+      activeRelationships: mockFoundationsData.filter((f) => f.relationshipStatus === 'Active')
+        .length,
     };
 
-    return NextResponse.json(
+    return Response.json(
       {
         success: true,
-        data: newFoundation,
+        data: {
+          foundations,
+          metrics,
+          count: foundations.length,
+        },
         timestamp: new Date(),
-      } as ApiResponse<Foundation>,
-      { status: 201 }
+      } as ApiResponse<any>,
+      { status: 200 }
     );
   } catch (error) {
-    console.error('Error creating foundation:', error);
-    return NextResponse.json(
+    console.error('Error fetching foundations:', error);
+    return Response.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create foundation',
+        error: error instanceof Error ? error.message : 'Failed to fetch foundations',
       } as ApiResponse<null>,
       { status: 500 }
     );

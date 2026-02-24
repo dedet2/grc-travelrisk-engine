@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 interface SpeakingOpportunity {
   id: string;
@@ -67,6 +67,23 @@ const mockSpeakingData: SpeakingOpportunity[] = [
   },
 ];
 
+function mapEventType(type: string): 'Keynote' | 'Panel' | 'Podcast' | 'Media Interview' | 'Conference' {
+  const lowerType = type.toLowerCase();
+  if (lowerType.includes('keynote')) return 'Keynote';
+  if (lowerType.includes('panel')) return 'Panel';
+  if (lowerType.includes('podcast')) return 'Podcast';
+  if (lowerType.includes('media') || lowerType.includes('interview')) return 'Media Interview';
+  if (lowerType.includes('conference')) return 'Conference';
+  return 'Conference';
+}
+
+function mapStatus(status: string): 'Confirmed' | 'Pending' | 'Proposed' {
+  const lowerStatus = status.toLowerCase();
+  if (lowerStatus.includes('confirmed')) return 'Confirmed';
+  if (lowerStatus.includes('pending')) return 'Pending';
+  return 'Proposed';
+}
+
 function getStatusColor(status: string): string {
   switch (status) {
     case 'Confirmed':
@@ -86,6 +103,10 @@ function getStatusLabel(status: string): string {
 
 export default function SpeakingPage() {
   const [selectedType, setSelectedType] = useState<string>('All Types');
+  const [opportunities, setOpportunities] = useState<SpeakingOpportunity[]>(mockSpeakingData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const typeOptions = [
     'All Types',
@@ -96,19 +117,64 @@ export default function SpeakingPage() {
     'Conference',
   ];
 
+  // Fetch speaking opportunities from API on mount
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      setIsLoading(true);
+      setHasError(false);
+      setIsEmpty(false);
+      try {
+        const response = await fetch('/api/speaking');
+        if (!response.ok) {
+          throw new Error('Failed to fetch speaking opportunities');
+        }
+        const data = await response.json();
+
+        // Handle both direct array and wrapped response
+        const opportunities = Array.isArray(data) ? data : data.data || [];
+
+        if (opportunities.length === 0) {
+          setIsEmpty(true);
+          setOpportunities(mockSpeakingData);
+        } else {
+          // Transform API response to match our interface
+          const transformed: SpeakingOpportunity[] = opportunities.map((opp: any) => ({
+            id: opp.id,
+            eventName: opp.eventName,
+            type: mapEventType(opp.eventType || opp.type || 'Conference'),
+            date: opp.date,
+            audienceSize: opp.audienceSize || 0,
+            fee: opp.fee || 0,
+            status: mapStatus(opp.status || 'Proposed'),
+          }));
+          setOpportunities(transformed);
+        }
+      } catch (error) {
+        console.error('Error fetching speaking opportunities:', error);
+        setHasError(true);
+        // Fall back to mock data on error
+        setOpportunities(mockSpeakingData);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
+
   const filteredOpportunities = useMemo(() => {
     if (selectedType === 'All Types') {
-      return mockSpeakingData;
+      return opportunities;
     }
-    return mockSpeakingData.filter((opp) => opp.type === selectedType);
-  }, [selectedType]);
+    return opportunities.filter((opp) => opp.type === selectedType);
+  }, [selectedType, opportunities]);
 
   const metrics: SpeakingMetrics = {
-    totalOpportunities: mockSpeakingData.length,
-    confirmedEvents: mockSpeakingData.filter((o) => o.status === 'Confirmed').length,
-    totalRevenue: mockSpeakingData.reduce((sum, o) => sum + o.fee, 0),
+    totalOpportunities: opportunities.length,
+    confirmedEvents: opportunities.filter((o) => o.status === 'Confirmed').length,
+    totalRevenue: opportunities.reduce((sum, o) => sum + o.fee, 0),
     avgSpeakingFee:
-      mockSpeakingData.reduce((sum, o) => sum + o.fee, 0) / mockSpeakingData.length,
+      opportunities.length > 0 ? opportunities.reduce((sum, o) => sum + o.fee, 0) / opportunities.length : 0,
   };
 
   const upcomingConfirmed = filteredOpportunities
@@ -123,6 +189,9 @@ export default function SpeakingPage() {
         <p className="text-violet-600 mt-2">
           Build authority and generate revenue through speaking engagements
         </p>
+        {isLoading && <p className="text-violet-500 text-sm mt-2">Loading opportunities...</p>}
+        {hasError && <p className="text-cyan-500 text-sm mt-2">Note: Using fallback data. Check network connection.</p>}
+        {isEmpty && <p className="text-fuchsia-500 text-sm mt-2">No opportunities found.</p>}
       </div>
 
       {/* Metric Cards - 4 Column Grid */}
@@ -259,36 +328,47 @@ export default function SpeakingPage() {
       {/* Upcoming Confirmed Events */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-bold text-violet-950 mb-6">Upcoming Confirmed Events</h2>
-        <div className="space-y-4">
-          {upcomingConfirmed.length > 0 ? (
-            upcomingConfirmed.map((event) => (
-              <div
-                key={event.id}
-                className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-violet-950">{event.eventName}</h3>
-                    <p className="text-sm text-violet-600 mt-1">
-                      {event.type} • {new Date(event.date).toLocaleDateString()} •{' '}
-                      {event.audienceSize.toLocaleString()} attendees
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-emerald-600">
-                      ${event.fee.toLocaleString()}
-                    </p>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300 mt-2 inline-block">
-                      Confirmed
-                    </span>
+        {isLoading ? (
+          <div className="text-center py-8">
+            <div className="inline-block">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-500"></div>
+            </div>
+            <p className="text-violet-500 mt-2">Loading events...</p>
+          </div>
+        ) : isEmpty ? (
+          <p className="text-violet-500 text-center py-8">No events available.</p>
+        ) : (
+          <div className="space-y-4">
+            {upcomingConfirmed.length > 0 ? (
+              upcomingConfirmed.map((event) => (
+                <div
+                  key={event.id}
+                  className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-bold text-violet-950">{event.eventName}</h3>
+                      <p className="text-sm text-violet-600 mt-1">
+                        {event.type} • {new Date(event.date).toLocaleDateString()} •{' '}
+                        {event.audienceSize.toLocaleString()} attendees
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-emerald-600">
+                        ${event.fee.toLocaleString()}
+                      </p>
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300 mt-2 inline-block">
+                        Confirmed
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-violet-500 text-center py-8">No confirmed events scheduled</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p className="text-violet-500 text-center py-8">No confirmed events scheduled</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

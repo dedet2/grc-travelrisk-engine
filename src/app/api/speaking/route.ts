@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { ApiResponse } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,22 +68,57 @@ const mockEvents: SpeakingEvent[] = [
 ];
 
 export async function GET() {
-  return NextResponse.json(mockEvents);
+  return NextResponse.json(
+    {
+      success: true,
+      data: mockEvents,
+      timestamp: new Date(),
+    } as ApiResponse<SpeakingEvent[]>,
+    { status: 200 }
+  );
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  
-  const newEvent: SpeakingEvent = {
-    id: `speak-${Date.now()}`,
-    eventName: body.eventName,
-    date: body.date,
-    fee: body.fee,
-    audienceSize: body.audienceSize,
-    eventType: body.eventType,
-    location: body.location,
-    status: body.status || 'inquiry',
-  };
-  
-  return NextResponse.json(newEvent, { status: 201 });
+  try {
+    const body = await request.json();
+
+    if (!body.eventName || !body.date || !body.eventType || !body.location) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Missing required fields: eventName, date, eventType, location',
+        } as ApiResponse<null>,
+        { status: 400 }
+      );
+    }
+
+    const newEvent: SpeakingEvent = {
+      id: `speak-${Date.now()}`,
+      eventName: body.eventName,
+      date: body.date,
+      fee: body.fee || 0,
+      audienceSize: body.audienceSize || 0,
+      eventType: body.eventType,
+      location: body.location,
+      status: body.status || 'inquiry',
+    };
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: newEvent,
+        timestamp: new Date(),
+      } as ApiResponse<SpeakingEvent>,
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error creating speaking event:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create speaking event',
+      } as ApiResponse<null>,
+      { status: 500 }
+    );
+  }
 }

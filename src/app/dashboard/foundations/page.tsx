@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 interface Foundation {
   id: string;
@@ -17,6 +17,7 @@ interface FoundationsMetrics {
   activeRelationships: number;
 }
 
+// Fallback mock data if API fails
 const mockFoundationsData: Foundation[] = [
   {
     id: '1',
@@ -88,24 +89,65 @@ function getTypeColor(type: string): string {
 
 export default function FoundationsPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [foundations, setFoundations] = useState<Foundation[]>([]);
+  const [metrics, setMetrics] = useState<FoundationsMetrics>({
+    totalFoundations: 0,
+    boardOpportunities: 0,
+    activeRelationships: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch foundations from API on mount
+  useEffect(() => {
+    const fetchFoundations = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/foundations');
+        if (!response.ok) {
+          throw new Error(`API returned status ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success && data.data) {
+          setFoundations(data.data.foundations || []);
+          setMetrics(data.data.metrics || {
+            totalFoundations: 0,
+            boardOpportunities: 0,
+            activeRelationships: 0,
+          });
+        } else {
+          throw new Error('Invalid API response');
+        }
+      } catch (err) {
+        console.error('Failed to fetch foundations, using fallback data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch foundations');
+        // Fallback to mock data
+        setFoundations(mockFoundationsData);
+        setMetrics({
+          totalFoundations: mockFoundationsData.length,
+          boardOpportunities: mockFoundationsData.reduce((sum, f) => sum + f.boardSeatsAvailable, 0),
+          activeRelationships: mockFoundationsData.filter((f) => f.relationshipStatus === 'Active')
+            .length,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFoundations();
+  }, []);
 
   const filteredFoundations = useMemo(() => {
     if (!searchQuery.trim()) {
-      return mockFoundationsData;
+      return foundations;
     }
-    return mockFoundationsData.filter(
+    return foundations.filter(
       (f) =>
         f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         f.type.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
-
-  const metrics: FoundationsMetrics = {
-    totalFoundations: mockFoundationsData.length,
-    boardOpportunities: mockFoundationsData.reduce((sum, f) => sum + f.boardSeatsAvailable, 0),
-    activeRelationships: mockFoundationsData.filter((f) => f.relationshipStatus === 'Active')
-      .length,
-  };
+  }, [searchQuery, foundations]);
 
   return (
     <div className="space-y-8">
@@ -115,8 +157,30 @@ export default function FoundationsPage() {
         <p className="text-violet-600 mt-2">
           Board opportunities and philanthropic connections
         </p>
+        {error && (
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-300 rounded-lg">
+            <p className="text-sm text-amber-800">
+              Note: Using fallback data. {error}
+            </p>
+          </div>
+        )}
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="inline-block">
+              <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+            </div>
+            <p className="mt-4 text-violet-600">Loading foundations data...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Content - hidden while loading */}
+      {!isLoading && (
+        <>
       {/* Metric Cards - 3 Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Foundations */}
@@ -226,34 +290,40 @@ export default function FoundationsPage() {
       {/* Active Relationships Summary */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-bold text-violet-950 mb-6">Active Relationships</h2>
-        <div className="space-y-4">
-          {mockFoundationsData
-            .filter((f) => f.relationshipStatus === 'Active')
-            .map((foundation) => (
-              <div
-                key={foundation.id}
-                className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-violet-950">{foundation.name}</h3>
-                    <p className="text-sm text-violet-600 mt-1">
-                      {foundation.type} • ${(foundation.annualBudget / 1000000).toFixed(0)}M annual budget
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-emerald-600">
-                      {foundation.boardSeatsAvailable} seat{foundation.boardSeatsAvailable !== 1 ? 's' : ''} available
-                    </p>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300 mt-2 inline-block">
-                      Active
-                    </span>
+        {foundations.filter((f) => f.relationshipStatus === 'Active').length > 0 ? (
+          <div className="space-y-4">
+            {foundations
+              .filter((f) => f.relationshipStatus === 'Active')
+              .map((foundation) => (
+                <div
+                  key={foundation.id}
+                  className="border border-violet-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-bold text-violet-950">{foundation.name}</h3>
+                      <p className="text-sm text-violet-600 mt-1">
+                        {foundation.type} • ${(foundation.annualBudget / 1000000).toFixed(0)}M annual budget
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-emerald-600">
+                        {foundation.boardSeatsAvailable} seat{foundation.boardSeatsAvailable !== 1 ? 's' : ''} available
+                      </p>
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-300 mt-2 inline-block">
+                        Active
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
+              ))}
+          </div>
+        ) : (
+          <p className="text-center py-8 text-violet-500">No active relationships at this time</p>
+        )}
       </div>
+        </>
+      )}
     </div>
   );
 }
