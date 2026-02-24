@@ -2,13 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-interface FrameworkCategory {
-  id: string;
-  name: string;
-  description?: string;
-  controlCount: number;
-}
-
 interface Framework {
   id: string;
   name: string;
@@ -16,7 +9,7 @@ interface Framework {
   description: string;
   controlCount: number;
   status: 'draft' | 'published' | 'archived';
-  categories: FrameworkCategory[];
+  categories: any[];
   createdAt: string;
   updatedAt: string;
 }
@@ -32,34 +25,17 @@ export default function FrameworksPage() {
     fetchFrameworks();
   }, []);
 
-  /**
-   * Validate framework data structure
-   */
-  function isValidFramework(data: unknown): data is Framework {
-    if (!data || typeof data !== 'object') return false;
-
-    const framework = data as Record<string, unknown>;
-    return (
-      typeof framework.id === 'string' &&
-      typeof framework.name === 'string' &&
-      typeof framework.version === 'string' &&
-      typeof framework.description === 'string' &&
-      typeof framework.controlCount === 'number' &&
-      ['draft', 'published', 'archived'].includes(framework.status as string) &&
-      Array.isArray(framework.categories)
-    );
-  }
-
   async function fetchFrameworks() {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/frameworks', {
+      const response = await fetch('/api/frameworks?status=all', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        cache: 'no-store',
       });
 
       if (!response.ok) {
@@ -72,16 +48,7 @@ export default function FrameworksPage() {
         throw new Error('Invalid response format: expected array of frameworks');
       }
 
-      // Validate each framework
-      const validFrameworks = result.data.filter((fw: unknown) => {
-        const valid = isValidFramework(fw);
-        if (!valid) {
-          console.warn('Skipping invalid framework:', fw);
-        }
-        return valid;
-      });
-
-      setFrameworks(validFrameworks);
+      setFrameworks(result.data);
     } catch (err) {
       console.error('Error fetching frameworks:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to load frameworks';
@@ -92,7 +59,7 @@ export default function FrameworksPage() {
     }
   }
 
-  async function seedISO27001() {
+  async function handleSeedFrameworks() {
     try {
       setSeeding(true);
       setError(null);
@@ -105,14 +72,14 @@ export default function FrameworksPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to seed framework`);
+        throw new Error(`HTTP ${response.status}: Failed to seed frameworks`);
       }
 
       // Refresh the list
       await fetchFrameworks();
     } catch (err) {
-      console.error('Error seeding framework:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to seed framework';
+      console.error('Error seeding frameworks:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to seed frameworks';
       setError(errorMessage);
     } finally {
       setSeeding(false);
@@ -122,23 +89,44 @@ export default function FrameworksPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published':
-        return 'bg-emerald-100 text-emerald-700';
+        return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
       case 'draft':
-        return 'bg-amber-100 text-amber-700';
+        return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
       case 'archived':
-        return 'bg-violet-100 text-violet-700';
+        return 'bg-red-500/20 text-red-400 border border-red-500/40';
       default:
-        return 'bg-violet-100 text-violet-700';
+        return 'bg-violet-500/20 text-violet-400 border border-violet-500/40';
+    }
+  };
+
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case 'published':
+        return 'bg-emerald-400';
+      case 'draft':
+        return 'bg-amber-400';
+      case 'archived':
+        return 'bg-red-400';
+      default:
+        return 'bg-violet-400';
     }
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-12 bg-violet-200 rounded animate-pulse w-1/2" />
+        {/* Header skeleton */}
+        <div>
+          <div className="h-10 bg-gradient-to-r from-violet-600/30 to-cyan-500/30 rounded-lg animate-pulse w-2/3" />
+          <div className="h-4 bg-violet-600/20 rounded animate-pulse w-1/2 mt-3" />
+        </div>
+        {/* Cards skeleton */}
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow h-32 animate-pulse" />
+            <div
+              key={i}
+              className="bg-white/5 border border-violet-500/20 rounded-lg p-6 h-32 animate-pulse"
+            />
           ))}
         </div>
       </div>
@@ -146,74 +134,100 @@ export default function FrameworksPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-violet-950">GRC Frameworks</h1>
-          <p className="text-violet-600 mt-2">Manage security and compliance frameworks</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent">
+            GRC Frameworks
+          </h1>
+          <p className="text-cyan-400/70 mt-2">
+            Manage security and compliance frameworks across your organization
+          </p>
         </div>
       </div>
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-700">{error}</p>
+        <div className="bg-red-950/30 border border-red-500/40 rounded-lg p-4">
+          <p className="text-red-300">{error}</p>
         </div>
       )}
 
-      {/* Seed Button */}
+      {/* Seed Prompt - Empty State */}
       {frameworks.length === 0 && !loading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h2 className="text-lg font-bold text-blue-900 mb-2">Get Started</h2>
-          <p className="text-blue-700 mb-4">
-            No frameworks loaded yet. Seed the database with ISO 27001:2022 to get started.
-          </p>
-          <button
-            onClick={seedISO27001}
-            disabled={seeding}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
-            {seeding ? 'Seeding...' : '+ Seed ISO 27001:2022'}
-          </button>
+        <div className="bg-gradient-to-br from-violet-950/40 via-violet-900/20 to-cyan-950/30 border border-violet-500/30 rounded-lg p-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-violet-200 mb-2">No Frameworks Yet</h2>
+            <p className="text-cyan-400/70 mb-6">
+              Get started by seeding the database with industry-standard compliance frameworks including ISO 27001:2022,
+              NIST CSF 2.0, and SOC 2 Type II.
+            </p>
+            <button
+              onClick={handleSeedFrameworks}
+              disabled={seeding}
+              className="px-6 py-3 bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-medium rounded-lg hover:from-violet-500 hover:to-cyan-400 disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-violet-500/50"
+            >
+              {seeding ? (
+                <span className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Seeding Frameworks...
+                </span>
+              ) : (
+                '+ Seed Frameworks'
+              )}
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Frameworks List */}
+      {/* Frameworks Grid */}
       {frameworks.length > 0 && (
         <div className="space-y-4">
           {frameworks.map((framework) => (
-            <div key={framework.id} className="bg-white rounded-lg shadow overflow-hidden">
+            <div
+              key={framework.id}
+              className="bg-white/5 border border-violet-500/20 rounded-lg overflow-hidden hover:border-cyan-500/40 transition-colors"
+            >
               {/* Main Framework Card */}
               <div
-                className="p-6 cursor-pointer hover:bg-violet-50/30 transition-colors"
+                className="p-6 cursor-pointer hover:bg-white/5 transition-colors"
                 onClick={() =>
                   setExpandedId(expandedId === framework.id ? null : framework.id)
                 }
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center space-x-3">
-                      <h3 className="text-xl font-bold text-violet-950">{framework.name}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(framework.status)}`}>
-                        {framework.status}
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-xl font-bold text-cyan-300">{framework.name}</h3>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          framework.status
+                        )}`}
+                      >
+                        <span className={`inline-block w-2 h-2 rounded-full mr-2 ${getStatusDot(framework.status)}`} />
+                        {framework.status.charAt(0).toUpperCase() + framework.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-violet-600 mt-1">{framework.description}</p>
-                    <div className="flex items-center space-x-4 mt-3 text-sm">
-                      <span className="text-violet-600">
-                        <span className="font-bold text-violet-950">{framework.controlCount}</span> controls
+                    <p className="text-sm text-cyan-400/60 mb-4">{framework.description}</p>
+                    <div className="flex flex-wrap items-center gap-6 text-sm">
+                      <span className="text-cyan-400/70">
+                        <span className="font-bold text-fuchsia-300">{framework.controlCount}</span> controls
                       </span>
-                      <span className="text-violet-600">
-                        v<span className="font-bold text-violet-950">{framework.version}</span>
+                      <span className="text-cyan-400/70">
+                        v<span className="font-bold text-fuchsia-300">{framework.version}</span>
                       </span>
-                      <span className="text-violet-500">
+                      <span className="text-violet-400/60">
                         Created {new Date(framework.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
-                  <div className="ml-4">
-                    <span className={`inline-block text-2xl transition-transform ${expandedId === framework.id ? 'rotate-180' : ''}`}>
+                  <div className="ml-6">
+                    <span
+                      className={`inline-block text-2xl text-cyan-400 transition-transform ${
+                        expandedId === framework.id ? 'rotate-180' : ''
+                      }`}
+                    >
                       ▼
                     </span>
                   </div>
@@ -221,17 +235,22 @@ export default function FrameworksPage() {
               </div>
 
               {/* Expanded Categories */}
-              {expandedId === framework.id && framework.categories.length > 0 && (
-                <div className="border-t border-violet-200 bg-violet-50/30 p-6">
-                  <h4 className="font-bold text-violet-950 mb-4">Categories</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {framework.categories.map((category) => (
-                      <div key={category.id} className="bg-white p-4 rounded-lg border border-violet-200">
-                        <h5 className="font-medium text-violet-950 text-sm">{category.name}</h5>
-                        <p className="text-xs text-violet-600 mt-1">{category.description || 'No description'}</p>
-                        <p className="text-xs text-violet-500 mt-2">
-                          <span className="font-bold text-violet-700">{category.controlCount}</span> controls
-                        </p>
+              {expandedId === framework.id && framework.categories && framework.categories.length > 0 && (
+                <div className="border-t border-violet-500/20 bg-white/3 p-6">
+                  <h4 className="font-bold text-violet-200 mb-4 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                    Control Categories
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {framework.categories.map((category, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gradient-to-br from-violet-950/40 to-cyan-950/30 p-4 rounded-lg border border-violet-500/20 hover:border-cyan-500/40 transition-colors"
+                      >
+                        <h5 className="font-medium text-cyan-300 text-sm mb-1">
+                          {category.name}
+                        </h5>
+                        <p className="text-xs text-cyan-400/50">{category.description || 'No description'}</p>
                       </div>
                     ))}
                   </div>
@@ -239,9 +258,9 @@ export default function FrameworksPage() {
               )}
 
               {/* No Categories Message */}
-              {expandedId === framework.id && framework.categories.length === 0 && (
-                <div className="border-t border-violet-200 bg-violet-50/30 p-6 text-center text-violet-600">
-                  <p>No categories defined for this framework</p>
+              {expandedId === framework.id && (!framework.categories || framework.categories.length === 0) && (
+                <div className="border-t border-violet-500/20 bg-white/3 p-6 text-center">
+                  <p className="text-cyan-400/60">No categories defined for this framework</p>
                 </div>
               )}
             </div>
@@ -249,45 +268,43 @@ export default function FrameworksPage() {
         </div>
       )}
 
-      {/* Empty State */}
-      {frameworks.length === 0 && !error && !loading && (
-        <div className="bg-violet-50/30 border border-violet-200 rounded-lg p-12 text-center">
-          <h2 className="text-lg font-bold text-violet-950 mb-2">No frameworks</h2>
-          <p className="text-violet-600 mb-6">Import a framework or use the seed button above to get started</p>
-          <div className="space-x-3">
-            <button className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors">
-              + Import Framework
-            </button>
-            <button
-              onClick={seedISO27001}
-              disabled={seeding}
-              className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 transition-colors"
-            >
-              {seeding ? 'Seeding...' : '+ Seed ISO 27001'}
-            </button>
+      {/* Quick Stats */}
+      {frameworks.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Total Frameworks */}
+          <div className="bg-gradient-to-br from-violet-950/40 to-violet-900/20 border border-violet-500/20 rounded-lg p-6 hover:border-violet-500/40 transition-colors">
+            <p className="text-cyan-400/70 text-sm font-medium mb-2">Total Frameworks</p>
+            <p className="text-4xl font-bold text-violet-300">{frameworks.length}</p>
+          </div>
+
+          {/* Total Controls */}
+          <div className="bg-gradient-to-br from-cyan-950/40 to-cyan-900/20 border border-cyan-500/20 rounded-lg p-6 hover:border-cyan-500/40 transition-colors">
+            <p className="text-cyan-400/70 text-sm font-medium mb-2">Total Controls</p>
+            <p className="text-4xl font-bold text-cyan-300">
+              {frameworks.reduce((sum, f) => sum + f.controlCount, 0)}
+            </p>
+          </div>
+
+          {/* Compliance Status */}
+          <div className="bg-gradient-to-br from-fuchsia-950/40 to-fuchsia-900/20 border border-fuchsia-500/20 rounded-lg p-6 hover:border-fuchsia-500/40 transition-colors">
+            <p className="text-cyan-400/70 text-sm font-medium mb-2">Published Frameworks</p>
+            <p className="text-4xl font-bold text-fuchsia-300">
+              {frameworks.filter((f) => f.status === 'published').length}
+            </p>
           </div>
         </div>
       )}
 
-      {/* Quick Stats */}
+      {/* Seed Frameworks Button - Bottom */}
       {frameworks.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-violet-600">
-            <p className="text-sm text-violet-600 mb-1">Total Frameworks</p>
-            <p className="text-3xl font-bold text-violet-600">{frameworks.length}</p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-emerald-600">
-            <p className="text-sm text-violet-600 mb-1">Total Controls</p>
-            <p className="text-3xl font-bold text-emerald-600">
-              {frameworks.reduce((sum, f) => sum + f.controlCount, 0)}
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
-            <p className="text-sm text-violet-600 mb-1">Total Categories</p>
-            <p className="text-3xl font-bold text-blue-600">
-              {frameworks.reduce((sum, f) => sum + f.categories.length, 0)}
-            </p>
-          </div>
+        <div className="flex justify-center pt-4">
+          <button
+            onClick={handleSeedFrameworks}
+            disabled={seeding}
+            className="px-6 py-2 text-sm text-cyan-400 border border-cyan-500/40 rounded-lg hover:border-cyan-500/60 hover:text-cyan-300 disabled:opacity-50 transition-all"
+          >
+            {seeding ? 'Seeding...' : '+ Add More Frameworks'}
+          </button>
         </div>
       )}
     </div>
