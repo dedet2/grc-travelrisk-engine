@@ -219,8 +219,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
-                Get Started
+              <Link href="https://buy.stripe.com/14A4gz8S07fD7KK5P37kc07" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
+                Buy Now — $497
               </Link>
             </div>
 
