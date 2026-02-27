@@ -32,6 +32,7 @@ import type { ChannelMetrics, DashboardMetrics } from '../agents/analytics-dashb
 import type { HealthReport, HealthAlert } from '../agents/uptime-health-agent';
 import type { DatabaseMetrics } from '../agents/database-optimization-agent';
 import type { SecurityAuditReport } from '../agents/security-audit-agent';
+import type { GovernanceAuditReport } from '../agents/governance-audit-agent';
 import type { BackupRecoveryReport } from '../agents/backup-recovery-agent';
 import type { CostOptimizationReport } from '../agents/cost-optimization-agent';
 import type { CompetitiveIntelligenceReport } from '../agents/competitive-intelligence-agent';
@@ -142,6 +143,7 @@ class InMemoryStore {
   private healthAlerts: HealthAlert[] = [];
   private dbOptimizationMetrics?: DatabaseMetrics;
   private securityAuditReport?: SecurityAuditReport;
+  private governanceAuditReport?: GovernanceAuditReport;
   private backupRecoveryReport?: BackupRecoveryReport;
   private costOptimizationReport?: CostOptimizationReport;
 
@@ -1085,7 +1087,23 @@ class InMemoryStore {
     return this.securityAuditReport;
   }
 
-  // ===== Backup & Recovery Storage (D-04) =====
+  // ===== Governance Audit Storage (D-04) =====
+
+  /**
+   * Store governance audit report
+   */
+  storeGovernanceAuditReport(report: GovernanceAuditReport): void {
+    this.governanceAuditReport = report;
+  }
+
+  /**
+   * Get governance audit report
+   */
+  getGovernanceAuditReport(): GovernanceAuditReport | undefined {
+    return this.governanceAuditReport;
+  }
+
+  // ===== Backup & Recovery Storage (D-05) =====
 
   /**
    * Store backup recovery report

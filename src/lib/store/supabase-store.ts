@@ -28,6 +28,7 @@ import type { ChannelMetrics, DashboardMetrics } from '../agents/analytics-dashb
 import type { HealthReport, HealthAlert } from '../agents/uptime-health-agent';
 import type { DatabaseMetrics } from '../agents/database-optimization-agent';
 import type { SecurityAuditReport } from '../agents/security-audit-agent';
+import type { GovernanceAuditReport } from '../agents/governance-audit-agent';
 import type { BackupRecoveryReport } from '../agents/backup-recovery-agent';
 import type { CostOptimizationReport } from '../agents/cost-optimization-agent';
 import type { CompetitiveIntelligenceReport } from '../agents/competitive-intelligence-agent';
@@ -733,6 +734,10 @@ class SupabaseStore {
   // Security Audit
   storeSecurityAuditReport = this.fallbackStore.storeSecurityAuditReport.bind(this.fallbackStore);
   getSecurityAuditReport = this.fallbackStore.getSecurityAuditReport.bind(this.fallbackStore);
+
+  // Governance Audit
+  storeGovernanceAuditReport = this.fallbackStore.storeGovernanceAuditReport.bind(this.fallbackStore);
+  getGovernanceAuditReport = this.fallbackStore.getGovernanceAuditReport.bind(this.fallbackStore);
 
   // Backup & Recovery
   storeBackupRecoveryReport = this.fallbackStore.storeBackupRecoveryReport.bind(this.fallbackStore);
