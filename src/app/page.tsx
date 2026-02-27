@@ -12,7 +12,7 @@ export default function Home() {
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-violet-950/60 border-b border-violet-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="https://dr-dede.com" className="text-sm text-violet-300 hover:text-white transition flex items-center gap-1">
+            <Link href="https://www.dr-dede.com" className="text-sm text-violet-300 hover:text-white transition flex items-center gap-1">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               dr-dede.com
             </Link>
@@ -25,19 +25,19 @@ export default function Home() {
             <a href="#pricing" className="text-sm hover:text-cyan-300 transition">
               Pricing
             </a>
-            <Link href="https://dr-dede.com/incluu" className="text-sm hover:text-cyan-300 transition">
+            <Link href="https://www.dr-dede.com/incluu" className="text-sm hover:text-cyan-300 transition">
               incluu
             </Link>
-            <Link href="https://dr-dede.com/dr-dede" className="text-sm hover:text-cyan-300 transition">
+            <Link href="https://www.dr-dede.com/dr-dede" className="text-sm hover:text-cyan-300 transition">
               About Dr. Dédé
             </Link>
-            <Link href="https://dr-dede.com/speaking" className="text-sm hover:text-cyan-300 transition">
+            <Link href="https://www.dr-dede.com/speaking" className="text-sm hover:text-cyan-300 transition">
               Speaking
             </Link>
-            <Link href="https://dr-dede.com/contact" className="text-sm hover:text-cyan-300 transition">
+            <Link href="https://www.dr-dede.com/contact" className="text-sm hover:text-cyan-300 transition">
               Contact
             </Link>
-            <Link href="https://dr-dede.com/contact" className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-semibold transition">
+            <Link href="https://www.dr-dede.com/contact" className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-semibold transition">
               Schedule Consultation
             </Link>
             
@@ -72,10 +72,10 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="https://dr-dede.com/contact" className="px-8 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold inline-flex items-center justify-center gap-2 transition">
+          <Link href="https://www.dr-dede.com/contact" className="px-8 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold inline-flex items-center justify-center gap-2 transition">
             Schedule Consultation <ArrowRight size={20} />
           </Link>
-          <Link href="https://dr-dede.com/speaking" className="px-8 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition">
+          <Link href="https://www.dr-dede.com/speaking" className="px-8 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition">
             Book Speaking Engagement
           </Link>
         </div>
@@ -244,7 +244,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
                 Upgrade to Standard
               </Link>
             </div>
@@ -265,7 +265,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
                 Get Premium Access
               </Link>
             </div>
@@ -289,7 +289,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
                 Get Started
               </Link>
             </div>
@@ -312,7 +312,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-4 py-2 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-xs">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-4 py-2 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-xs">
                 Upgrade to Pro
               </Link>
             </div>
@@ -332,7 +332,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
                 Request Proposal
               </Link>
             </div>
@@ -352,7 +352,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-4 py-2 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-xs">
                 License Agents
               </Link>
             </div>
@@ -376,7 +376,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
                 Request Assessment
               </Link>
             </div>
@@ -399,7 +399,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-6 py-3 bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-600 hover:to-cyan-600 rounded-lg font-semibold transition text-sm">
                 Book VIP Day
               </Link>
             </div>
@@ -419,7 +419,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/contact" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
                 Discuss Retainer
               </Link>
             </div>
@@ -443,7 +443,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/speaking" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/speaking" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
                 Book Dr. Dédé
               </Link>
             </div>
@@ -462,7 +462,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="https://dr-dede.com/retreats-advocacy" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
+              <Link href="https://www.dr-dede.com/retreats-advocacy" className="w-full block text-center px-6 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition text-sm">
                 View Retreat Calendar
               </Link>
             </div>
@@ -649,7 +649,7 @@ export default function Home() {
               <p className="text-violet-200 mb-6">
                 Dr. Dédé's proven methodology has helped enterprises navigate the most complex AI governance and compliance challenges. Ready to reimagine your approach?
               </p>
-              <Link href="https://dr-dede.com/contact" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold transition">
+              <Link href="https://www.dr-dede.com/contact" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold transition">
                 Schedule Your Consultation <ArrowRight size={18} />
               </Link>
             </div>
@@ -667,10 +667,10 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="https://dr-dede.com/contact" className="px-8 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold inline-flex items-center justify-center gap-2 transition">
+          <Link href="https://www.dr-dede.com/contact" className="px-8 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-semibold inline-flex items-center justify-center gap-2 transition">
             Schedule Consultation <ArrowRight size={20} />
           </Link>
-          <Link href="https://dr-dede.com" className="px-8 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition">
+          <Link href="https://www.dr-dede.com" className="px-8 py-3 border border-violet-400 hover:bg-violet-600/10 rounded-lg font-semibold transition">
             Visit Dr. Dédé's Main Site
           </Link>
         </div>

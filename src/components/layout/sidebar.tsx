@@ -246,7 +246,7 @@ function SidebarContent({
       {/* Back to Main Site */}
       <div className="px-6 pt-4 pb-2">
         <a
-          href="https://dr-dede.com"
+          href="https://www.dr-dede.com"
           className="flex items-center gap-2 text-xs font-medium rounded-md px-3 py-1.5 transition-colors"
           style={{ color: 'hsl(190 40% 65%)', background: 'hsl(265 20% 18%)' }}
           onMouseEnter={(e) => { e.currentTarget.style.background = 'hsl(265 20% 24%)'; e.currentTarget.style.color = 'white'; }}

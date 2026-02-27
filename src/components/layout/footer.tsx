@@ -70,7 +70,7 @@ function NewsletterForm() {
 
     try {
       // Post to dr-dede.com leads API
-      const response = await fetch('https://dr-dede.com/api/leads', {
+      const response = await fetch('https://www.dr-dede.com/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source: 'grc-footer' }),
@@ -160,31 +160,31 @@ export function Footer() {
             <h3 className="font-bold text-lg mb-4 text-white">Services</h3>
             <ul className="space-y-3 text-sm text-gray-300">
               <li>
-                <a href="https://dr-dede.com/incluu" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/incluu" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   AI GRC Consulting
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/incluu" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/incluu" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Tech Equity Solutions
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/dr-dede" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/dr-dede" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Disability Advocacy
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/retreats-advocacy" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/retreats-advocacy" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Luxury Retreats
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/speaking" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/speaking" className="hover:text-purple-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-purple-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Speaking & Events
                 </a>
@@ -209,25 +209,25 @@ export function Footer() {
             <h3 className="font-bold text-lg mb-4 text-white">Company</h3>
             <ul className="space-y-3 text-sm text-gray-300">
               <li>
-                <a href="https://dr-dede.com/dr-dede" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/dr-dede" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   About Dr. Dédé
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/resources" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/resources" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Resources
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/contact" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/contact" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Contact
                 </a>
               </li>
               <li>
-                <a href="https://dr-dede.com/admin" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
+                <a href="https://www.dr-dede.com/admin" className="hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 group">
                   <span className="w-1 h-1 bg-blue-400 rounded-full group-hover:w-2 transition-all duration-200" />
                   Admin
                 </a>
@@ -305,13 +305,13 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-400">&copy; {currentYear} Dr. Dédé Tetsubayashi. All rights reserved.</p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="https://dr-dede.com/resources/privacy-policy" className="hover:text-blue-400 transition-colors duration-200">
+              <a href="https://www.dr-dede.com/resources/privacy-policy" className="hover:text-blue-400 transition-colors duration-200">
                 Privacy Policy
               </a>
-              <a href="https://dr-dede.com/resources/terms-of-service" className="hover:text-blue-400 transition-colors duration-200">
+              <a href="https://www.dr-dede.com/resources/terms-of-service" className="hover:text-blue-400 transition-colors duration-200">
                 Terms of Service
               </a>
-              <a href="https://dr-dede.com/accessibility" className="hover:text-blue-400 transition-colors duration-200">
+              <a href="https://www.dr-dede.com/accessibility" className="hover:text-blue-400 transition-colors duration-200">
                 Accessibility
               </a>
             </div>
