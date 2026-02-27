@@ -261,7 +261,7 @@ export function Footer() {
                 <YoutubeIcon className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
               </a>
               <a
-                href="https://dr-dede.com/blog"
+                href="https://www.dr-dede.com/blog"
                 className="h-10 w-10 rounded-lg bg-gray-800 hover:bg-purple-600 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
                 aria-label="Dr. Dédé Blog"
                 target="_blank"

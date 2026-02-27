@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { ArrowRight, Shield, TrendingUp, Globe, Lock, Users, CheckCircle, Zap } from 'lucide-react';
+import { Footer } from '@/components/layout/footer';
 
 export default function Home() {
   return (
@@ -675,51 +676,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="px-6 py-12 border-t border-violet-500/20 bg-violet-950/60">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h4 className="font-bold mb-4">Services</h4>
-              <ul className="space-y-2 text-violet-300 text-sm">
-                <li><Link href="https://dr-dede.com/services" className="hover:text-cyan-300 transition">GRC Consulting</Link></li>
-                <li><Link href="https://dr-dede.com/services" className="hover:text-cyan-300 transition">Travel Risk</Link></li>
-                <li><Link href="https://dr-dede.com/speaking" className="hover:text-cyan-300 transition">Speaking</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">About</h4>
-              <ul className="space-y-2 text-violet-300 text-sm">
-                <li><Link href="https://dr-dede.com/dr-dede" className="hover:text-cyan-300 transition">Dr. Dédé</Link></li>
-                <li><Link href="https://dr-dede.com/contact" className="hover:text-cyan-300 transition">Contact</Link></li>
-                <li><Link href="https://dr-dede.com/contact" className="hover:text-cyan-300 transition">Schedule</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Expertise</h4>
-              <ul className="space-y-2 text-violet-300 text-sm">
-                <li>AI Governance</li>
-                <li>Compliance & Risk</li>
-                <li>Disability Advocacy</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Connect</h4>
-              <ul className="space-y-2 text-violet-300 text-sm">
-                <li><a href="https://linkedin.com" className="hover:text-cyan-300 transition">LinkedIn</a></li>
-                <li><a href="https://twitter.com" className="hover:text-cyan-300 transition">Twitter</a></li>
-                <li><a href="https://dr-dede.com" className="hover:text-cyan-300 transition">dr-dede.com</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-violet-500/20 pt-8 text-center text-violet-300 text-sm">
-            <p>
-              © 2025 Dr. Dédé Tetsubayashi. All rights reserved. AI GRC & TravelRisk Engine — Premium consulting infrastructure.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer - matching dr-dede.com global footer */}
+      <Footer />
     </div>
   );
 }
