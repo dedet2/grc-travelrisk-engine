@@ -251,7 +251,7 @@ Generate a risk register entry for each AI system. Return ONLY JSON:
       "name": "[AI system name from the list]",
       "euActClass": "High-risk|Limited-risk|Minimal-risk",
       "riskLevel": "Critical|High|Medium|Low",
-      "primaryExposure": "<top regulatory/legal exposure, specific>",
+      "primaryExposure": "[top regulatory/legal exposure, specific]",
       "biasVector": "[most likely bias or fairness failure mode]",
       "control": "[single most important control they should have in place]",
       "urgency": "Immediate|30 days|90 days"
@@ -312,7 +312,7 @@ Estimate financial exposure from AI governance failures. Use real regulatory fin
     }
   ],
   "roiStatement": "[1 sentence: cost of remediation vs. exposure]",
-  "urgencyNote": "<1 sentence on timing/enforcement trends>"
+  "urgencyNote": "[1 sentence on timing/enforcement trends]"
 }
 Include 4-6 exposure scenarios specific to their industry, AI systems, and applicable regulations. Reference real cases or fine structures (EU AI Act max â¬35M or 7% of global turnover; EEOC settlements avg $2.7M; HIPAA max $1.9M per violation category, etc.).`, 1500);
       setSection("financialExposure",{status:"done",data:d});
