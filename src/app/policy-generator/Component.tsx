@@ -16,7 +16,7 @@ const B = {
 };
 
 const INDUSTRIES = [
-  "Financial Services / Banking", "Healthcare / Life Sciences", "Insurance",
+  "Financial Services / Banking", "Healthcare / Life Sciences", "Insurance"
   "Legal Services", "Technology / SaaS", "Manufacturing",
   "Retail / E-commerce", "Government / Public Sector", "Energy / Utilities",
   "Education / Higher Ed",
@@ -44,7 +44,7 @@ const MATURITY = [
   { value: "established", label: "Established", desc: "Formal program in progress" },
 ];
 
-const EMPEOYEE_COUNTS = ["100–500", "500–1,000", "1,000–5,000", "5,000–25,000", "25,000+"];
+const EMPLOYEE_COUNTS = ["100–500", "500–1,000", "1,000–5,000", "5,000–25,000", "25,000+"];
 
 const POLICY_SECTIONS = [
   "Executive Summary & Policy Statement",
