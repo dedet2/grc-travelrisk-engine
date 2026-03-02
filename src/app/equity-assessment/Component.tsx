@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 
-// ─────ブランドトークン─────────────────────────────────────────────────────
+// âââââãã©ã³ããã¼ã¯ã³âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const B = {
   heroGrad: "linear-gradient(135deg, #9333ea 0%, #a855f7 50%, #22d3ee 100%)",
   btnGrad: "linear-gradient(to right, #9333ea, #0891b2)",
@@ -15,7 +15,7 @@ const B = {
   gray800: "#1f2937",
 };
 
-// ─────設定─────────────────────────────────────────────────────────────
+// âââââè¨­å®âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const INDUSTRIES = ["Financial Services / Banking","Healthcare / Life Sciences","Insurance","Legal Services","Technology / SaaS","Manufacturing","Retail / E-commerce","Government / Public Sector","Energy / Utilities","Education / Higher Ed"];
 const AI_SYSTEMS = ["Hiring / applicant screening","Performance management analytics","Customer-facing decisioning / chatbots","Fraud detection / credit scoring","Predictive analytics","Generative AI (internal tools, code, content)","Healthcare diagnostics / clinical support","Marketing personalization","Surveillance / monitoring systems","Supply chain optimization"];
 const REGULATIONS = ["EU AI Act","NIST AI RMF","ISO 42001","EEOC / OFCCP","HIPAA","CCPA / CPRA","GDPR","NY Local Law 144","Colorado / Illinois AI bias laws","CFPB / Fair lending","FTC Act","SOC 2"];
@@ -25,15 +25,15 @@ const MATURITY_OPTS = [
   {v:"developing",l:"Developing",d:"Ad hoc policies, no formal program"},
   {v:"established",l:"Established",d:"Formal program actively maturing"},
 ];
-const EMPLOYEES = ["100–500","500–1,000","1,000–5,000","5,000–25,000","25,000+"];
-const INCIDENT_HISTORY = ["No AI incidents to date","1–2 minor incidents, resolved internally","1–2 incidents with external visibility","Multiple incidents, regulatory inquiry received","Active regulatory investigation or litigation"];
+const EMPLOYEES = ["100â500","500â1,000","1,000â5,000","5,000â25,000","25,000+"];
+const INCIDENT_HISTORY = ["No AI incidents to date","1â2 minor incidents, resolved internally","1â2 incidents with external visibility","Multiple incidents, regulatory inquiry received","Active regulatory investigation or litigation"];
 const STRATEGIC_DRIVER = ["Proactive risk reduction","Regulatory deadline approaching","Board / investor mandate","M&A due diligence","Customer / partner requirement","Public incident response","Competitive differentiation"];
 
-const SYSTEM_PROMPT = `You are Dr. Dédé Tetsubayashi — Cornell PhD anthropologist, former Meta/Salesforce/Indeed/WeWork/Rakuten executive, TEDx speaker, and one of the foremost AI governance experts in the world. You have helped Fortune 500 companies navigate billions in regulatory exposure.
+const SYSTEM_PROMPT = `You are Dr. DÃ©dÃ© Tetsubayashi â Cornell PhD anthropologist, former Meta/Salesforce/Indeed/WeWork/Rakuten executive, TEDx speaker, and one of the foremost AI governance experts in the world. You have helped Fortune 500 companies navigate billions in regulatory exposure.
 
-Your AI Equity Assessment reports are authoritative, specific, and immediately actionable. They are the quality of a $15,000 consulting deliverable — not generic checklists. Every section references real regulatory frameworks, real fine structures, real risk patterns for the specific industry and AI systems described. You write with precision, authority, and care for the humans impacted by these AI systems.`;
+Your AI Equity Assessment reports are authoritative, specific, and immediately actionable. They are the quality of a $15,000 consulting deliverable â not generic checklists. Every section references real regulatory frameworks, real fine structures, real risk patterns for the specific industry and AI systems described. You write with precision, authority, and care for the humans impacted by these AI systems.`;
 
-// ─────ヘルパー─────────────────────────────────────────────────────────
+// âââââãã«ãã¼âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function Chip({label, selected, onClick}) {
   return (
     <button onClick={onClick} style={{
@@ -58,13 +58,13 @@ function CheckChip({label, selected, onClick}) {
       fontSize:"0.78rem", fontWeight: selected?"600":"400",
       cursor:"pointer", fontFamily:"inherit", transition:"all 0.15s",
     }}>
-      <span style={{width:"13px",height:"13px",borderRadius:"3px",border: selected?`2px solid ${B.purple5}`:"2px solid #d1d5db",background:selected?B.purple5:"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.55rem",color:"#fff",flexShrink:0}}>{selected&&"✓"}</span>
+      <span style={{width:"13px",height:"13px",borderRadius:"3px",border: selected?`2px solid ${B.purple5}`:"2px solid #d1d5db",background:selected?B.purple5:"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.55rem",color:"#fff",flexShrink:0}}>{selected&&"â"}</span>
       {label}
     </button>
   );
 }
 
-// ─────プログレスバー─────────────────────────────────────────────────────
+// âââââãã­ã°ã¬ã¹ãã¼âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function ProgressBar({steps, current}) {
   return (
     <div style={{display:"flex",gap:"0.4rem",marginBottom:"2rem"}}>
@@ -78,7 +78,7 @@ function ProgressBar({steps, current}) {
   );
 }
 
-// ─────スコアリング─────────────────────────────────────────────────────
+// âââââã¹ã³ã¢ãªã³ã°âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function ScoreRing({score, label, size=80, stroke=8}) {
   const r = (size-stroke*2)/2;
   const circ = 2*Math.PI*r;
@@ -101,11 +101,11 @@ function ScoreRing({score, label, size=80, stroke=8}) {
   );
 }
 
-// ─────セクションカード─────────────────────────────────────────────────
+// âââââã»ã¯ã·ã§ã³ã«ã¼ãâââââââââââââââââââââââââââââââââââââââââââââââââ
 function SectionCard({title, icon, status, children}) {
   const statusColors = {
     done:{bg:"rgba(22,163,74,0.08)",border:"rgba(22,163,74,0.2)",text:"#15803d",label:"Complete"},
-    loading:{bg:"rgba(147,51,234,0.06)",border:"rgba(147,51,234,0.2)",text:B.purple,label:"Analyzing…"},
+    loading:{bg:"rgba(147,51,234,0.06)",border:"rgba(147,51,234,0.2)",text:B.purple,label:"Analyzingâ¦"},
     pending:{bg:"#f9fafb",border:"#e5e7eb",text:"#9ca3af",label:"Pending"},
   };
   const sc = statusColors[status]||statusColors.pending;
@@ -126,16 +126,16 @@ function SectionCard({title, icon, status, children}) {
   );
 }
 
-// ─────重症度バッジ─────────────────────────────────────────────────────
+// âââââéçåº¦ããã¸âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function Sev({level}) {
   const m={Critical:{bg:"#fee2e2",text:"#b91c1c"},High:{bg:"#fff7ed",text:"#c2410c"},Medium:{bg:"#fef9c3",text:"#a16207"},Low:{bg:"#f0fdf4",text:"#15803d"}};
   const s=m[level]||m.Medium;
   return <span style={{background:s.bg,color:s.text,fontSize:"0.65rem",fontWeight:"700",padding:"0.15rem 0.5rem",borderRadius:"50px",letterSpacing:"0.05em"}}>{level}</span>;
 }
 
-// ─────メインアプリ─────────────────────────────────────────────────────
+// âââââã¡ã¤ã³ã¢ããªâââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export default function EnhancedAssessment() {
-  // フォーム状態
+  // ãã©ã¼ã ç¶æ
   const [step, setStep] = useState(0); // 0=form, 1=generating, 2=report
   const [orgName, setOrgName] = useState("");
   const [industry, setIndustry] = useState("");
@@ -147,7 +147,7 @@ export default function EnhancedAssessment() {
   const [driver, setDriver] = useState("");
   const [email, setEmail] = useState("");
 
-  // Report state — each section generated independently
+  // Report state â each section generated independently
   const [sections, setSections] = useState({
     riskScore: {status:"pending", data:null},
     regGap: {status:"pending", data:null},
@@ -195,28 +195,28 @@ Governance maturity: ${maturity}
 Incident history: ${incidents||"Not disclosed"}
 Strategic driver: ${driver||"Not disclosed"}`;
 
-    // ── Call 1: Risk Scoring ──────────────────────────────────────────
+    // ââ Call 1: Risk Scoring ââââââââââââââââââââââââââââââââââââââââââ
     setSection("riskScore",{status:"loading"});
     try {
       const d = await callClaude(`${ctx}
 
-Score this organization's AI risk across 5 dimensions (0–100 where 100 = highest risk). Return ONLY JSON:
+Score this organization's AI risk across 5 dimensions (0â100 where 100 = highest risk). Return ONLY JSON:
 {
-  "composite": <weighted average>,
+  "composite": [weighted average],
   "level": "Critical|High|Medium|Low",
   "dimensions": [
-    {"name":"Regulatory Exposure","score":<0-100>,"rationale":"<1 sentence specific to their industry+systems>"},
-    {"name":"Bias & Fairness Risk","score":<0-100>,"rationale":"<1 sentence>"},
-    {"name":"Data Governance","score":<0-100>,"rationale":"<1 sentence>"},
-    {"name":"Incident Readiness","score":<0-100>,"rationale":"<1 sentence>"},
-    {"name":"Governance Maturity","score":<0-100>,"rationale":"<1 sentence>"}
+    {"name":"Regulatory Exposure","score":[0-100],"rationale":"[1 sentence specific to their industry+systems]"},
+    {"name":"Bias & Fairness Risk","score":[0-100],"rationale":"[1 sentence]"},
+    {"name":"Data Governance","score":[0-100],"rationale":"[1 sentence]"},
+    {"name":"Incident Readiness","score":[0-100],"rationale":"[1 sentence]"},
+    {"name":"Governance Maturity","score":[0-100],"rationale":"[1 sentence]"}
   ],
-  "executiveSummary": "<3-4 sentences. Authoritative. Name the specific risks. No hedging.>"
+  "executiveSummary": "[3-4 sentences. Authoritative. Name the specific risks. No hedging.]"
 }`, 1200);
       setSection("riskScore",{status:"done",data:d});
     } catch(e){ setSection("riskScore",{status:"done",data:null}); }
 
-    // ── Call 2: Regulatory Gap ────────────────────────────────────────
+    // ââ Call 2: Regulatory Gap ââââââââââââââââââââââââââââââââââââââââ
     setSection("regGap",{status:"loading"});
     try {
       const regs = regulations.length?regulations:["NIST AI RMF","EU AI Act"];
@@ -226,20 +226,20 @@ Generate a regulatory gap analysis. For each applicable framework, identify 2-3 
 {
   "gaps": [
     {
-      "framework": "<framework name>",
-      "article": "<specific article or section, e.g. EU AI Act Art. 9>",
-      "requirement": "<what the law requires, 1 sentence>",
-      "gap": "<what this org is likely missing based on their profile, specific>",
+      "framework": "[framework name]",
+      "article": "[specific article or section, e.g. EU AI Act Art. 9]",
+      "requirement": "[what the law requires, 1 sentence]",
+      "gap": "[what this org is likely missing based on their profile, specific]",
       "severity": "Critical|High|Medium",
-      "remediation": "<concrete action, 1 sentence>"
+      "remediation": "[concrete action, 1 sentence]"
     }
   ]
 }
-Include 6-10 total gaps across their applicable frameworks. Be specific to their industry and AI systems — not generic.`, 1800);
+Include 6-10 total gaps across their applicable frameworks. Be specific to their industry and AI systems â not generic.`, 1800);
       setSection("regGap",{status:"done",data:d});
     } catch(e){ setSection("regGap",{status:"done",data:null}); }
 
-    // ── Call 3: System Risk Register ──────────────────────────────────
+    // ââ Call 3: System Risk Register ââââââââââââââââââââââââââââââââââ
     setSection("systemRegister",{status:"loading"});
     try {
       const d = await callClaude(`${ctx}
@@ -248,21 +248,21 @@ Generate a risk register entry for each AI system. Return ONLY JSON:
 {
   "systems": [
     {
-      "name": "<AI system name from the list>",
+      "name": "[AI system name from the list]",
       "euActClass": "High-risk|Limited-risk|Minimal-risk",
       "riskLevel": "Critical|High|Medium|Low",
       "primaryExposure": "<top regulatory/legal exposure, specific>",
-      "biasVector": "<most likely bias or fairness failure mode>",
-      "control": "<single most important control they should have in place>",
+      "biasVector": "[most likely bias or fairness failure mode]",
+      "control": "[single most important control they should have in place]",
       "urgency": "Immediate|30 days|90 days"
     }
   ]
 }
-Cover all ${aiSystems.length} systems listed. Be specific — not generic placeholders.`, 1500);
+Cover all ${aiSystems.length} systems listed. Be specific â not generic placeholders.`, 1500);
       setSection("systemRegister",{status:"done",data:d});
     } catch(e){ setSection("systemRegister",{status:"done",data:null}); }
 
-    // ── Call 4: Roadmap ──────────────────────────────────────────────
+    // ââ Call 4: Roadmap ââââââââââââââââââââââââââââââââââââââââââââââ
     setSection("roadmap",{status:"loading"});
     try {
       const d = await callClaude(`${ctx}
@@ -272,19 +272,19 @@ Generate a prioritized 30/60/90-day action roadmap. Return ONLY JSON:
   "phases": [
     {
       "phase": "30 Days",
-      "theme": "<1 sentence focus>",
+      "theme": "[1 sentence focus]",
       "actions": [
-        {"action":"<specific task>","owner":"CHRO|CTO|Legal|Board|Chief AI Officer","effort":"Low|Medium|High","impact":"High|Medium"}
+        {"action":"[specific task]","owner":"CHRO|CTO|Legal|Board|Chief AI Officer","effort":"Low|Medium|High","impact":"High|Medium"}
       ]
     },
     {
       "phase": "60 Days",
-      "theme": "<1 sentence focus>",
+      "theme": "[1 sentence focus]",
       "actions": [...]
     },
     {
       "phase": "90 Days",
-      "theme": "<1 sentence focus>",
+      "theme": "[1 sentence focus]",
       "actions": [...]
     }
   ]
@@ -293,28 +293,28 @@ Generate a prioritized 30/60/90-day action roadmap. Return ONLY JSON:
       setSection("roadmap",{status:"done",data:d});
     } catch(e){ setSection("roadmap",{status:"done",data:null}); }
 
-    // ── Call 5: Financial Exposure ────────────────────────────────────
+    // ââ Call 5: Financial Exposure ââââââââââââââââââââââââââââââââââââ
     setSection("financialExposure",{status:"loading"});
     try {
       const d = await callClaude(`${ctx}
 
 Estimate financial exposure from AI governance failures. Use real regulatory fine structures. Return ONLY JSON:
 {
-  "totalExposureLow": "<$ amount, e.g. $2.4M>",
-  "totalExposureHigh": "<$ amount, e.g. $47M>",
+  "totalExposureLow": "[$ amount, e.g. $2.4M]",
+  "totalExposureHigh": "[$ amount, e.g. $47M]",
   "exposures": [
     {
-      "source": "<regulation or risk type>",
-      "scenario": "<specific failure scenario for this org>",
-      "fineRangeLow": "<$ amount>",
-      "fineRangeHigh": "<$ amount>",
-      "basis": "<legal citation or precedent>"
+      "source": "[regulation or risk type]",
+      "scenario": "[specific failure scenario for this org]",
+      "fineRangeLow": "[$ amount]",
+      "fineRangeHigh": "[$ amount]",
+      "basis": "[legal citation or precedent]"
     }
   ],
-  "roiStatement": "<1 sentence: cost of remediation vs. exposure>",
+  "roiStatement": "[1 sentence: cost of remediation vs. exposure]",
   "urgencyNote": "<1 sentence on timing/enforcement trends>"
 }
-Include 4-6 exposure scenarios specific to their industry, AI systems, and applicable regulations. Reference real cases or fine structures (EU AI Act max €35M or 7% of global turnover; EEOC settlements avg $2.7M; HIPAA max $1.9M per violation category, etc.).`, 1500);
+Include 4-6 exposure scenarios specific to their industry, AI systems, and applicable regulations. Reference real cases or fine structures (EU AI Act max â¬35M or 7% of global turnover; EEOC settlements avg $2.7M; HIPAA max $1.9M per violation category, etc.).`, 1500);
       setSection("financialExposure",{status:"done",data:d});
     } catch(e){ setSection("financialExposure",{status:"done",data:null}); }
 
@@ -340,7 +340,7 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
           <div style={{width:"32px",height:"32px",background:B.heroGrad,borderRadius:"0.5rem",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.6rem",fontWeight:"800",color:"#fff"}}>AI</div>
           <div>
             <div style={{fontSize:"0.9rem",fontWeight:"600",color:B.gray800}}>AI Equity Assessment</div>
-            <div style={{fontSize:"0.67rem",color:"#9ca3af",textTransform:"uppercase",letterSpacing:"0.05em"}}>Incluu · Dr. Dédé Tetsubayashi</div>
+            <div style={{fontSize:"0.67rem",color:"#9ca3af",textTransform:"uppercase",letterSpacing:"0.05em"}}>Incluu Â· Dr. DÃ©dÃ© Tetsubayashi</div>
           </div>
         </div>
         <span style={{fontSize:"0.67rem",fontWeight:"600",letterSpacing:"0.08em",textTransform:"uppercase",color:"#16a34a",background:"rgba(22,163,74,0.08)",border:"1px solid rgba(22,163,74,0.2)",padding:"0.3rem 0.75rem",borderRadius:"50px"}}>Free Assessment</span>
@@ -350,7 +350,7 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
       <div style={{background:B.heroGrad,color:"#fff",padding:"2.5rem 1.5rem",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",inset:0,background:"radial-gradient(circle at 25% 50%, rgba(255,255,255,0.12), transparent 60%)",pointerEvents:"none"}}/>
         <div style={{maxWidth:"700px",margin:"0 auto",position:"relative"}}>
-          <span style={{display:"inline-block",marginBottom:"0.75rem",padding:"0.3rem 1rem",background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"50px",fontSize:"0.72rem",fontWeight:"600",letterSpacing:"0.06em"}}>Equivalent to a $15,000 consulting engagement — complimentary</span>
+          <span style={{display:"inline-block",marginBottom:"0.75rem",padding:"0.3rem 1rem",background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"50px",fontSize:"0.72rem",fontWeight:"600",letterSpacing:"0.06em"}}>Equivalent to a $15,000 consulting engagement â complimentary</span>
           <h1 style={{fontSize:"clamp(1.5rem,4vw,2.3rem)",fontWeight:"300",lineHeight:"1.2",marginBottom:"0.75rem"}}>
             Know your <strong style={{fontWeight:"700"}}>exact AI risk exposure</strong><br/>before your board does.
           </h1>
@@ -362,7 +362,7 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
 
       <div style={{maxWidth:"860px",margin:"0 auto",padding:"2rem 1.5rem 4rem"}}>
 
-        {/* ────FORM──────────────────────────────────────────────────── */}
+        {/* ââââFORMââââââââââââââââââââââââââââââââââââââââââââââââââââ */}
         {step===0&&(
           <div>
             <ProgressBar steps={["Organization","AI Systems","Regulations","Context","Generate"]} current={0}/>
@@ -443,13 +443,13 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
             </div>
 
             <button onClick={generate} disabled={!canStart} style={{width:"100%",background:canStart?B.btnGrad:"#e5e7eb",color:canStart?"#fff":"#9ca3af",border:"none",borderRadius:"0.5rem",padding:"1.1rem",fontSize:"0.95rem",fontWeight:"700",cursor:canStart?"pointer":"not-allowed",fontFamily:"inherit",letterSpacing:"0.01em"}}>
-              Run Full AI Equity Assessment — 5 Modules →
+              Run Full AI Equity Assessment â 5 Modules â
             </button>
             {!canStart&&<p style={{textAlign:"center",fontSize:"0.72rem",color:"#9ca3af",marginTop:"0.5rem"}}>Select industry, employee count, and at least one AI system to begin.</p>}
           </div>
         )}
 
-        {/* ────GENERATING / REPORT──────────────────────────────────── */}
+        {/* ââââGENERATING / REPORTââââââââââââââââââââââââââââââââââââ */}
         {(step===1||step===2)&&(
           <div ref={reportRef} className="fadeIn">
             {/* Report header */}
@@ -458,9 +458,9 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
                 <div>
                   <div style={{fontSize:"0.68rem",fontWeight:"700",textTransform:"uppercase",letterSpacing:"0.12em",color:"#9ca3af",marginBottom:"0.3rem"}}>AI Equity Assessment Report</div>
                   <h2 style={{fontSize:"1.4rem",fontWeight:"300",color:B.gray800,marginBottom:"0.15rem"}}>
-                    <strong style={{fontWeight:"700"}}>{orgName||"Your Organization"}</strong> · {industry}
+                    <strong style={{fontWeight:"700"}}>{orgName||"Your Organization"}</strong> Â· {industry}
                   </h2>
-                  <div style={{fontSize:"0.78rem",color:"#9ca3af"}}>{employees} employees · {aiSystems.length} AI systems · Generated {new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>
+                  <div style={{fontSize:"0.78rem",color:"#9ca3af"}}>{employees} employees Â· {aiSystems.length} AI systems Â· Generated {new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>
                 </div>
                 {rs.data&&(
                   <div style={{background:lc.bg,border:`1.5px solid ${lc.border}`,borderRadius:"0.875rem",padding:"1rem 1.25rem",textAlign:"center",minWidth:"120px"}}>
@@ -472,8 +472,8 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
               </div>
             </div>
 
-            {/* ── Module 1: Risk Scoring ── */}
-            <SectionCard title="Module 1 — Risk Score & Executive Summary" icon="📊" status={rs.status}>
+            {/* ââ Module 1: Risk Scoring ââ */}
+            <SectionCard title="Module 1 â Risk Score & Executive Summary" icon="ð" status={rs.status}>
               {rs.data&&(
                 <div className="fadeIn">
                   <p style={{fontSize:"0.875rem",color:B.gray700,lineHeight:"1.75",marginBottom:"1.5rem",padding:"1rem",background:"rgba(147,51,234,0.04)",borderRadius:"0.75rem",borderLeft:`3px solid ${B.purple5}`}}>
@@ -491,8 +491,8 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
               )}
             </SectionCard>
 
-            {/* ── Module 2: Regulatory Gap ── */}
-            <SectionCard title="Module 2 — Regulatory Gap Analysis" icon="⚖️" status={rg.status}>
+            {/* ââ Module 2: Regulatory Gap ââ */}
+            <SectionCard title="Module 2 â Regulatory Gap Analysis" icon="âï¸" status={rg.status}>
               {rg.data?.gaps&&(
                 <div className="fadeIn">
                   <div style={{overflowX:"auto"}}>
@@ -522,8 +522,8 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
               )}
             </SectionCard>
 
-            {/* ── Module 3: System Risk Register ── */}
-            <SectionCard title="Module 3 — AI System Risk Register" icon="🗂️" status={sr.status}>
+            {/* ââ Module 3: System Risk Register ââ */}
+            <SectionCard title="Module 3 â AI System Risk Register" icon="ðï¸" status={sr.status}>
               {sr.data?.systems&&(
                 <div className="fadeIn" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:"0.75rem"}}>
                   {sr.data.systems.map((s,i)=>{
@@ -549,8 +549,8 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
               )}
             </SectionCard>
 
-            {/* ── Module 4: Roadmap ── */}
-            <SectionCard title="Module 4 — 30 / 60 / 90 Day Roadmap" icon="🗓️" status={rm.status}>
+            {/* ââ Module 4: Roadmap ââ */}
+            <SectionCard title="Module 4 â 30 / 60 / 90 Day Roadmap" icon="ðï¸" status={rm.status}>
               {rm.data?.phases&&(
                 <div className="fadeIn" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"0.75rem"}}>
                   {rm.data.phases.map((phase,i)=>{
@@ -577,15 +577,15 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
               )}
             </SectionCard>
 
-            {/* ── Module 5: Financial Exposure ── */}
-            <SectionCard title="Module 5 — Financial Exposure Estimate" icon="💰" status={fe.status}>
+            {/* ââ Module 5: Financial Exposure ââ */}
+            <SectionCard title="Module 5 â Financial Exposure Estimate" icon="ð°" status={fe.status}>
               {fe.data&&(
                 <div className="fadeIn">
                   {/* Headline */}
                   <div style={{background:"#fee2e2",border:"1.5px solid #fecaca",borderRadius:"0.875rem",padding:"1.25rem",marginBottom:"1.25rem",display:"flex",alignItems:"center",gap:"1.5rem"}}>
                     <div>
                       <div style={{fontSize:"0.68rem",fontWeight:"700",textTransform:"uppercase",letterSpacing:"0.1em",color:"#b91c1c",marginBottom:"0.2rem"}}>Estimated Total Exposure</div>
-                      <div style={{fontSize:"1.6rem",fontWeight:"800",color:"#b91c1c",lineHeight:"1"}}>{fe.data.totalExposureLow} – {fe.data.totalExposureHigh}</div>
+                      <div style={{fontSize:"1.6rem",fontWeight:"800",color:"#b91c1c",lineHeight:"1"}}>{fe.data.totalExposureLow} â {fe.data.totalExposureHigh}</div>
                     </div>
                     <div style={{flex:1}}>
                       <p style={{fontSize:"0.82rem",color:"#7f1d1d",lineHeight:"1.6",margin:0}}>{fe.data.roiStatement}</p>
@@ -632,19 +632,19 @@ Include 4-6 exposure scenarios specific to their industry, AI systems, and appli
                       The AI Equity Intensive turns this into a <strong style={{fontWeight:"700"}}>full implementation roadmap</strong>.
                     </h3>
                     <p style={{fontSize:"0.85rem",color:"rgba(255,255,255,0.85)",lineHeight:"1.7",marginBottom:"0.5rem",maxWidth:"480px"}}>
-                      90 minutes with Dr. Dédé. Model inventory, bias testing protocol, incident response playbook, board-ready reporting — all specific to your organization. Then monitor it daily in the Incluu AI Risk Platform.
+                      90 minutes with Dr. DÃ©dÃ©. Model inventory, bias testing protocol, incident response playbook, board-ready reporting â all specific to your organization. Then monitor it daily in the Incluu AI Risk Platform.
                     </p>
                     {email&&<p style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.7)"}}>Your report will be emailed to {email}</p>}
                   </div>
                   <div style={{display:"flex",flexDirection:"column",gap:"0.75rem",minWidth:"200px"}}>
                     <a href="https://incluu.us/book-intensive" target="_blank" rel="noopener noreferrer" style={{background:"#fff",color:B.purple,borderRadius:"0.5rem",padding:"0.85rem 1.25rem",fontSize:"0.875rem",fontWeight:"700",textDecoration:"none",textAlign:"center",display:"block"}}>
-                      Book the Intensive →
+                      Book the Intensive â
                     </a>
                     <a href="https://incluu.us/platform" target="_blank" rel="noopener noreferrer" style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",color:"#fff",borderRadius:"0.5rem",padding:"0.75rem 1.25rem",fontSize:"0.82rem",fontWeight:"600",textDecoration:"none",textAlign:"center",display:"block"}}>
                       Join the Risk Platform waitlist
                     </a>
                     <div style={{textAlign:"center",fontSize:"0.72rem",color:"rgba(255,255,255,0.6)"}}>
-                      $2,500 individual · $5,000 enterprise
+                      $2,500 individual Â· $5,000 enterprise
                     </div>
                   </div>
                 </div>
