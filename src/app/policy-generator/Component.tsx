@@ -16,7 +16,7 @@ const B = {
 };
 
 const INDUSTRIES = [
-  "Financial Services / Banking", "Healthcare / Life Sciences", "Insurance"
+  "Financial Services / Banking", "Healthcare / Life Sciences", "Insurance",
   "Legal Services", "Technology / SaaS", "Manufacturing",
   "Retail / E-commerce", "Government / Public Sector", "Energy / Utilities",
   "Education / Higher Ed",
