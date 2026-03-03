@@ -13,8 +13,8 @@ const B = {
 // ─── Config (replace with your values) ─────────────────────────
 const CONFIG = {
   calendlyUrl:   "https://calendly.com/dr-dede/ai-equity-intensive",
-  stripeLink2500: "https://buy.stripe.com/REPLACE_2500_LINK",
-  stripeLink5000: "https://buy.stripe.com/REPLACE_5000_LINK",
+  stripeink2500: "https://buy.stripe.com/7sYaEX5GC7fDfdc1yN7kc08",
+  stripeLink5000: "https://buy.stripe.com/aFa3cv1qmczXghgcdr7kc09",
   fromEmail:     "hello@incluu.us",
   drDedeSignature: "Dr. Dédé Tetsubayashi | Cornell PhD | Former Meta/Salesforce/Indeed Executive | TEDx Speaker",
 };
