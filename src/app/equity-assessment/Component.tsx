@@ -14,7 +14,6 @@ const B = {
   orange50:"#fff7ed",orange500:"#f97316",
   white:"#ffffff",
 };
-
 interface SectionResult {
   score: number;
   level: "Critical" | "High" | "Medium" | "Low";
@@ -56,7 +55,7 @@ function ScoreBadge({ score, level }: { score: number; level: string }) {
       color: c.text,
       border: "1px solid " + c.border,
     }}>
-      {score}/100 Â· {level}
+      {score}/100 · {level}
     </span>
   );
 }
@@ -88,7 +87,7 @@ function SectionCard({ title, result }: { title: string; result: SectionResult }
         <span style={{ fontWeight: 600, color: B.gray800, fontSize: "0.95rem" }}>{title}</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <ScoreBadge score={result.score} level={result.level} />
-          <span style={{ color: B.gray400, fontSize: "1.1rem" }}>{open ? "â²" : "â¼"}</span>
+          <span style={{ color: B.gray400, fontSize: "1.1rem" }}>{open ? "▲" : "▼"}</span>
         </div>
       </button>
       {open && (
@@ -108,7 +107,7 @@ function SectionCard({ title, result }: { title: string; result: SectionResult }
                     display: "flex",
                     gap: "0.5rem",
                   }}>
-                    <span style={{ color: B.red500, flexShrink: 0 }}>â </span>
+                    <span style={{ color: B.red500, flexShrink: 0 }}>⚠</span>
                     {f}
                   </li>
                 ))}
@@ -130,7 +129,7 @@ function SectionCard({ title, result }: { title: string; result: SectionResult }
                     display: "flex",
                     gap: "0.5rem",
                   }}>
-                    <span style={{ color: B.green500, flexShrink: 0 }}>â</span>
+                    <span style={{ color: B.green500, flexShrink: 0 }}>✓</span>
                     {r}
                   </li>
                 ))}
@@ -340,7 +339,7 @@ Respond with just the summary paragraph, no headers.`;
             margin: "0 auto 1.5rem",
             fontSize: "1.75rem",
           }}>
-            ð
+            🔍
           </div>
           <h2 style={{ margin: "0 0 0.5rem", color: B.gray800, fontSize: "1.25rem", fontWeight: 700 }}>
             Running Equity Assessment
@@ -503,7 +502,7 @@ Respond with just the summary paragraph, no headers.`;
           fontSize: "1.5rem",
           marginBottom: "1rem",
         }}>
-          âï¸
+          ⚖️
         </div>
         <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.75rem", fontWeight: 700 }}>
           AI Equity Assessment
@@ -602,10 +601,10 @@ Respond with just the summary paragraph, no headers.`;
               }}
             >
               <option value="">Select size...</option>
-              <option value="1-50">1 â 50 employees</option>
-              <option value="51-200">51 â 200 employees</option>
-              <option value="201-1000">201 â 1,000 employees</option>
-              <option value="1001-5000">1,001 â 5,000 employees</option>
+              <option value="1-50">1 – 50 employees</option>
+              <option value="51-200">51 – 200 employees</option>
+              <option value="201-1000">201 – 1,000 employees</option>
+              <option value="1001-5000">1,001 – 5,000 employees</option>
               <option value="5000+">5,000+ employees</option>
             </select>
           </div>
@@ -648,7 +647,7 @@ Respond with just the summary paragraph, no headers.`;
               transition: "background 0.15s",
             }}
           >
-            Start Equity Assessment â
+            Start Equity Assessment →
           </button>
 
           <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>
