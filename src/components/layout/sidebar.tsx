@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 
 /* ------------------------------------------------------------------ */
-/*  SVG Icon Components — replacing emojis with branded vector icons  */
+/* SVG Icon Components â replacing emojis with branded vector icons */
 /* ------------------------------------------------------------------ */
 
 function IconDashboard() {
@@ -147,23 +147,12 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
   { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
   { href: '/dashboard/travel-risk', label: 'Travel Risk', Icon: IconTravelRisk },
-  { href: '/dashboard/workflows', label: 'Workflows', Icon: IconWorkflows },
-  { href: '/dashboard/lead-pipeline', label: 'Lead Pipeline', Icon: IconLeadPipeline },
-  { href: '/dashboard/crm', label: 'CRM', Icon: IconCRM },
-  { href: '/dashboard/campaigns', label: 'Campaigns', Icon: IconCampaigns },
-  { href: '/dashboard/content', label: 'Content', Icon: IconContent },
-  { href: '/dashboard/opportunities', label: 'Opportunities', Icon: IconOpportunities },
-  { href: '/dashboard/speaking', label: 'Speaking', Icon: IconSpeaking },
-  { href: '/dashboard/foundations', label: 'Foundations', Icon: IconFoundations },
-  { href: '/dashboard/health', label: 'Health', Icon: IconHealth },
-  { href: '/dashboard/revenue', label: 'Revenue', Icon: IconRevenue },
-  { href: '/dashboard/roadmap', label: 'Roadmap', Icon: IconRoadmap },
-  { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
-  { href: '/dashboard/strategic', label: 'Strategic', Icon: IconStrategic },
+  { href: '/auto-audit', label: 'Auto Audit', Icon: IconAssessments },
+  { href: '/policy-generator', label: 'Policy Generator', Icon: IconReports },
+  { href: '/equity-assessment', label: 'Equity Assessment', Icon: IconFoundations },
   { href: '/dashboard/frameworks', label: 'Frameworks', Icon: IconFrameworks },
   { href: '/dashboard/assessments', label: 'Assessments', Icon: IconAssessments },
-  { href: '/dashboard/integrations', label: 'Integrations', Icon: IconIntegrations },
-  { href: '/dashboard/infrastructure', label: 'Infrastructure', Icon: IconInfrastructure },
+  { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
   { href: '/dashboard/billing', label: 'Billing', Icon: IconBilling },
   { href: '/dashboard/settings', label: 'Settings', Icon: IconSettings },
 ];
@@ -208,12 +197,19 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     return (
       <>
         {sidebarOpen && (
-          <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={handleClose} aria-hidden="true" />
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={handleClose}
+            aria-hidden="true"
+          />
         )}
         {sidebarOpen && (
           <div
             className="fixed left-0 top-0 h-screen w-64 flex flex-col z-50 overflow-y-auto md:hidden"
-            style={{ background: 'linear-gradient(180deg, hsl(250 30% 12%) 0%, hsl(265 35% 15%) 100%)', color: 'white' }}
+            style={{
+              background: 'linear-gradient(180deg, hsl(250 30% 12%) 0%, hsl(265 35% 15%) 100%)',
+              color: 'white'
+            }}
           >
             <SidebarContent pathname={pathname} isMobile onClose={handleClose} />
           </div>
@@ -225,7 +221,10 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   return (
     <div
       className="w-64 flex flex-col hidden md:flex"
-      style={{ background: 'linear-gradient(180deg, hsl(250 30% 12%) 0%, hsl(265 35% 15%) 100%)', color: 'white' }}
+      style={{
+        background: 'linear-gradient(180deg, hsl(250 30% 12%) 0%, hsl(265 35% 15%) 100%)',
+        color: 'white'
+      }}
     >
       <SidebarContent pathname={pathname} />
     </div>
@@ -249,8 +248,14 @@ function SidebarContent({
           href="https://www.dr-dede.com"
           className="flex items-center gap-2 text-xs font-medium rounded-md px-3 py-1.5 transition-colors"
           style={{ color: 'hsl(190 40% 65%)', background: 'hsl(265 20% 18%)' }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'hsl(265 20% 24%)'; e.currentTarget.style.color = 'white'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'hsl(265 20% 18%)'; e.currentTarget.style.color = 'hsl(190 40% 65%)'; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'hsl(265 20% 24%)';
+            e.currentTarget.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'hsl(265 20% 18%)';
+            e.currentTarget.style.color = 'hsl(190 40% 65%)';
+          }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Back to dr-dede.com
@@ -259,8 +264,8 @@ function SidebarContent({
 
       {/* Logo */}
       <div className="px-6 pb-4 pt-2" style={{ borderBottom: '1px solid hsl(265 20% 22%)' }}>
-        <div className="brand-gradient-text text-xl font-bold tracking-tight">
-          GRC TravelRisk Engine
+        <div className="bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-transparent text-xl font-bold tracking-tight">
+          GRC TravelRisk Tools
         </div>
         <p className="text-xs mt-1" style={{ color: 'hsl(190 40% 65%)' }}>
           AI-Powered Risk Intelligence
@@ -270,9 +275,7 @@ function SidebarContent({
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
+          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
           const isExactDashboard = item.href === '/dashboard' && pathname === '/dashboard';
           const active = isActive || isExactDashboard;
 
@@ -316,7 +319,13 @@ function SidebarContent({
 
       {/* User Button */}
       <div className="p-6" style={{ borderTop: '1px solid hsl(265 20% 22%)' }}>
-        <UserButton appearance={{ elements: { userButtonAvatarBox: 'w-8 h-8' } }} />
+        <UserButton
+          appearance={{
+            elements: {
+              userButtonAvatarBox: 'w-8 h-8'
+            }
+          }}
+        />
       </div>
     </>
   );
