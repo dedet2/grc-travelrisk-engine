@@ -1,5 +1,12 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// ─── Supabase Setup ───────────────────────────────────────────
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ruiphgtxyazqlasbchiv.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1aXBoZ3R4eWF6cWxhc2JjaGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNzk0ODMsImV4cCI6MjA4Njk1NTQ4M30.yVHlpQQTFZ515DC7a7dktnxmDVwr9GDPDra4QDpXM-o"
+);
 
 const B = {
   purple50:"#faf5ff",purple100:"#f3e8ff",purple200:"#e9d5ff",purple300:"#d8b4fe",
@@ -216,6 +223,8 @@ export default function EnhancedAssessment() {
   const [currentSection, setCurrentSection] = useState("");
   const [results, setResults] = useState<AssessmentResults>({});
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   const callClaude = useCallback(async (prompt: string): Promise<string> => {
@@ -231,6 +240,56 @@ export default function EnhancedAssessment() {
     const data = await res.json();
     return data.content ?? data.text ?? "";
   }, []);
+
+  const saveToSupabase = useCallback(async () => {
+    setSaving(true);
+    try {
+      const assessmentData = {
+        org_name: orgName,
+        org_type: orgType,
+        org_size: orgSize,
+        description: description,
+        overall_score: results.overall?.score || 0,
+        overall_level: results.overall?.level || "High",
+        overall_summary: results.overall?.summary || "",
+        section_results: {
+          employment: results.employment,
+          housing: results.housing,
+          healthcare: results.healthcare,
+          education: results.education,
+          digitalAccess: results.digitalAccess,
+          criminalJustice: results.criminalJustice,
+          environmental: results.environmental,
+          financial: results.financial,
+        },
+        generated_at: new Date().toISOString(),
+      };
+
+      const { data, error: err } = await supabase
+        .from("reports")
+        .insert({
+          org_id: null,
+          type: "audit",
+          title: `AI Equity Assessment - ${orgName}`,
+          data: assessmentData,
+          format: "json",
+        });
+
+      if (err) {
+        console.error("Supabase error:", err);
+        setError("Failed to save assessment: " + err.message);
+        setSaving(false);
+        return;
+      }
+
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (e: unknown) {
+      setError("Save failed: " + (e as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  }, [orgName, orgType, orgSize, description, results]);
 
   const runAssessment = useCallback(async () => {
     if (!orgName.trim()) {
@@ -410,6 +469,20 @@ Respond with just the summary paragraph, no headers.`;
         </div>
 
         <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1.5rem" }}>
+          {saveSuccess && (
+            <div style={{
+              background: B.green50,
+              border: "1px solid " + B.green500,
+              borderRadius: "0.5rem",
+              padding: "1rem",
+              marginBottom: "1rem",
+              color: B.green600,
+              fontSize: "0.875rem",
+            }}>
+              Assessment saved successfully!
+            </div>
+          )}
+
           <div style={{
             background: B.white,
             borderRadius: "1rem",
@@ -458,22 +531,40 @@ Respond with just the summary paragraph, no headers.`;
             );
           })}
 
-          <button
-            onClick={() => { setStep("form"); setResults({}); }}
-            style={{
-              marginTop: "1.5rem",
-              padding: "0.75rem 2rem",
-              background: B.purple600,
-              color: B.white,
-              border: "none",
-              borderRadius: "0.5rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              fontSize: "0.95rem",
-            }}
-          >
-            New Assessment
-          </button>
+          <div style={{ marginTop: "1.5rem", display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            <button
+              onClick={saveToSupabase}
+              disabled={saving}
+              style={{
+                padding: "0.75rem 2rem",
+                background: B.green600,
+                color: B.white,
+                border: "none",
+                borderRadius: "0.5rem",
+                fontWeight: 600,
+                cursor: saving ? "not-allowed" : "pointer",
+                fontSize: "0.95rem",
+                opacity: saving ? 0.7 : 1,
+              }}
+            >
+              {saving ? "Saving..." : "Save Assessment"}
+            </button>
+            <button
+              onClick={() => { setStep("form"); setResults({}); }}
+              style={{
+                padding: "0.75rem 2rem",
+                background: B.purple600,
+                color: B.white,
+                border: "none",
+                borderRadius: "0.5rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontSize: "0.95rem",
+              }}
+            >
+              New Assessment
+            </button>
+          </div>
         </div>
       </div>
     );

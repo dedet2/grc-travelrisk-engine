@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ruiphgtxyazqlasbchiv.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1aXBoZ3R4eWF6cWxhc2JjaGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNzk0ODMsImV4cCI6MjA4Njk1NTQ4M30.yVHlpQQTFZ515DC7a7dktnxmDVwr9GDPDra4QDpXM-o"
+);
 
 interface FormData {
   step1: {
@@ -31,6 +37,7 @@ export default function OnboardingPage() {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -68,6 +75,8 @@ export default function OnboardingPage() {
       }
 
       setCurrentStep(step);
+      setSuccess('Progress saved!');
+      setTimeout(() => setSuccess(''), 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -137,6 +146,28 @@ export default function OnboardingPage() {
     setError('');
 
     try {
+      // Save to Supabase onboarding_sessions table
+      const onboardingData = {
+        org_name: formData.step1.companyName,
+        systems: formData.step2.frameworks,
+        apis: Object.entries(formData.step3.integrations)
+          .filter(([, enabled]) => enabled)
+          .map(([name]) => name),
+        frameworks: formData.step2.frameworks,
+        invites: formData.step4.teamMembers.filter(m => m.email),
+        status: 'completed',
+      };
+
+      const { data, error: supabaseError } = await supabase
+        .from('onboarding_sessions')
+        .insert([onboardingData])
+        .select();
+
+      if (supabaseError) {
+        throw new Error('Failed to save onboarding session: ' + supabaseError.message);
+      }
+
+      // Save to API endpoint as well
       const res = await fetch('/api/onboarding', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -144,10 +175,13 @@ export default function OnboardingPage() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to complete onboarding');
+        throw new Error('Failed to complete onboarding via API');
       }
 
-      window.location.href = '/dashboard';
+      setSuccess('Onboarding completed successfully!');
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setSaving(false);
@@ -180,6 +214,12 @@ export default function OnboardingPage() {
         {error && (
           <div className="mb-6 p-4 bg-red-500 bg-opacity-20 border border-red-500 rounded-lg text-red-100">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-6 p-4 bg-green-500 bg-opacity-20 border border-green-500 rounded-lg text-green-100">
+            {success}
           </div>
         )}
 

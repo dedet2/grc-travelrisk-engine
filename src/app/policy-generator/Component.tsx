@@ -1,5 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// ─── Supabase Setup ───────────────────────────────────────────
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ruiphgtxyazqlasbchiv.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1aXBoZ3R4eWF6cWxhc2JjaGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNzk0ODMsImV4cCI6MjA4Njk1NTQ4M30.yVHlpQQTFZ515DC7a7dktnxmDVwr9GDPDra4QDpXM-o"
+);
 
 // ─── Brand Tokens ─────────────────────────────────────────────
 const B = {
@@ -198,6 +205,8 @@ export default function PolicyGenerator() {
   const [regulations, setRegulations] = useState([]);
   const [maturity, setMaturity] = useState("none");
   const [sections, setSections] = useState([...POLICY_SECTIONS]);
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [policyText, setPolicyText] = useState("");
   const [streamText, setStreamText] = useState("");
   const [charCount, setCharCount] = useState(0);
@@ -281,6 +290,46 @@ Draft a complete, professional AI Governance Policy document. Be specific to thi
   function copyAll() {
     navigator.clipboard.writeText(policyText);
   }
+  async function savePolicy() {
+    setSaving(true);
+    try {
+      const policyData = {
+        org_name: orgName,
+        industry: industry,
+        employees: employees,
+        ai_systems: aiSystems,
+        regulations: regulations,
+        maturity: maturity,
+        sections: sections,
+        policy_content: policyText,
+        generated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from("policies")
+        .insert({
+          org_id: null,
+          title: `AI Governance Policy - ${orgName}`,
+          description: `Policy document generated for ${orgName} (${industry})`,
+          version: "1.0",
+          status: "draft",
+          framework_mappings: { regulations, sections },
+          created_at: new Date().toISOString(),
+        });
+
+      if (error) {
+        alert("Failed to save policy: " + error.message);
+      } else {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      }
+    } catch (e) {
+      alert("Save error: " + (e as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
 
   // ─── Rendered markdown (simple) ───────────────────────────
   function renderMarkdown(text) {
@@ -326,7 +375,8 @@ Draft a complete, professional AI Governance Policy document. Be specific to thi
           {step === "output" && (
             <>
               <button onClick={copyAll} style={{ background: "transparent", border: "1.5px solid #e5e7eb", borderRadius: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.78rem", color: B.gray600, cursor: "pointer", fontFamily: "inherit", fontWeight: "600" }}>Copy All</button>
-              <button onClick={downloadMarkdown} style={{ background: B.btnGradient, border: "none", borderRadius: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.78rem", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: "600" }}>Download .md</button>
+              <button onClick={savePolicy} disabled={saving} style={{ background: saving ? "#d1d5db" : "#22c55e", border: "none", borderRadius: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.78rem", color: "#fff", cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit", fontWeight: "600" }}>{saving ? "Saving..." : "💾 Save Policy"}</button>
+                  <button onClick={downloadMarkdown} style={{ background: B.btnGradient, border: "none", borderRadius: "0.5rem", padding: "0.5rem 1rem", fontSize: "0.78rem", color: "#fff", cursor: "pointer", fontFamily: "inherit", fontWeight: "600" }}>Download .md</button>
             </>
           )}
           <span style={{ fontSize: "0.67rem", fontWeight: "600", letterSpacing: "0.08em", textTransform: "uppercase", color: B.purple600, background: "rgba(147,51,234,0.08)", border: "1px solid rgba(147,51,234,0.2)", padding: "0.3rem 0.75rem", borderRadius: "50px" }}>
