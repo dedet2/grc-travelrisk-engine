@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 
 /* ------------------------------------------------------------------ */
-/* SVG Icon Components â replacing emojis with branded vector icons */
+/* SVG Icon Components – replacing emojis with branded vector icons */
 /* ------------------------------------------------------------------ */
 function IconDashboard() {
   return (
@@ -141,21 +141,25 @@ function IconInfrastructure() {
   );
 }
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
-  { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
-  { href: '/dashboard/travel-risk', label: 'Travel Risk', Icon: IconTravelRisk },
-  { href: '/equity-assessment', label: 'Equity Assessment', Icon: IconFoundations },
+// Client-facing GRC tools (what prospects/clients see)
+const clientNavItems = [
+  { href: '/equity-assessment', label: 'AI Equity Assessment', Icon: IconFoundations },
   { href: '/auto-audit', label: 'Auto Audit', Icon: IconAssessments },
   { href: '/policy-generator', label: 'Policy Generator', Icon: IconReports },
   { href: '/risk-platform', label: 'Risk Platform', Icon: IconHealth },
+  { href: '/billing', label: 'Plans & Pricing', Icon: IconBilling },
+];
+
+// Admin-only tools (Dr. Dédé's empire management)
+const adminNavItems = [
+  { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
+  { href: '/dashboard/agents', label: 'AI Agents', Icon: IconAgents },
+  { href: '/dashboard/travel-risk', label: 'Travel Risk', Icon: IconTravelRisk },
   { href: '/linkedin-engine', label: 'LinkedIn Engine', Icon: IconContent },
   { href: '/outreach-agent', label: 'Outreach Agent', Icon: IconCampaigns },
-  { href: '/onboarding', label: 'Get Started', Icon: IconRoadmap },
+  { href: '/onboarding', label: 'Platform Setup', Icon: IconRoadmap },
   { href: '/dashboard/frameworks', label: 'Frameworks', Icon: IconFrameworks },
-  { href: '/dashboard/assessments', label: 'Assessments', Icon: IconAssessments },
   { href: '/dashboard/reports', label: 'Reports', Icon: IconReports },
-  { href: '/billing', label: 'Billing & Plans', Icon: IconBilling },
   { href: '/dashboard/settings', label: 'Settings', Icon: IconSettings },
 ];
 
@@ -267,56 +271,106 @@ function SidebarContent({
       {/* Logo */}
       <div className="px-6 pb-4 pt-2" style={{ borderBottom: '1px solid hsl(265 20% 22%)' }}>
         <div className="bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-transparent text-xl font-bold tracking-tight">
-          AI GRC Platform
+          AI GRC RiskTravel Platform
         </div>
         <p className="text-xs mt-1" style={{ color: 'hsl(190 40% 65%)' }}>
-          AI-Powered Risk Intelligence
+          Dr. Dédé & incluu
         </p>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
-          const isExactDashboard = item.href === '/dashboard' && pathname === '/dashboard';
-          const active = isActive || isExactDashboard;
+        {/* Client Tools */}
+        <div className="space-y-1">
+          <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">GRC Tools</p>
+          {clientNavItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
+            const isExactDashboard = item.href === '/dashboard' && pathname === '/dashboard';
+            const active = isActive || isExactDashboard;
 
-          return (
-            <Link
-              key={`${item.href}-${item.label}`}
-              href={item.href}
-              onClick={isMobile ? onClose : undefined}
-              className="flex items-center px-4 py-2 rounded-lg transition-all duration-200"
-              style={
-                active
-                  ? {
-                      background: 'linear-gradient(90deg, hsl(265 60% 45% / 0.3), hsl(190 70% 45% / 0.2))',
-                      borderLeft: '3px solid hsl(190 70% 55%)',
-                      color: 'white',
-                    }
-                  : {
-                      color: 'hsl(250 15% 70%)',
-                      borderLeft: '3px solid transparent',
-                    }
-              }
-              onMouseEnter={(e) => {
-                if (!active) {
-                  e.currentTarget.style.background = 'hsl(265 20% 20%)';
-                  e.currentTarget.style.color = 'hsl(0 0% 95%)';
+            return (
+              <Link
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                onClick={isMobile ? onClose : undefined}
+                className="flex items-center px-4 py-2 rounded-lg transition-all duration-200"
+                style={
+                  active
+                    ? {
+                        background: 'linear-gradient(90deg, hsl(265 60% 45% / 0.3), hsl(190 70% 45% / 0.2))',
+                        borderLeft: '3px solid hsl(190 70% 55%)',
+                        color: 'white',
+                      }
+                    : {
+                        color: 'hsl(250 15% 70%)',
+                        borderLeft: '3px solid transparent',
+                      }
                 }
-              }}
-              onMouseLeave={(e) => {
-                if (!active) {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'hsl(250 15% 70%)';
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = 'hsl(265 20% 20%)';
+                    e.currentTarget.style.color = 'hsl(0 0% 95%)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'hsl(250 15% 70%)';
+                  }
+                }}
+              >
+                <span className="mr-3 flex-shrink-0"><item.Icon /></span>
+                <span className="font-medium text-sm">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Admin Section - divider and admin tools */}
+        <div className="mt-4 pt-4 border-t border-gray-700 space-y-1">
+          <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Empire Admin</p>
+          {adminNavItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
+            const isExactDashboard = item.href === '/dashboard' && pathname === '/dashboard';
+            const active = isActive || isExactDashboard;
+
+            return (
+              <Link
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                onClick={isMobile ? onClose : undefined}
+                className="flex items-center px-4 py-2 rounded-lg transition-all duration-200"
+                style={
+                  active
+                    ? {
+                        background: 'linear-gradient(90deg, hsl(265 60% 45% / 0.3), hsl(190 70% 45% / 0.2))',
+                        borderLeft: '3px solid hsl(190 70% 55%)',
+                        color: 'white',
+                      }
+                    : {
+                        color: 'hsl(250 15% 70%)',
+                        borderLeft: '3px solid transparent',
+                      }
                 }
-              }}
-            >
-              <span className="mr-3 flex-shrink-0"><item.Icon /></span>
-              <span className="font-medium text-sm">{item.label}</span>
-            </Link>
-          );
-        })}
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = 'hsl(265 20% 20%)';
+                    e.currentTarget.style.color = 'hsl(0 0% 95%)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'hsl(250 15% 70%)';
+                  }
+                }}
+              >
+                <span className="mr-3 flex-shrink-0"><item.Icon /></span>
+                <span className="font-medium text-sm">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       {/* User Button */}

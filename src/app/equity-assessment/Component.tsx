@@ -1,762 +1,747 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useState, useEffect, useRef } from "react";
 
-// ─── Supabase Setup ───────────────────────────────────────────
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ruiphgtxyazqlasbchiv.supabase.co",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1aXBoZ3R4eWF6cWxhc2JjaGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNzk0ODMsImV4cCI6MjA4Njk1NTQ4M30.yVHlpQQTFZ515DC7a7dktnxmDVwr9GDPDra4QDpXM-o"
-);
-
+// ============================================================
+// DR. DÉDÉ TETSUBAYASHI BRAND TOKENS
+// ============================================================
 const B = {
-  purple50:"#faf5ff",purple100:"#f3e8ff",purple200:"#e9d5ff",purple300:"#d8b4fe",
-  purple400:"#c084fc",purple500:"#a855f7",purple600:"#9333ea",purple700:"#7c3aed",
-  gray50:"#f9fafb",gray100:"#f3f4f6",gray200:"#e5e7eb",gray300:"#d1d5db",
-  gray400:"#9ca3af",gray500:"#6b7280",gray600:"#4b5563",gray700:"#374151",
-  gray800:"#1f2937",gray900:"#111827",
-  red50:"#fef2f2",red100:"#fee2e2",red500:"#ef4444",red600:"#dc2626",
-  green50:"#f0fdf4",green500:"#22c55e",green600:"#16a34a",
-  yellow50:"#fefce8",yellow500:"#eab308",
-  blue50:"#eff6ff",blue500:"#3b82f6",blue600:"#2563eb",
-  orange50:"#fff7ed",orange500:"#f97316",
-  white:"#ffffff",
+  purple600: "#9333ea",
+  purple500: "#a855f7",
+  cyan400: "#22d3ee",
+  cyan600: "#0891b2",
+  heroGradient: "linear-gradient(135deg, rgba(147,51,234,0.95) 0%, rgba(168,85,247,0.95) 50%, rgba(34,211,238,0.95) 100%)",
+  heroSolid: "linear-gradient(135deg, #9333ea 0%, #a855f7 50%, #22d3ee 100%)",
+  btnGradient: "linear-gradient(to right, #9333ea, #0891b2)",
+  textGradientCSS: {
+    background: "linear-gradient(135deg, #9333ea 0%, #a855f7 50%, #22d3ee 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+  },
+  gray50: "#f9fafb",
+  gray100: "#f3f4f6",
+  gray600: "#4b5563",
+  gray800: "#1f2937",
+  white90: "rgba(255,255,255,0.9)",
+  sectionBg: "linear-gradient(135deg, rgba(6,182,212,0.04) 0%, rgba(147,51,234,0.04) 100%)",
 };
-interface SectionResult {
-  score: number;
-  level: "Critical" | "High" | "Medium" | "Low";
-  findings: string[];
-  recommendations: string[];
-  raw?: string;
-}
 
-interface AssessmentResults {
-  employment?: SectionResult;
-  housing?: SectionResult;
-  healthcare?: SectionResult;
-  education?: SectionResult;
-  digitalAccess?: SectionResult;
-  criminalJustice?: SectionResult;
-  environmental?: SectionResult;
-  financial?: SectionResult;
-  overall?: { score: number; level: string; summary: string };
-}
+const INDUSTRIES = [
+  "Financial Services / Banking", "Healthcare / Life Sciences", "Insurance",
+  "Legal Services", "Technology / SaaS", "Manufacturing",
+  "Retail / E-commerce", "Government / Public Sector", "Energy / Utilities",
+  "Education / Higher Ed", "Other",
+];
 
-function ScoreBadge({ score, level }: { score: number; level: string }) {
-  const colors: Record<string, { bg: string; text: string; border: string }> = {
-    Critical: { bg: B.red50, text: B.red600, border: B.red500 },
-    High: { bg: B.orange50, text: "#c2410c", border: B.orange500 },
-    Medium: { bg: B.yellow50, text: "#92400e", border: B.yellow500 },
-    Low: { bg: B.green50, text: B.green600, border: B.green500 },
-  };
-  const c = colors[level] || colors.High;
+const AI_SYSTEMS = [
+  "Hiring / recruiting tools (ATS, screening)",
+  "Performance management / workforce analytics",
+  "Customer-facing chatbots or decisioning",
+  "Fraud detection / credit scoring",
+  "Predictive analytics for business decisions",
+  "Generative AI (content, code, internal tools)",
+  "Surveillance or monitoring systems",
+  "Supply chain or logistics optimization",
+  "Healthcare diagnostics or clinical decision support",
+  "Marketing personalization / targeting",
+];
+
+const REGULATIONS = [
+  "EU AI Act", "NIST AI RMF", "ISO 42001",
+  "EEOC / OFCCP (employment discrimination)", "HIPAA (healthcare data)",
+  "CCPA / CPRA (California privacy)", "GDPR", "SOC 2",
+  "NY Local Law 144 (automated employment decisions)",
+  "Colorado / Illinois AI bias laws", "CFPB / Fair lending regulations",
+  "FTC Act (deceptive AI practices)",
+];
+
+const GOVERNANCE_ITEMS = [
+  "Written AI governance policy approved by leadership",
+  "Designated AI risk owner or committee",
+  "Documented model inventory for all AI in production",
+  "Third-party vendor AI assessment process",
+  "Algorithmic bias testing protocols",
+  "AI incident response playbook",
+  "Employee AI use policies",
+  "Board-level AI risk reporting",
+];
+
+const DRIVERS = [
+  "Board or investor scrutiny / ESG pressure",
+  "Upcoming regulatory deadline or audit",
+  "M&A due diligence (buyer or target)",
+  "Post-incident remediation",
+  "Proactive risk posture ahead of regulation",
+  "Internal compliance mandate",
+  "Competitor or industry benchmark pressure",
+];
+
+const EMPLOYEE_COUNTS = ["100–500", "500–1,000", "1,000–5,000", "5,000–25,000", "25,000+"];
+const REVENUE_RANGES = ["<$50M", "$50M–$250M", "$250M–$1B", "$1B–$10B", "$10B+"];
+
+// ─── Shared Styles ──────────────────────────────────────────────────────────────────
+const S = {
+  container: {
+    minHeight: "100vh",
+    background: B.gray50,
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    color: B.gray800,
+  },
+  card: {
+    maxWidth: "700px",
+    margin: "0 auto",
+    padding: "2.5rem 2rem 4rem",
+  },
+  qLabel: {
+    fontSize: "0.72rem",
+    letterSpacing: "0.18em",
+    fontWeight: "600",
+    textTransform: "uppercase",
+    marginBottom: "0.4rem",
+    background: B.heroSolid,
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+  },
+  qTitle: {
+    fontSize: "1.5rem",
+    fontWeight: "300",
+    color: B.gray800,
+    marginBottom: "0.5rem",
+    lineHeight: "1.35",
+    letterSpacing: "-0.01em",
+  },
+  qSub: {
+    fontSize: "0.875rem",
+    color: B.gray600,
+    marginBottom: "1.75rem",
+    lineHeight: "1.65",
+  },
+  btnPrimary: {
+    background: B.btnGradient,
+    color: "#fff",
+    border: "none",
+    padding: "0.875rem 2rem",
+    borderRadius: "0.5rem",
+    fontWeight: "600",
+    fontSize: "0.9rem",
+    cursor: "pointer",
+    letterSpacing: "0.01em",
+    transition: "opacity 0.2s",
+    fontFamily: "inherit",
+  },
+  btnSecondary: {
+    background: "transparent",
+    color: B.gray600,
+    border: "1px solid #d1d5db",
+    padding: "0.875rem 1.5rem",
+    borderRadius: "0.5rem",
+    fontSize: "0.875rem",
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  divider: { height: "1px", background: "#e5e7eb", margin: "2rem 0" },
+};
+
+// ─── Progress Bar ───────────────────────────────────────────────────────────────────────
+function ProgressBar({ current, total }) {
   return (
-    <span style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "0.25rem",
-      padding: "0.25rem 0.75rem",
-      borderRadius: "9999px",
-      fontSize: "0.875rem",
-      fontWeight: 600,
-      background: c.bg,
-      color: c.text,
-      border: "1px solid " + c.border,
-    }}>
-      {score}/100 · {level}
-    </span>
-  );
-}
-
-function SectionCard({ title, result }: { title: string; result: SectionResult }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div style={{
-      background: B.white,
-      border: "1px solid " + B.gray200,
-      borderRadius: "0.75rem",
-      overflow: "hidden",
-      marginBottom: "0.75rem",
-    }}>
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem 1.25rem",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <span style={{ fontWeight: 600, color: B.gray800, fontSize: "0.95rem" }}>{title}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <ScoreBadge score={result.score} level={result.level} />
-          <span style={{ color: B.gray400, fontSize: "1.1rem" }}>{open ? "▲" : "▼"}</span>
-        </div>
-      </button>
-      {open && (
-        <div style={{ padding: "0 1.25rem 1.25rem", borderTop: "1px solid " + B.gray100 }}>
-          {result.findings.length > 0 && (
-            <div style={{ marginTop: "1rem" }}>
-              <p style={{ fontWeight: 600, color: B.gray700, marginBottom: "0.5rem", fontSize: "0.875rem" }}>
-                Key Findings
-              </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {result.findings.map((f, i) => (
-                  <li key={i} style={{
-                    padding: "0.375rem 0",
-                    borderBottom: i < result.findings.length - 1 ? "1px solid " + B.gray100 : "none",
-                    color: B.gray600,
-                    fontSize: "0.875rem",
-                    display: "flex",
-                    gap: "0.5rem",
-                  }}>
-                    <span style={{ color: B.red500, flexShrink: 0 }}>⚠</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {result.recommendations.length > 0 && (
-            <div style={{ marginTop: "1rem" }}>
-              <p style={{ fontWeight: 600, color: B.gray700, marginBottom: "0.5rem", fontSize: "0.875rem" }}>
-                Recommendations
-              </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {result.recommendations.map((r, i) => (
-                  <li key={i} style={{
-                    padding: "0.375rem 0",
-                    borderBottom: i < result.recommendations.length - 1 ? "1px solid " + B.gray100 : "none",
-                    color: B.gray600,
-                    fontSize: "0.875rem",
-                    display: "flex",
-                    gap: "0.5rem",
-                  }}>
-                    <span style={{ color: B.green500, flexShrink: 0 }}>✓</span>
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+    <div style={{ marginBottom: "2rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+        <span style={{ fontSize: "0.72rem", letterSpacing: "0.12em", color: B.gray600, fontWeight: "500", textTransform: "uppercase" }}>
+          Assessment Progress
+        </span>
+        <span style={{ fontSize: "0.72rem", color: B.purple500, fontWeight: "600" }}>
+          {current} of {total}
+        </span>
+      </div>
+      <div style={{ height: "4px", background: "#e9d5ff", borderRadius: "2px" }}>
+        <div style={{
+          height: "100%",
+          width: `${(current / total) * 100}%`,
+          background: B.heroSolid,
+          borderRadius: "2px",
+          transition: "width 0.5s ease",
+        }} />
+      </div>
     </div>
   );
 }
 
-function ProgressRing({ score }: { score: number }) {
-  const r = 52;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (score / 100) * circ;
-  const color = score >= 75 ? B.green500 : score >= 50 ? B.yellow500 : score >= 25 ? B.orange500 : B.red500;
+// ─── Option Button ────────────────────────────────────────────────────────────────────────
+function OptionBtn({ label, selected, onClick, round }) {
   return (
-    <svg width="128" height="128" viewBox="0 0 128 128">
-      <circle cx="64" cy="64" r={r} fill="none" stroke={B.gray200} strokeWidth="10" />
-      <circle
-        cx="64" cy="64" r={r}
-        fill="none"
-        stroke={color}
-        strokeWidth="10"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        transform="rotate(-90 64 64)"
-        style={{ transition: "stroke-dashoffset 0.6s ease" }}
-      />
-      <text x="64" y="60" textAnchor="middle" fontSize="22" fontWeight="700" fill={B.gray800}>{score}</text>
-      <text x="64" y="78" textAnchor="middle" fontSize="11" fill={B.gray500}>/100</text>
-    </svg>
-  );
-}
-
-function parseSection(raw: string): SectionResult {
-  const scoreMatch = raw.match(/SCORE:\s*(\d+)/i);
-  const levelMatch = raw.match(/RISK[_\s]?LEVEL:\s*(Critical|High|Medium|Low)/i);
-  const findingsMatch = raw.match(/FINDINGS:([\s\S]*?)(?=RECOMMENDATIONS:|$)/i);
-  const recsMatch = raw.match(/RECOMMENDATIONS:([\s\S]*?)$/i);
-
-  const score = scoreMatch ? parseInt(scoreMatch[1], 10) : 50;
-  const level = (levelMatch?.[1] as SectionResult["level"]) || "High";
-
-  const parseList = (block: string | undefined): string[] => {
-    if (!block) return [];
-    return block
-      .split("\n")
-      .map((l) => l.replace(/^[-*\d.]+\s*/, "").trim())
-      .filter((l) => l.length > 10);
-  };
-
-  return {
-    score,
-    level,
-    findings: parseList(findingsMatch?.[1]),
-    recommendations: parseList(recsMatch?.[1]),
-    raw,
-  };
-}
-
-const SECTIONS = [
-  { key: "employment", label: "Employment & Workplace" },
-  { key: "housing", label: "Housing & Accommodations" },
-  { key: "healthcare", label: "Healthcare Access" },
-  { key: "education", label: "Education & Training" },
-  { key: "digitalAccess", label: "Digital Accessibility" },
-  { key: "criminalJustice", label: "Criminal Justice" },
-  { key: "environmental", label: "Environmental & Structural" },
-  { key: "financial", label: "Financial Services" },
-] as const;
-
-type SectionKey = typeof SECTIONS[number]["key"];
-
-export default function EnhancedAssessment() {
-  const [orgName, setOrgName] = useState("");
-  const [orgType, setOrgType] = useState("");
-  const [orgSize, setOrgSize] = useState("");
-  const [description, setDescription] = useState("");
-  const [step, setStep] = useState<"form" | "running" | "results">("form");
-  const [progress, setProgress] = useState(0);
-  const [currentSection, setCurrentSection] = useState("");
-  const [results, setResults] = useState<AssessmentResults>({});
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
-
-  const callClaude = useCallback(async (prompt: string): Promise<string> => {
-    const ctrl = new AbortController();
-    abortRef.current = ctrl;
-    const res = await fetch("/api/claude", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: ctrl.signal,
-      body: JSON.stringify({ prompt, maxTokens: 1024 }),
-    });
-    if (!res.ok) throw new Error("API error " + res.status);
-    const data = await res.json();
-    return data.content ?? data.text ?? "";
-  }, []);
-
-  const saveToSupabase = useCallback(async () => {
-    setSaving(true);
-    try {
-      const assessmentData = {
-        org_name: orgName,
-        org_type: orgType,
-        org_size: orgSize,
-        description: description,
-        overall_score: results.overall?.score || 0,
-        overall_level: results.overall?.level || "High",
-        overall_summary: results.overall?.summary || "",
-        section_results: {
-          employment: results.employment,
-          housing: results.housing,
-          healthcare: results.healthcare,
-          education: results.education,
-          digitalAccess: results.digitalAccess,
-          criminalJustice: results.criminalJustice,
-          environmental: results.environmental,
-          financial: results.financial,
-        },
-        generated_at: new Date().toISOString(),
-      };
-
-      const { data, error: err } = await supabase
-        .from("reports")
-        .insert({
-          org_id: null,
-          type: "audit",
-          title: `AI Equity Assessment - ${orgName}`,
-          data: assessmentData,
-          format: "json",
-        });
-
-      if (err) {
-        console.error("Supabase error:", err);
-        setError("Failed to save assessment: " + err.message);
-        setSaving(false);
-        return;
-      }
-
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (e: unknown) {
-      setError("Save failed: " + (e as Error).message);
-    } finally {
-      setSaving(false);
-    }
-  }, [orgName, orgType, orgSize, description, results]);
-
-  const runAssessment = useCallback(async () => {
-    if (!orgName.trim()) {
-      setError("Please enter your organization name.");
-      return;
-    }
-    setError("");
-    setStep("running");
-    setProgress(0);
-    setResults({});
-    const ctx = `Organization: ${orgName} | Type: ${orgType || "Not specified"} | Size: ${orgSize || "Not specified"} | Description: ${description || "No description provided"}`;
-    const newResults: AssessmentResults = {};
-
-    try {
-      for (let i = 0; i < SECTIONS.length; i++) {
-        const sec = SECTIONS[i];
-        setCurrentSection(sec.label);
-        setProgress(Math.round((i / SECTIONS.length) * 85));
-
-        const prompt = `You are an AI equity and bias auditor. Analyze ${sec.label} equity risks for the following organization.
-
-${ctx}
-
-Respond in exactly this format:
-SCORE: [0-100, where 100 = maximum equity risk]
-RISK_LEVEL: [Critical/High/Medium/Low]
-FINDINGS:
-- [Finding 1]
-- [Finding 2]
-- [Finding 3]
-RECOMMENDATIONS:
-- [Recommendation 1]
-- [Recommendation 2]
-- [Recommendation 3]`;
-
-        const raw = await callClaude(prompt);
-        const parsed = parseSection(raw);
-        newResults[sec.key as SectionKey] = parsed;
-        setResults({ ...newResults });
-      }
-
-      setCurrentSection("Overall Assessment");
-      setProgress(90);
-
-      const scores = SECTIONS.map((s) => newResults[s.key as SectionKey]?.score ?? 50);
-      const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-      const overallLevel = avgScore >= 75 ? "Critical" : avgScore >= 50 ? "High" : avgScore >= 25 ? "Medium" : "Low";
-
-      const overallPrompt = `You are an AI equity auditor. Provide a 2-3 sentence executive summary of overall equity risk for:
-
-${ctx}
-
-Section scores: ${SECTIONS.map((s) => s.label + ": " + (newResults[s.key as SectionKey]?.score ?? "N/A")).join(", ")}
-
-Respond with just the summary paragraph, no headers.`;
-
-      const overallRaw = await callClaude(overallPrompt);
-      newResults.overall = { score: avgScore, level: overallLevel, summary: overallRaw.trim() };
-      setResults({ ...newResults });
-      setProgress(100);
-      setStep("results");
-    } catch (e: unknown) {
-      if ((e as Error).name !== "AbortError") {
-        setError("Assessment failed: " + (e as Error).message);
-        setStep("form");
-      }
-    }
-  }, [orgName, orgType, orgSize, description, callClaude]);
-
-  const levelColors: Record<string, string> = {
-    Critical: B.red500,
-    High: B.orange500,
-    Medium: B.yellow500,
-    Low: B.green500,
-  };
-
-  const overallColor = levelColors[results.overall?.level ?? "High"] ?? B.orange500;
-
-  if (step === "running") {
-    return (
-      <div style={{
-        minHeight: "100vh",
-        background: B.gray50,
+    <button onClick={onClick} style={{
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.75rem",
+      textAlign: "left",
+      padding: "0.85rem 1rem",
+      background: selected ? "rgba(147,51,234,0.06)" : B.white90,
+      border: selected ? `2px solid ${B.purple500}` : "1.5px solid #e5e7eb",
+      borderRadius: "0.75rem",
+      color: selected ? B.purple600 : B.gray600,
+      fontSize: "0.85rem",
+      cursor: "pointer",
+      transition: "all 0.15s",
+      width: "100%",
+      fontFamily: "inherit",
+      lineHeight: "1.45",
+      backdropFilter: "blur(8px)",
+      boxShadow: selected ? `0 0 0 1px ${B.purple500}20, 0 2px 8px ${B.purple600}10` : "0 1px 3px rgba(0,0,0,0.04)",
+    }}>
+      <span style={{
+        flexShrink: 0,
+        width: "18px",
+        height: "18px",
+        borderRadius: round ? "50%" : "4px",
+        border: selected ? `2px solid ${B.purple500}` : "2px solid #d1d5db",
+        background: selected ? B.purple500 : "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        marginTop: "1px",
+        fontSize: "0.65rem",
+        color: "#fff",
+        fontWeight: "700",
       }}>
-        <div style={{
-          background: B.white,
-          borderRadius: "1rem",
-          padding: "3rem",
-          maxWidth: "480px",
-          width: "90%",
-          textAlign: "center",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-        }}>
-          <div style={{
-            width: "64px",
-            height: "64px",
-            borderRadius: "50%",
-            background: B.purple100,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 1.5rem",
-            fontSize: "1.75rem",
-          }}>
-            🔍
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem", color: B.gray800, fontSize: "1.25rem", fontWeight: 700 }}>
-            Running Equity Assessment
-          </h2>
-          <p style={{ color: B.gray500, margin: "0 0 2rem", fontSize: "0.875rem" }}>
-            Analyzing {currentSection}...
-          </p>
-          <div style={{
-            background: B.gray100,
-            borderRadius: "9999px",
-            height: "8px",
-            overflow: "hidden",
-            marginBottom: "0.75rem",
-          }}>
-            <div style={{
-              height: "100%",
-              width: progress + "%",
-              background: "linear-gradient(90deg, " + B.purple500 + ", " + B.purple600 + ")",
-              borderRadius: "9999px",
-              transition: "width 0.4s ease",
+        {selected && "✓"}
+      </span>
+      <span style={{ fontWeight: selected ? "500" : "400" }}>{label}</span>
+    </button>
+  );
+}
+
+function SelectList({ options, selected, onChange, single }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      {options.map(opt => {
+        const isSelected = single ? selected === opt : selected.includes(opt);
+        return (
+          <OptionBtn key={opt} label={opt} selected={isSelected} round={single}
+            onClick={() => {
+              if (single) onChange(opt);
+              else isSelected ? onChange(selected.filter(s => s !== opt)) : onChange([...selected, opt]);
             }} />
-          </div>
-          <p style={{ color: B.gray400, fontSize: "0.8rem" }}>{progress}% complete</p>
-          <button
-            onClick={() => { abortRef.current?.abort(); setStep("form"); }}
-            style={{
-              marginTop: "1.5rem",
-              padding: "0.5rem 1.5rem",
-              background: "none",
-              border: "1px solid " + B.gray300,
-              borderRadius: "0.5rem",
-              color: B.gray600,
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    );
-  }
+        );
+      })}
+    </div>
+  );
+}
 
-  if (step === "results" && results.overall) {
-    const completedSections = SECTIONS.filter((s) => results[s.key as SectionKey]);
-    return (
-      <div style={{
-        minHeight: "100vh",
-        background: B.gray50,
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}>
-        <div style={{
-          background: "linear-gradient(135deg, " + B.purple600 + ", " + B.purple700 + ")",
-          padding: "2rem 1.5rem",
-          color: B.white,
-        }}>
-          <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-            <p style={{ margin: "0 0 0.25rem", opacity: 0.8, fontSize: "0.875rem" }}>
-              AI Equity Assessment Report
-            </p>
-            <h1 style={{ margin: "0 0 0.25rem", fontSize: "1.75rem", fontWeight: 700 }}>
-              {orgName}
-            </h1>
-            <p style={{ margin: 0, opacity: 0.7, fontSize: "0.875rem" }}>
-              {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-            </p>
-          </div>
-        </div>
+function CheckboxGrid({ options, selected, onChange }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "0.5rem" }}>
+      {options.map(opt => {
+        const isSelected = selected.includes(opt);
+        return (
+          <OptionBtn key={opt} label={opt} selected={isSelected}
+            onClick={() => isSelected ? onChange(selected.filter(s => s !== opt)) : onChange([...selected, opt])} />
+        );
+      })}
+    </div>
+  );
+}
 
-        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1.5rem" }}>
-          {saveSuccess && (
-            <div style={{
-              background: B.green50,
-              border: "1px solid " + B.green500,
-              borderRadius: "0.5rem",
-              padding: "1rem",
-              marginBottom: "1rem",
-              color: B.green600,
-              fontSize: "0.875rem",
-            }}>
-              Assessment saved successfully!
-            </div>
-          )}
-
-          <div style={{
-            background: B.white,
-            borderRadius: "1rem",
-            padding: "1.5rem",
-            marginBottom: "1.5rem",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-            display: "flex",
-            alignItems: "center",
-            gap: "2rem",
-            flexWrap: "wrap",
-          }}>
-            <ProgressRing score={results.overall.score} />
-            <div style={{ flex: 1, minWidth: "200px" }}>
-              <p style={{ margin: "0 0 0.25rem", fontSize: "0.875rem", color: B.gray500 }}>
-                Overall Equity Risk Score
-              </p>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
-                <span style={{ fontSize: "2rem", fontWeight: 700, color: B.gray900 }}>
-                  {results.overall.score}
-                </span>
-                <span style={{
-                  padding: "0.25rem 0.75rem",
-                  borderRadius: "9999px",
-                  background: overallColor + "20",
-                  color: overallColor,
-                  fontWeight: 600,
-                  fontSize: "0.875rem",
-                }}>
-                  {results.overall.level} Risk
-                </span>
-              </div>
-              <p style={{ margin: 0, color: B.gray600, fontSize: "0.875rem", lineHeight: 1.6 }}>
-                {results.overall.summary}
-              </p>
-            </div>
-          </div>
-
-          <h2 style={{ margin: "0 0 1rem", color: B.gray800, fontSize: "1.1rem", fontWeight: 700 }}>
-            Section Analysis
-          </h2>
-          {completedSections.map((sec) => {
-            const r = results[sec.key as SectionKey];
-            if (!r) return null;
-            return (
-              <SectionCard key={sec.key} title={sec.label} result={r} />
-            );
-          })}
-
-          <div style={{ marginTop: "1.5rem", display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <button
-              onClick={saveToSupabase}
-              disabled={saving}
-              style={{
-                padding: "0.75rem 2rem",
-                background: B.green600,
-                color: B.white,
-                border: "none",
-                borderRadius: "0.5rem",
-                fontWeight: 600,
-                cursor: saving ? "not-allowed" : "pointer",
-                fontSize: "0.95rem",
-                opacity: saving ? 0.7 : 1,
-              }}
-            >
-              {saving ? "Saving..." : "Save Assessment"}
-            </button>
-            <button
-              onClick={() => { setStep("form"); setResults({}); }}
-              style={{
-                padding: "0.75rem 2rem",
-                background: B.purple600,
-                color: B.white,
-                border: "none",
-                borderRadius: "0.5rem",
-                fontWeight: 600,
-                cursor: "pointer",
-                fontSize: "0.95rem",
-              }}
-            >
-              New Assessment
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+// ─── Header ───────────────────────────────────────────────────────────────────────────────
+function Header() {
   return (
     <div style={{
-      minHeight: "100vh",
-      background: B.gray50,
-      fontFamily: "system-ui, -apple-system, sans-serif",
+      borderBottom: "1px solid #e5e7eb",
+      padding: "1rem 2rem",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      background: "rgba(255,255,255,0.95)",
+      backdropFilter: "blur(12px)",
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <div style={{
+          width: "32px", height: "32px",
+          background: B.heroSolid,
+          borderRadius: "0.5rem",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "0.65rem", fontWeight: "800", color: "#fff",
+          letterSpacing: "0.02em",
+        }}>DD</div>
+        <div>
+          <div style={{ fontSize: "0.88rem", fontWeight: "600", color: B.gray800 }}>AI Equity Assessment</div>
+          <div style={{ fontSize: "0.67rem", color: "#9ca3af", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+            Dr. Dédé Tetsubayashi · Incluu.us
+          </div>
+        </div>
+      </div>
+      <span style={{
+        fontSize: "0.67rem", fontWeight: "600", letterSpacing: "0.1em",
+        textTransform: "uppercase", color: B.purple600,
+        background: "rgba(147,51,234,0.08)",
+        border: "1px solid rgba(147,51,234,0.2)",
+        padding: "0.3rem 0.75rem",
+        borderRadius: "50px",
+      }}>Enterprise Framework</span>
+    </div>
+  );
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────────────────
+function LoadingScreen() {
+  const [phase, setPhase] = useState(0);
+  const phases = [
+    "Analyzing regulatory exposure…",
+    "Mapping governance gaps…",
+    "Benchmarking against NIST AI RMF…",
+    "Calculating organizational risk score…",
+    "Generating executive assessment…",
+  ];
+  useEffect(() => {
+    const id = setInterval(() => setPhase(p => (p + 1) % phases.length), 2000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div style={{ textAlign: "center", padding: "5rem 2rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ width: "64px", height: "64px", margin: "0 auto 2.5rem", position: "relative" }}>
+        <div style={{
+          position: "absolute", inset: 0, borderRadius: "50%",
+          border: "3px solid transparent", borderTopColor: B.purple500,
+          animation: "spin 1s linear infinite",
+        }} />
+        <div style={{
+          position: "absolute", inset: "8px", borderRadius: "50%",
+          border: "3px solid transparent", borderTopColor: B.cyan400,
+          animation: "spin 1.5s linear infinite reverse",
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+      <div style={{ ...B.textGradientCSS, fontSize: "0.75rem", letterSpacing: "0.2em", fontWeight: "700", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+        Generating your assessment
+      </div>
+      <p style={{ color: B.gray600, fontSize: "0.88rem" }}>{phases[phase]}</p>
+    </div>
+  );
+}
+
+// ─── Risk Badge ───────────────────────────────────────────────────────────────────────────
+function RiskBadge({ level }) {
+  const cfg = {
+    LOW: { bg: "#dcfce7", border: "#86efac", color: "#15803d", label: "Low Risk" },
+    MEDIUM: { bg: "#fef9c3", border: "#fde047", color: "#a16207", label: "Medium Risk" },
+    HIGH: { bg: "#ffedd5", border: "#fdba74", color: "#c2410c", label: "High Risk" },
+    CRITICAL: { bg: "#fee2e2", border: "#fca5a5", color: "#b91c1c", label: "Critical Risk" },
+  };
+  const c = cfg[level] || cfg.HIGH;
+  return (
+    <span style={{
+      display: "inline-block", padding: "0.35rem 1rem",
+      background: c.bg, border: `1.5px solid ${c.border}`,
+      borderRadius: "50px", color: c.color,
+      fontSize: "0.8rem", fontWeight: "700", letterSpacing: "0.03em",
+    }}>{c.label}</span>
+  );
+}
+
+// ─── Report Section ───────────────────────────────────────────────────────────────────────
+function ReportCard({ title, children, accent }) {
+  return (
+    <div style={{
+      background: "#fff",
+      border: `1.5px solid ${accent || "#e5e7eb"}`,
+      borderRadius: "1rem",
+      padding: "1.5rem",
+      marginBottom: "1.25rem",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
     }}>
       <div style={{
-        background: "linear-gradient(135deg, " + B.purple600 + ", " + B.purple700 + ")",
-        padding: "2.5rem 1.5rem",
-        color: B.white,
-        textAlign: "center",
+        fontSize: "0.68rem", letterSpacing: "0.18em", fontWeight: "700",
+        textTransform: "uppercase", marginBottom: "0.85rem",
+        color: accent ? B.purple600 : "#6b7280",
+      }}>{title}</div>
+      {children}
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────────────────
+export default function AIEquityAssessment() {
+  const [screen, setScreen] = useState("landing");
+  const [answers, setAnswers] = useState({
+    industry: "", employees: "", revenue: "",
+    aiSystems: [], regulations: [], governanceItems: [],
+    incidentHistory: "", driver: "",
+  });
+  const [report, setReport] = useState(null);
+  const reportRef = useRef(null);
+
+  const upd = (key, val) => setAnswers(a => ({ ...a, [key]: val }));
+
+  const ok = {
+    q1: answers.industry && answers.employees && answers.revenue,
+    q2: answers.aiSystems.length > 0,
+    q5: !!answers.incidentHistory,
+    q6: !!answers.driver,
+  };
+
+  async function generateReport() {
+    setScreen("loading");
+    try {
+      const prompt = `You are Dr. Dédé Tetsubayashi's AI governance assessment engine. Generate a concise, authoritative enterprise AI governance risk assessment.
+
+ORGANIZATION: ${answers.industry} | ${answers.employees} employees | ${answers.revenue} revenue
+AI SYSTEMS: ${answers.aiSystems.join(", ") || "None specified"}
+REGULATIONS: ${answers.regulations.join(", ") || "None identified"}
+GOVERNANCE CONTROLS IN PLACE: ${answers.governanceItems.join(", ") || "None"}
+INCIDENT HISTORY: ${answers.incidentHistory}
+PRIMARY DRIVER: ${answers.driver}
+
+Return ONLY raw JSON (no markdown, no code blocks):
+{
+  "riskLevel": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
+  "executiveSummary": "2-3 sentences, direct, specific to their industry and AI systems.",
+  "topGaps": [
+    { "gap": "Short title", "detail": "1-2 sentences on the gap and specific regulatory or liability exposure.", "severity": "HIGH" | "CRITICAL" | "MEDIUM" },
+    { "gap": "...", "detail": "...", "severity": "..." },
+    { "gap": "...", "detail": "...", "severity": "..." }
+  ],
+  "regulatoryExposure": "2-3 sentences naming specific regulations and timelines relevant to their situation.",
+  "priorityAction": "One concrete, named deliverable for the next 30 days. Not generic.",
+  "whyIntensive": "1-2 sentences connecting their specific situation to the AI Equity Intensive with Dr. Dédé."
+}`;
+
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
+      const data = await resp.json();
+      const text = data.content?.find(b => b.type === "text")?.text || "";
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No JSON in response");
+      const parsed = JSON.parse(jsonMatch[0]);
+      setReport(parsed);
+      setScreen("report");
+      setTimeout(() => reportRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+    } catch (e) {
+      console.error("Assessment error:", e);
+      setScreen("error");
+    }
+  }
+
+  // ─── LANDING ──────────────────────────────────────────────────────────────────────────
+  if (screen === "landing") return (
+    <div style={S.container}>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      <Header />
+      {/* Hero */}
+      <div style={{
+        background: B.heroGradient, color: "#fff",
+        padding: "4rem 2rem 5rem",
+        position: "relative", overflow: "hidden",
       }}>
         <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "56px",
-          height: "56px",
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.15)",
-          fontSize: "1.5rem",
-          marginBottom: "1rem",
-        }}>
-          ⚖️
-        </div>
-        <h1 style={{ margin: "0 0 0.5rem", fontSize: "1.75rem", fontWeight: 700 }}>
-          AI Equity Assessment
-        </h1>
-        <p style={{ margin: 0, opacity: 0.85, fontSize: "0.95rem" }}>
-          Identify equity risks and disparate impacts across 8 domains
-        </p>
-      </div>
-
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "2rem 1.5rem" }}>
-        <div style={{
-          background: B.white,
-          borderRadius: "1rem",
-          padding: "2rem",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-        }}>
-          {error && (
-            <div style={{
-              background: B.red50,
-              border: "1px solid " + B.red100,
-              borderRadius: "0.5rem",
-              padding: "0.75rem 1rem",
-              color: B.red600,
-              fontSize: "0.875rem",
-              marginBottom: "1.5rem",
-            }}>
-              {error}
-            </div>
-          )}
-
-          <div style={{ marginBottom: "1.25rem" }}>
-            <label style={{ display: "block", fontWeight: 600, color: B.gray700, marginBottom: "0.4rem", fontSize: "0.875rem" }}>
-              Organization Name *
-            </label>
-            <input
-              type="text"
-              value={orgName}
-              onChange={(e) => setOrgName(e.target.value)}
-              placeholder="e.g., Acme Corporation"
-              style={{
-                width: "100%",
-                padding: "0.6rem 0.85rem",
-                border: "1px solid " + B.gray300,
-                borderRadius: "0.5rem",
-                fontSize: "0.95rem",
-                boxSizing: "border-box",
-                outline: "none",
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: "1.25rem" }}>
-            <label style={{ display: "block", fontWeight: 600, color: B.gray700, marginBottom: "0.4rem", fontSize: "0.875rem" }}>
-              Organization Type
-            </label>
-            <select
-              value={orgType}
-              onChange={(e) => setOrgType(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.6rem 0.85rem",
-                border: "1px solid " + B.gray300,
-                borderRadius: "0.5rem",
-                fontSize: "0.95rem",
-                background: B.white,
-                boxSizing: "border-box",
-              }}
-            >
-              <option value="">Select type...</option>
-              <option value="Tech/SaaS">Tech / SaaS</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Finance">Finance / Banking</option>
-              <option value="Government">Government / Public Sector</option>
-              <option value="Education">Education</option>
-              <option value="Nonprofit">Nonprofit</option>
-              <option value="Retail">Retail / Consumer</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div style={{ marginBottom: "1.25rem" }}>
-            <label style={{ display: "block", fontWeight: 600, color: B.gray700, marginBottom: "0.4rem", fontSize: "0.875rem" }}>
-              Organization Size
-            </label>
-            <select
-              value={orgSize}
-              onChange={(e) => setOrgSize(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.6rem 0.85rem",
-                border: "1px solid " + B.gray300,
-                borderRadius: "0.5rem",
-                fontSize: "0.95rem",
-                background: B.white,
-                boxSizing: "border-box",
-              }}
-            >
-              <option value="">Select size...</option>
-              <option value="1-50">1 – 50 employees</option>
-              <option value="51-200">51 – 200 employees</option>
-              <option value="201-1000">201 – 1,000 employees</option>
-              <option value="1001-5000">1,001 – 5,000 employees</option>
-              <option value="5000+">5,000+ employees</option>
-            </select>
-          </div>
-
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label style={{ display: "block", fontWeight: 600, color: B.gray700, marginBottom: "0.4rem", fontSize: "0.875rem" }}>
-              Brief Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe your organization's products, services, or AI systems being assessed..."
-              rows={4}
-              style={{
-                width: "100%",
-                padding: "0.6rem 0.85rem",
-                border: "1px solid " + B.gray300,
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                resize: "vertical",
-                boxSizing: "border-box",
-                fontFamily: "inherit",
-              }}
-            />
-          </div>
-
-          <button
-            onClick={runAssessment}
-            disabled={!orgName.trim()}
-            style={{
-              width: "100%",
-              padding: "0.85rem",
-              background: orgName.trim() ? B.purple600 : B.gray300,
-              color: orgName.trim() ? B.white : B.gray500,
-              border: "none",
-              borderRadius: "0.5rem",
-              fontWeight: 700,
-              fontSize: "1rem",
-              cursor: orgName.trim() ? "pointer" : "not-allowed",
-              transition: "background 0.15s",
-            }}
-          >
-            Start Equity Assessment →
-          </button>
-
-          <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>
-            {SECTIONS.map((s) => (
-              <span key={s.key} style={{
-                padding: "0.2rem 0.6rem",
-                background: B.purple50,
-                color: B.purple700,
-                borderRadius: "9999px",
-                fontSize: "0.75rem",
-                fontWeight: 500,
-              }}>
-                {s.label}
-              </span>
+          position: "absolute", inset: 0,
+          background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15), transparent 60%), radial-gradient(circle at 70% 80%, rgba(34,211,238,0.15), transparent 60%)",
+          pointerEvents: "none",
+        }} />
+        <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative" }}>
+          <span style={{
+            display: "inline-block", marginBottom: "1.25rem",
+            padding: "0.4rem 1rem",
+            background: "rgba(255,255,255,0.2)",
+            border: "1px solid rgba(255,255,255,0.3)",
+            borderRadius: "50px",
+            fontSize: "0.78rem", fontWeight: "600", letterSpacing: "0.08em",
+            backdropFilter: "blur(4px)",
+          }}>
+            Enterprise AI Governance · 6 Questions · Free
+          </span>
+          <h1 style={{
+            fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: "300",
+            lineHeight: "1.2", letterSpacing: "-0.02em",
+            marginBottom: "1.25rem",
+            textShadow: "0 2px 12px rgba(0,0,0,0.2)",
+          }}>
+            Your AI Is Already Running.<br />
+            <strong style={{ fontWeight: "700" }}>Your Governance Isn't.</strong>
+          </h1>
+          <p style={{ fontSize: "1.05rem", color: "rgba(255,255,255,0.93)", lineHeight: "1.75", marginBottom: "2rem", maxWidth: "520px" }}>
+            Answer 6 questions. Get a personalized AI governance gap assessment — the same diagnostic framework Dr. Dédé uses with Fortune 500 executives before every engagement.
+          </p>
+          <div style={{ display: "flex", gap: "2.5rem", marginBottom: "2.5rem", flexWrap: "wrap" }}>
+            {[["~4 minutes", "6 questions"], ["Instant report", "No email required"], ["Enterprise grade", "Fortune 500 framework"]].map(([a, b]) => (
+              <div key={a}>
+                <div style={{ fontWeight: "700", fontSize: "0.9rem" }}>{a}</div>
+                <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.75)" }}>{b}</div>
+              </div>
             ))}
           </div>
+          <button onClick={() => setScreen("q1")} style={{ ...S.btnPrimary, background: "#fff", color: B.purple600, fontSize: "1rem", padding: "1rem 2.5rem" }}>
+            Begin Assessment →
+          </button>
+          <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)", marginTop: "1rem" }}>
+            Results generated in real time. Not stored or shared.
+          </p>
+        </div>
+      </div>
+      {/* Trust strip */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #e5e7eb", padding: "1.25rem 2rem" }}>
+        <div style={{ maxWidth: "700px", margin: "0 auto", display: "flex", gap: "2rem", flexWrap: "wrap", alignItems: "center" }}>
+          <span style={{ fontSize: "0.75rem", color: "#9ca3af", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.08em" }}>Framework coverage:</span>
+          {["EU AI Act", "NIST AI RMF", "ISO 42001", "EEOC / OFCCP", "CFPB", "NY Local Law 144"].map(f => (
+            <span key={f} style={{ fontSize: "0.78rem", color: B.gray600, fontWeight: "500" }}>{f}</span>
+          ))}
         </div>
       </div>
     </div>
   );
+
+  // ─── QUESTION WRAPPER ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  const QWrap = ({ step, qLabel, qTitle, qSub, onBack, onNext, nextDisabled, nextLabel, children }) => (
+    <div style={S.container}>
+      <Header />
+      <div style={S.card}>
+        <ProgressBar current={step} total={6} />
+        <div style={S.qLabel}>{qLabel}</div>
+        <h2 style={S.qTitle}>{qTitle}</h2>
+        {qSub && <p style={S.qSub}>{qSub}</p>}
+        {children}
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "space-between", marginTop: "2rem" }}>
+          <button onClick={onBack} style={S.btnSecondary}>← Back</button>
+          <button onClick={onNext} disabled={nextDisabled} style={{ ...S.btnPrimary, opacity: nextDisabled ? 0.4 : 1 }}>
+            {nextLabel || "Continue →"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (screen === "q1") return (
+    <div style={S.container}>
+      <Header />
+      <div style={S.card}>
+        <ProgressBar current={1} total={6} />
+        <div style={S.qLabel}>Question 01 · Organization Profile</div>
+        <h2 style={S.qTitle}>Tell us about your organization.</h2>
+        <p style={S.qSub}>Risk exposure varies significantly by industry and scale. We use this to calibrate your assessment.</p>
+
+        <div style={{ marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "0.75rem", fontWeight: "600", color: B.gray600, marginBottom: "0.6rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Industry Sector</div>
+          <SelectList options={INDUSTRIES} selected={answers.industry} onChange={v => upd("industry", v)} single />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1.5rem" }}>
+          <div>
+            <div style={{ fontSize: "0.75rem", fontWeight: "600", color: B.gray600, marginBottom: "0.6rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Employees</div>
+            <SelectList options={EMPLOYEE_COUNTS} selected={answers.employees} onChange={v => upd("employees", v)} single />
+          </div>
+          <div>
+            <div style={{ fontSize: "0.75rem", fontWeight: "600", color: B.gray600, marginBottom: "0.6rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Annual Revenue</div>
+            <SelectList options={REVENUE_RANGES} selected={answers.revenue} onChange={v => upd("revenue", v)} single />
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "space-between", marginTop: "2rem" }}>
+          <button onClick={() => setScreen("landing")} style={S.btnSecondary}>← Back</button>
+          <button onClick={() => setScreen("q2")} disabled={!ok.q1} style={{ ...S.btnPrimary, opacity: ok.q1 ? 1 : 0.4 }}>Continue →</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (screen === "q2") return (
+    <QWrap step={2} qLabel="Question 02 · AI Deployment Scope"
+      qTitle="Which AI systems are currently in production?"
+      qSub="Select all that apply. Include systems operated by third-party vendors on your behalf."
+      onBack={() => setScreen("q1")} onNext={() => setScreen("q3")} nextDisabled={!ok.q2}>
+      <CheckboxGrid options={AI_SYSTEMS} selected={answers.aiSystems} onChange={v => upd("aiSystems", v)} />
+    </QWrap>
+  );
+
+  if (screen === "q3") return (
+    <QWrap step={3} qLabel="Question 03 · Regulatory Exposure"
+      qTitle="Which regulatory frameworks apply to your organization?"
+      qSub="Select all that apply. If unsure, choose frameworks relevant to your industry and operating jurisdictions."
+      onBack={() => setScreen("q2")} onNext={() => setScreen("q4")}>
+      <CheckboxGrid options={REGULATIONS} selected={answers.regulations} onChange={v => upd("regulations", v)} />
+    </QWrap>
+  );
+
+  if (screen === "q4") return (
+    <QWrap step={4} qLabel="Question 04 · Governance Maturity"
+      qTitle="Which governance controls are currently in place?"
+      qSub="Select only controls that exist in documented, operational form — not those planned or in progress."
+      onBack={() => setScreen("q3")} onNext={() => setScreen("q5")}>
+      <CheckboxGrid options={GOVERNANCE_ITEMS} selected={answers.governanceItems} onChange={v => upd("governanceItems", v)} />
+    </QWrap>
+  );
+
+  if (screen === "q5") return (
+    <QWrap step={5} qLabel="Question 05 · Incident History"
+      qTitle="Has your organization experienced any of the following in the past 24 months?"
+      qSub="This is used to assess residual risk and potential regulatory attention."
+      onBack={() => setScreen("q4")} onNext={() => setScreen("q6")} nextDisabled={!ok.q5}>
+      <SelectList options={[
+        "No known AI-related incidents, inquiries, or escalations",
+        "Internal escalation or employee complaint related to AI decision-making",
+        "Regulatory inquiry, audit finding, or notice related to AI or data practices",
+        "Litigation or threatened litigation involving AI systems or outputs",
+        "Public-facing AI incident that received media attention",
+        "AI system failure that impacted business operations or customers",
+      ]} selected={answers.incidentHistory} onChange={v => upd("incidentHistory", v)} single />
+    </QWrap>
+  );
+
+  if (screen === "q6") return (
+    <QWrap step={6} qLabel="Question 06 · Strategic Driver"
+      qTitle="What is the primary driver behind this assessment?"
+      qSub="Understanding your pressure point lets us prioritize the findings most relevant to your timeline."
+      onBack={() => setScreen("q5")} onNext={generateReport} nextDisabled={!ok.q6}
+      nextLabel="Generate My Assessment →">
+      <SelectList options={DRIVERS} selected={answers.driver} onChange={v => upd("driver", v)} single />
+    </QWrap>
+  );
+
+  if (screen === "loading") return (
+    <div style={S.container}><Header /><div style={S.card}><LoadingScreen /></div></div>
+  );
+
+  if (screen === "error") return (
+    <div style={S.container}>
+      <Header />
+      <div style={{ ...S.card, textAlign: "center", paddingTop: "4rem" }}>
+        <p style={{ color: "#ef4444", marginBottom: "1rem", fontWeight: "600" }}>Unable to generate assessment.</p>
+        <button onClick={() => setScreen("q6")} style={S.btnPrimary}>Try Again</button>
+      </div>
+    </div>
+  );
+
+  // ─── REPORT ───────────────────────────────────────────────────────────────────────────
+  if (screen === "report" && report) {
+    const sevColor = { HIGH: "#c2410c", CRITICAL: "#b91c1c", MEDIUM: "#a16207" };
+    const sevBg = { HIGH: "#ffedd5", CRITICAL: "#fee2e2", MEDIUM: "#fef9c3" };
+    return (
+      <div style={S.container}>
+        <Header />
+        {/* Report Hero */}
+        <div style={{
+          background: B.heroGradient, color: "#fff",
+          padding: "2.5rem 2rem",
+          position: "relative", overflow: "hidden",
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            background: "radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 60%)",
+            pointerEvents: "none",
+          }} />
+          <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+              <div>
+                <div style={{ fontSize: "0.72rem", letterSpacing: "0.15em", fontWeight: "600", color: "rgba(255,255,255,0.7)", marginBottom: "0.4rem", textTransform: "uppercase" }}>
+                  AI Equity Assessment Report · {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                </div>
+                <h2 style={{ fontSize: "1.5rem", fontWeight: "300", marginBottom: "0.25rem" }}>
+                  {answers.industry}
+                </h2>
+                <div style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.75)" }}>
+                  {answers.employees} employees · {answers.revenue} revenue · {answers.aiSystems.length} AI systems in scope
+                </div>
+              </div>
+              <RiskBadge level={report.riskLevel} />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ ...S.card, paddingTop: "2rem" }} ref={reportRef}>
+          {/* Summary */}
+          <ReportCard title="Executive Summary" accent={`rgba(147,51,234,0.3)`}>
+            <p style={{ color: B.gray600, lineHeight: "1.8", fontSize: "0.92rem" }}>{report.executiveSummary}</p>
+          </ReportCard>
+
+          {/* Gaps */}
+          <ReportCard title="Critical Governance Gaps Identified">
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              {report.topGaps?.map((g, i) => (
+                <div key={i} style={{
+                  padding: "1rem 1.25rem",
+                  background: sevBg[g.severity] || "#fff7ed",
+                  border: `1.5px solid ${sevColor[g.severity] || "#c2410c"}30`,
+                  borderLeft: `4px solid ${sevColor[g.severity] || "#c2410c"}`,
+                  borderRadius: "0.5rem",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.4rem" }}>
+                    <div style={{ fontSize: "0.88rem", fontWeight: "600", color: B.gray800 }}>{i + 1}. {g.gap}</div>
+                    <span style={{
+                      fontSize: "0.65rem", fontWeight: "700", letterSpacing: "0.1em",
+                      color: sevColor[g.severity] || "#c2410c", textTransform: "uppercase",
+                    }}>{g.severity}</span>
+                  </div>
+                  <p style={{ fontSize: "0.82rem", color: B.gray600, lineHeight: "1.6", margin: 0 }}>{g.detail}</p>
+                </div>
+              ))}
+            </div>
+          </ReportCard>
+
+          {/* Regulatory */}
+          <ReportCard title="Regulatory Exposure Assessment">
+            <p style={{ color: B.gray600, lineHeight: "1.8", fontSize: "0.9rem" }}>{report.regulatoryExposure}</p>
+          </ReportCard>
+
+          {/* Priority action */}
+          <ReportCard title="Priority Action — Next 30 Days" accent="rgba(8,145,178,0.3)">
+            <p style={{ color: B.cyan600, lineHeight: "1.8", fontSize: "0.9rem", fontWeight: "500" }}>{report.priorityAction}</p>
+          </ReportCard>
+
+          {/* CTA */}
+          <div style={{
+            background: B.heroGradient,
+            borderRadius: "1rem",
+            padding: "2rem 2rem 2.25rem",
+            marginTop: "1.5rem",
+            color: "#fff",
+            position: "relative",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute", inset: 0,
+              background: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08), transparent 60%)",
+              pointerEvents: "none",
+            }} />
+            <div style={{ position: "relative" }}>
+              <span style={{
+                display: "inline-block", marginBottom: "0.75rem",
+                padding: "0.3rem 0.85rem",
+                background: "rgba(255,255,255,0.2)",
+                border: "1px solid rgba(255,255,255,0.3)",
+                borderRadius: "50px", fontSize: "0.72rem", fontWeight: "600",
+                letterSpacing: "0.08em", backdropFilter: "blur(4px)",
+              }}>Next Step · AI Equity Intensive</span>
+              <h3 style={{ fontSize: "1.3rem", fontWeight: "400", marginBottom: "0.75rem", lineHeight: "1.4" }}>
+                Go from risk identified to risk resolved.
+              </h3>
+              <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.88)", lineHeight: "1.75", marginBottom: "1.5rem" }}>
+                {report.whyIntensive} The AI Equity Intensive is a 90-minute working session with Dr. Dédé resulting in a 5–7 page AI Equity Assessment Report and a 30/60/90-day governance roadmap — specific to your organization.
+              </p>
+              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+                <a href="https://dr-dede.com/schedule-consultation" target="_blank" rel="noopener noreferrer"
+                  style={{ ...S.btnPrimary, background: "#fff", color: B.purple600, textDecoration: "none", display: "inline-block" }}>
+                  Book an AI Equity Intensive →
+                </a>
+                <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.7)" }}>$2,500 individual · $5,000 enterprise team</span>
+              </div>
+              <div style={{ marginTop: "1.25rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.2)", fontSize: "0.75rem", color: "rgba(255,255,255,0.6)" }}>
+                Dr. Dédé Tetsubayashi · TEDx Speaker · Cornell PhD · AI Governance Expert · incluu.us
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
