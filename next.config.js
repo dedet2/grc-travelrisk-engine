@@ -25,13 +25,6 @@ const nextConfig = {
       },
     ];
   },
-  rewrites: async () => {
-    return {
-      beforeFiles: [],
-      afterFiles: [],
-      fallback: [],
-    };
-  },
 };
 
 module.exports = nextConfig;
