@@ -17,7 +17,7 @@ export default function Home() {
               dr-dede.com
             </Link>
             <Link href="/" className="font-bold text-2xl bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-              AI GRC Engine
+              AI GRC TravelRisk Platform
             </Link>
           </div>
 
