@@ -18,15 +18,15 @@ const B = {
 
 // ─── Stripe Checkout Links ─────────────────────────────────────
 const STRIPE_LINKS: Record<string, string> = {
-  starter_monthly: "https://buy.stripe.com/REPLACE_STARTER_MONTHLY",
-  starter_annual: "https://buy.stripe.com/REPLACE_STARTER_ANNUAL",
-  growth_monthly: "https://buy.stripe.com/REPLACE_GROWTH_MONTHLY",
-  growth_annual: "https://buy.stripe.com/REPLACE_GROWTH_ANNUAL",
-  enterprise_monthly: "https://buy.stripe.com/REPLACE_ENTERPRISE_MONTHLY",
-  enterprise_annual: "https://buy.stripe.com/REPLACE_ENTERPRISE_ANNUAL",
+  starter_monthly: "https://buy.stripe.com/14A4gz8S07fD7KK5P37kc07",
+  starter_annual: "https://buy.stripe.com/14A4gz8S07fD7KK5P37kc07",
+  growth_monthly: "https://buy.stripe.com/7sYaEX5GC7fDfdc1yN7kc08",
+  growth_annual: "https://buy.stripe.com/7sYaEX5GC7fDfdc1yN7kc08",
+  enterprise_monthly: "https://buy.stripe.com/aFa3cv1qmczXghgcdr7kc09",
+  enterprise_annual: "https://buy.stripe.com/aFa3cv1qmczXghgcdr7kc09",
 };
 
-const STRIPE_PORTAL = "https://billing.stripe.com/REPLACE_PORTAL_LINK";
+const STRIPE_PORTAL = "https://billing.stripe.com/p/login/aEUcQ72mB8oMfKMdQQ";
 
 // ─── Plans ────────────────────────────────────────────────────────
 const PLANS = [
@@ -575,6 +575,23 @@ export default function IncluuBilling() {
                 </div>
               );
             })}
+          {/* Stripe Pricing Table */}
+          <div style={{ margin: "2rem 0", padding: "2rem", background: B.card, borderRadius: 16 }}>
+            <h3 style={{ textAlign: "center", marginBottom: "1rem", color: B.gray800, fontSize: "1.25rem", fontWeight: 700 }}>
+              Cherry Blossom Launch Special
+            </h3>
+            <div 
+              dangerouslySetInnerHTML={{
+                __html: `
+                  <script async src="https://js.stripe.com/v3/pricing-table.js"><\/script>
+                  <stripe-pricing-table 
+                    pricing-table-id="prctbl_1SgCbLEVSHLlpak6r5hntf8a"
+                    publishable-key="pk_live_51HBq4LEVSHLlpak65gbm9X4cCKW6tyG6IL2F60eLf4W0cpozlg9gTSCxXsUVHSboSOMj79ZaTnAqQBTzA5e8avTo0055WBIeUn"
+                  ><\/stripe-pricing-table>
+                `
+              }}
+            />
+          </div>
           </div>
 
           {/* Add-ons */}
