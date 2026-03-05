@@ -8,47 +8,29 @@ import { Footer } from '@/components/layout/footer';
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-950 via-purple-900 to-fuchsia-950 text-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-violet-950/60 border-b border-violet-500/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      {/* Minimal top banner - main nav lives on dr-dede.com */}
+      <div className="sticky top-0 z-50 backdrop-blur-md bg-violet-950/60 border-b border-violet-500/20">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="https://www.dr-dede.com" className="text-sm text-violet-300 hover:text-white transition flex items-center gap-1">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              dr-dede.com
+              Dr. Dédé &amp; incluu
             </Link>
-            <Link href="/" className="font-bold text-2xl bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-violet-500/40">|</span>
+            <span className="font-bold text-lg bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
               AI GRC TravelRisk Platform
-            </Link>
+            </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#pricing" className="text-sm hover:text-cyan-300 transition">
-              Pricing
-            </a>
-            <Link href="https://www.dr-dede.com/incluu" className="text-sm hover:text-cyan-300 transition">
-              incluu
-            </Link>
-            <Link href="https://www.dr-dede.com/dr-dede" className="text-sm hover:text-cyan-300 transition">
-              About Dr. Dédé
-            </Link>
-            <Link href="https://www.dr-dede.com/speaking" className="text-sm hover:text-cyan-300 transition">
-              Speaking
-            </Link>
-            <Link href="https://www.dr-dede.com/contact" className="text-sm hover:text-cyan-300 transition">
-              Contact
-            </Link>
-            <Link href="https://www.dr-dede.com/contact" className="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-semibold transition">
-              Schedule Consultation
-            </Link>
-            
+          <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
                 <button className="text-sm text-violet-200 hover:text-white transition">
-                  Admin
+                  Sign In
                 </button>
               </SignInButton>
             </SignedOut>
-            
+
             <SignedIn>
               <Link href="/dashboard" className="text-sm text-violet-200 hover:text-white transition">
                 Dashboard
@@ -57,7 +39,7 @@ export default function Home() {
             </SignedIn>
           </div>
         </div>
-      </nav>
+      </div>
 
       {/* Hero Section */}
       <section className="relative px-6 py-24 max-w-7xl mx-auto text-center">
